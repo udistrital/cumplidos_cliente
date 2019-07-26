@@ -1,0 +1,26 @@
+<div ng-cloak layout-gt-sm="row" layout="column">
+    <div flex-gt-sm="100" flex>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></span>
+            <input type="text" class="form-control" ng-model="buscador" placeholder="Filtrar Notificación">
+        </div>
+    </div>
+</div>
+<br>
+<div ng-cloak layout-gt-sm="row" layout="column">
+    <div flex-gt-sm="100" flex>
+        <md-content>
+            <div ng-repeat="m in notificacion.log">
+                <md-list-item class="md-3-line" ng-click="">
+                    <img class="menu-app" id="kronos">
+                    <div class="md-list-item-text">
+                        <h3>{{m.Alias}}</h3>
+                        <p>{{m.Content.Message}}</p>
+                        <!-- <p>{{m | json}}</p> -->
+                        <em><span am-time-ago="m.FechaCreacion"></span></em>
+                    </div>
+                </md-list-item>
+            </div>
+        </md-content>
+    </div>
+</div>
