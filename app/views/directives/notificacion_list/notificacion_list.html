@@ -10,13 +10,13 @@
 <div ng-cloak layout-gt-sm="row" layout="column">
     <div flex-gt-sm="100" flex>
         <md-content>
-            <div ng-repeat="m in notificacion.log">
-                <md-list-item class="md-3-line" ng-click="">
-                    <img class="menu-app" id="kronos">
+            <div ng-repeat="m in notificacion.log | filter:{ $: buscador}">
+                <md-list-item class="md-3-line" ng-click="redirect_url(m)">
+                    <img class="menu-app" id="{{m.EstiloIcono}}">
                     <div class="md-list-item-text">
                         <h3>{{m.Alias}}</h3>
-                        <p>{{m.Content.Message}}</p>
-                        <!-- <p>{{m | json}}</p> -->
+                        <p>{{m.Content.Message.Message}}</p>
+                        <p>{{m | json}}</p>
                         <em><span am-time-ago="m.FechaCreacion"></span></em>
                     </div>
                 </md-list-item>

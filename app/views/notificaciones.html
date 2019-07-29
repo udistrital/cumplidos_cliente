@@ -13,13 +13,13 @@
       </div>
       <br>
       <md-content>
-        <md-subheader class="md-primary">Notificaciones Vistas</md-subheader>
         <div ng-repeat="m in notificacion.log" ng-if="m.viewed">
-          <md-list-item class="md-3-line" ng-click="">
+          <md-list-item class="md-3-line" ng-click="m.">
             <img ng-src="{{imagePath}}" class="img-responsive img-thumbnail" alt="No funciona">
             <div class="md-list-item-text">
               <h3>{{m.user}}</h3>
-              <p>{{m.message}}</p>
+              <p>{{m | json}}</p>
+              <p>{{m.Message.Message}}</p>
               <em><span am-time-ago="m.date"></span></em>
             </div>
         </div>
