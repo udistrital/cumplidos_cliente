@@ -17,17 +17,14 @@ angular.module('contractualClienteApp')
         var notificacion_estado_usuario = [];
         var no_vistos = 0;
         var addMessage = function (message) {
-            methods.log = [message].concat(methods.log);
-            methods.no_vistos = (methods.log.filter(function (data) { return (data.Estado === 'enviada') })).length;
-
+            methods.log = [message].concat(methods.log)
         };
 
         var queryNotification = function () {
-            configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=id&order=asc&limit=-1')
+            configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=Fecha&order=asc&limit=-1', '')
                 .then(function (response) {
                     if (response !== null) {
                         notificacion_estado_usuario = response.data;
-                        console.log(response);
                         notificacion_estado_usuario.map(function (notify) {
                             if (typeof notify.Notificacion !== 'undefined') {
                                 var message = {
@@ -41,9 +38,11 @@ angular.module('contractualClienteApp')
                                     FechaEdicion: new Date(notify.Fecha),
                                     Estado: notify.NotificacionEstado.CodigoAbreviacion,
                                 };
-                                addMessage(message);
+
+                                methods.addMessage(message);
                             }
                         });
+                        methods.update_novistos();
                     }
                 });
         };
@@ -67,13 +66,9 @@ angular.module('contractualClienteApp')
                 var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + payload.sub + "&profiles=" + roles);
                 dataStream.onMessage(function (message) {
                     var mensage = JSON.parse(message.data);
-                        console.log(mensage);
-                    if (mensage.Estado != 'conected') {
-                        addMessage(mensage);
-                        console.log(mensage);
-                    }else {
-                        console.log(mensage);
-                    }
+                    console.log(mensage);
+                    methods.addMessage(mensage);
+                    methods.update_novistos();
                 });
                 queryNotification();
             }
@@ -98,8 +93,8 @@ angular.module('contractualClienteApp')
 
             changeStateNoView: function (user) {
                 console.info(user)
-                console.log(methods.log.filter(function (data) { return data.Estado === 'enviada' }))
-                if (methods.log.filter(function (data) { return data.Estado === 'enviada' }).length >= 1) {
+                console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
+                if (methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }).length >= 1) {
                     configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
                         .then(function (response) {
                             console.log(response);
@@ -113,6 +108,11 @@ angular.module('contractualClienteApp')
                 return notificacion_estado_usuario.filter(function (data) { return (data.Id === id) })[0]
             },
 
+            update_novistos: function () {
+                console.info((methods.log.filter(function (data) { return ((data.Estado).toLowerCase() == 'enviada') })).length);
+                methods.no_vistos = (methods.log.filter(function (data) { return (data.Estado.toLowerCase() === 'enviada') })).length;
+            },
+
             changeStateToView: function (id, estado) {
                 console.log(estado);
                 if (estado === 'noleida') {
@@ -120,10 +120,10 @@ angular.module('contractualClienteApp')
                     var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
                     console.log(path)
                     configuracionRequest.get(path, '')
-                    .then(function (response) {
-                        methods.log = [];
-                        methods.queryNotification();
-                    });
+                        .then(function (response) {
+                            methods.log = [];
+                            methods.queryNotification();
+                        });
                 }
             },
 
