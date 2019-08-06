@@ -18,7 +18,8 @@ angular.module('contractualClienteApp')
         var no_vistos = 0;
         var addMessage = function (message) {
             methods.log = [message].concat(methods.log);
-            no_vistos = (methods.log.filter(function (data) { return (data.Estado === 'enviada')})).length;
+            methods.no_vistos = (methods.log.filter(function (data) { return (data.Estado === 'enviada') })).length;
+
         };
 
         var queryNotification = function () {
@@ -65,7 +66,14 @@ angular.module('contractualClienteApp')
                 roles = roles.replace(/,/g, '%2C');
                 var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + payload.sub + "&profiles=" + roles);
                 dataStream.onMessage(function (message) {
-                    log.unshift(JSON.parse(message.data));
+                    var mensage = JSON.parse(message.data);
+                        console.log(mensage);
+                    if (mensage.Estado != 'conected') {
+                        addMessage(mensage);
+                        console.log(mensage);
+                    }else {
+                        console.log(mensage);
+                    }
                 });
                 queryNotification();
             }
@@ -80,6 +88,7 @@ angular.module('contractualClienteApp')
             no_vistos: no_vistos,
             queryNotification: queryNotification,
             addMessage: addMessage,
+            payload: payload,
 
             get: function () {
                 dataStream.send(JSON.stringify({
@@ -88,7 +97,9 @@ angular.module('contractualClienteApp')
             },
 
             changeStateNoView: function (user) {
-                if (methods.listMessage.filter(function (data) { return data.Estado === 'enviada' }).length >= 1) {
+                console.info(user)
+                console.log(methods.log.filter(function (data) { return data.Estado === 'enviada' }))
+                if (methods.log.filter(function (data) { return data.Estado === 'enviada' }).length >= 1) {
                     configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
                         .then(function (response) {
                             console.log(response);
@@ -102,49 +113,19 @@ angular.module('contractualClienteApp')
                 return notificacion_estado_usuario.filter(function (data) { return (data.Id === id) })[0]
             },
 
-            changeStateToView: function (id) {
-                var noti = methods.getNotificacionEstadoUsuario(id);
-                noti.Activo = false;
-                configuracionRequest.put('notificacion_estado_usuario', noti.Id,noti)
-                    .then(function (res) {
-                        noti[0].Id = null
-                        noti[0].Activo = true
-                        noti[0].NotificacionEstado = {
-                            Id: 3
-                        }
-                        configuracionRequest.post('notificacion_estado_usuario', noti[0])
-                            .then(function (res) {
-                                methods.listMessage = [];
-                                methods.queryNotification();
-                            });
-                    });
-
-            },
-
-            queryNotification: function () {
-                configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + methods.payload.sub + ',Activo:true&sortby=id&order=asc&limit=-1')
+            changeStateToView: function (id, estado) {
+                console.log(estado);
+                if (estado === 'noleida') {
+                    var noti = methods.getNotificacionEstadoUsuario(id);
+                    var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
+                    console.log(path)
+                    configuracionRequest.get(path, '')
                     .then(function (response) {
-                        if (response !== null) {
-                            methods.notificacion_estado_usuario = response;
-                            response.map(function (notify) {
-                                if (typeof notify.Notificacion !== 'undefined') {
-                                    var message = {
-                                        Id: notify.Id,
-                                        Type: notify.Notificacion.NotificacionConfiguracion.Tipo.Id,
-                                        Content: JSON.parse(notify.Notificacion.CuerpoNotificacion),
-                                        User: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Nombre,
-                                        Alias: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Alias,
-                                        EstiloIcono: notify.Notificacion.NotificacionConfiguracion.Aplicacion.EstiloIcono,
-                                        FechaCreacion: new Date(notify.Notificacion.FechaCreacion),
-                                        FechaEdicion: new Date(notify.Fecha),
-                                        Estado: notify.NotificacionEstado.CodigoAbreviacion,
-                                    };
-                                    methods.addMessage(message);
-                                }
-                            });
-                        }
+                        methods.log = [];
+                        methods.queryNotification();
                     });
-            }
+                }
+            },
 
         };
         return methods;

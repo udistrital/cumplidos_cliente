@@ -64,10 +64,10 @@
           </li>
         </ul>
       </li>
-      <a href="" class="navbar-brand" ng-click="toggleRight()" ng-if="notificacion.no_vistos> 0">
+      <a href="" class="navbar-brand" ng-click="toggleRight(); changeStateToNoView();" ng-if="notificacion.no_vistos > 0">
         <i class="fa fa-bell fa-fw faa-ring animated" aria-hidden="true"></i>{{notificacion.no_vistos}}
       </a>
-      <a href="" class="navbar-brand" ng-click="toggleRight()" ng-if="notificacion.no_vistos == 0">
+      <a href="" class="navbar-brand" ng-click="toggleRight(); " ng-if="notificacion.no_vistos == 0">
         <i class="fa fa-bell fa-fw faa-ring" aria-hidden="true"></i>
       </a>
       <!-- /.dropdown Notifications-->
