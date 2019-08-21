@@ -20,9 +20,9 @@ angular.module('nuxeoClient',[])
           .params({
             type: 'File',
             name: nombre,
-            properties: 'dc:title=' +  nombre + ' \ndc:description=' + descripcion
+            properties: 'dc:title=' +  nombre + ' \ndc:description=' + descripcion + ' \ndc:format=pdf \ndc:language=es \ndc:rights=aadadasd asdasdasd asdasda \ndc:source= Andrea Liliana Ramirez silva'
           })
-          .input('/default-domain/workspaces/oas/oas_app/resoluciones')
+          .input('/default-domain/workspaces/oas/oas_app/Cumplidos')
           .execute()
           .then(function(doc) {
             var nuxeoBlob = new Nuxeo.Blob({
