@@ -101,26 +101,6 @@ angular
                 controller: 'AboutCtrl',
                 controllerAs: 'about'
             })
-            .when('/seguimientoycontrol/tecnico/aprobacion_coordinador/:docid', {
-              templateUrl: 'views/seguimientoycontrol/tecnico/aprobacion_coordinador.html',
-              controller: 'AprobacionCoordinadorCtrl',
-              controllerAs: 'aprobacionCoordinador'
-            })
-            .when('/seguimientoycontrol/tecnico/aprobacion_documentos/:docid', {
-              templateUrl: 'views/seguimientoycontrol/tecnico/aprobacion_documentos.html',
-              controller: 'AprobacionDocumentosCtrl',
-              controllerAs: 'aprobacionDocumentos'
-            })
-            .when('/seguimientoycontrol/tecnico/aprobacion_pago/:docid', {
-              templateUrl: 'views/seguimientoycontrol/tecnico/aprobacion_pago.html',
-              controller: 'AprobacionPagoCtrl',
-              controllerAs: 'aprobacionPago'
-            })
-            .when('/seguimientoycontrol/tecnico/carga_documentos_docente/:docid', {
-              templateUrl: 'views/seguimientoycontrol/tecnico/carga_documentos_docente.html',
-              controller: 'CargaDocumentosDocenteCtrl',
-              controllerAs: 'cargaDocumentosDocente'
-            })
             .when('/seguimientoycontrol/tecnico/carga_documentos_contratista', {
               templateUrl: 'views/seguimientoycontrol/tecnico/carga_documentos_contratista.html',
               controller: 'cargaDocumentosContratistaCtrl',
