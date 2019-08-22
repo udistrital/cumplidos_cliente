@@ -22,25 +22,25 @@ angular.module('contractualClienteApp')
         $scope.perfil = "ADMINISTRADOR ARGO";
 
         //Rama cumplidos
-        $scope.logout = function(){
+        $scope.logout = function () {
             token_service.logout();
         };
-        if(token_service.live_token()){
+        if (token_service.live_token()) {
             $scope.token = token_service.getPayload();
-            if (!angular.isUndefined($scope.token.role)){
-                var roles="";
-                if ( typeof $scope.token.role === "object" ) {
-                  var rl = [];
-                  for (var index = 0; index < $scope.token.role.length; index++) {
-                    if ($scope.token.role[index].indexOf("/") < 0 ){
-                      rl.push($scope.token.role[index]);
+            if (!angular.isUndefined($scope.token.role)) {
+                var roles = "";
+                if (typeof $scope.token.role === "object") {
+                    var rl = [];
+                    for (var index = 0; index < $scope.token.role.length; index++) {
+                        if ($scope.token.role[index].indexOf("/") < 0) {
+                            rl.push($scope.token.role[index]);
+                        }
                     }
-                  }
-                  roles = rl.toString();
+                    roles = rl.toString();
                 } else {
-                  roles = $scope.token.role;
+                    roles = $scope.token.role;
                 }
-    
+
                 roles = roles.replace(/,/g, '%2C');
                 //Desarrollo
                 configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/Cumplidos','').then(function(response) {
@@ -48,14 +48,14 @@ angular.module('contractualClienteApp')
                 //configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas','').then(function(response) {
                     console.log(response);
                     $rootScope.my_menu = response.data;
-    
+
                 })
-                .catch(
-                    function(response) {
-                        console.log(response);
-                        $rootScope.my_menu = response.data;
-        
-                    });
+                    .catch(
+                        function (response) {
+                            console.log(response);
+                            $rootScope.my_menu = response.data;
+
+                        });
             }
         }
 
@@ -80,6 +80,10 @@ angular.module('contractualClienteApp')
                     $location.path(path);
                     break;
             }
+        };
+
+        $scope.changeStateToNoView = function () {
+            notificacion.changeStateNoView($scope.token.sub);
         };
 
 
