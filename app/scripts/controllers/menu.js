@@ -42,7 +42,10 @@ angular.module('contractualClienteApp')
                 }
 
                 roles = roles.replace(/,/g, '%2C');
-                configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas', '').then(function (response) {
+                //Desarrollo
+                configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/Cumplidos','').then(function(response) {
+                //Despliegue
+                //configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas','').then(function(response) {
                     console.log(response);
                     $rootScope.my_menu = response.data;
 
@@ -55,22 +58,6 @@ angular.module('contractualClienteApp')
                         });
             }
         }
-
-        /* // obtiene los menús segun el rol
-        var roles = rolesService.roles().toString().replace(/,/g, '%2C');
-        configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/Argo', '').then(function (response) {
-
-            $rootScope.my_menu = response.data;
-
-        }); */
-
-        /*
-        configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + "ADMINISTRADOR_ARGO" + '/Argo', '').then(function(response) {
-            $rootScope.my_menu = response.data;
-          });
-            /*configuracionRequest.update_menu(https://10.20.0.162:9443/store/apis/authenticate response.data);
-            $scope.menu_service = configuracionRequest.get_menu();*/
-
 
         var update_url = function () {
             $scope.breadcrumb = [''];
