@@ -52,7 +52,6 @@ angular
         'oikosService',
         'financieraMidService',
         'adminMidService',
-        'sicapitalService',
         'amazonAdministrativaService',
         'contratoService',
         'gridOptionsService',
