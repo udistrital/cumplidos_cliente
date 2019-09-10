@@ -50,7 +50,7 @@ var conf_cloud = {
   {
     id: "arka",
     title: "ARKA",
-    url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/arka"
+    url: "https://tpruebasfuncionarios.intranetoas.udistrital.edu.co/arka"
   },
   {
     id: "temis",
