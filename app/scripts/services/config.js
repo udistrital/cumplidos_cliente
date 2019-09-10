@@ -93,7 +93,7 @@ var conf_desarrollo = {
   NOTIFICACION_WS: "ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws/join",
   OIKOS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1",
   CONTRATO_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1",
-  NUXEO_SERVICE: "https://documental.udistrital.edu.co/nuxeo/",
+  NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
   TOKEN: {
     AUTORIZATION_URL: "https://autenticacion.udistrital.edu.co/oauth2/authorize",
     URL_USER_INFO: "https://autenticacion.udistrital.edu.co/oauth2/userinfo",
