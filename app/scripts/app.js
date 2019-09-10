@@ -53,7 +53,6 @@ angular
         'financieraMidService',
         'adminMidService',
         'sicapitalService',
-        'titan_service',
         'amazonAdministrativaService',
         'contratoService',
         'gridOptionsService',
