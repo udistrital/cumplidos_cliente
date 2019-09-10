@@ -57,7 +57,6 @@ angular
         'sicapitalService',
         'titan_service',
         'amazonAdministrativaService',
-        'academicaService',
         'contratoService',
         'gridOptionsService',
         'configuracionService',
