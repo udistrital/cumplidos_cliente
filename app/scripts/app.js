@@ -47,7 +47,6 @@ angular
         // Servicios
         'financieraService',
         'coreService',
-        'coreAmazonService',
         'administrativaService',
         'agoraService',
         'oikosService',
