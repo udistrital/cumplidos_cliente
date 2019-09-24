@@ -8,6 +8,19 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
+
+    reporters: ['progress', 'html'],
+
+    htmlReporter: {
+      outputFile: 'test/units.html',
+			
+      // Optional
+      pageTitle: 'Unit Tests',
+      subPageTitle: 'A sample project description',
+	  groupSuites: true,
+	  useCompactStyle: true,
+      useLegacyStyle: true
+    },
     // base path, that will be used to resolve files and exclude
     basePath: '../',
 
@@ -27,7 +40,6 @@ module.exports = function(config) {
       'bower_components/angular-cookies/angular-cookies.js',
       'bower_components/angular-resource/angular-resource.js',
       'bower_components/angular-route/angular-route.js',
-      'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-touch/angular-touch.js',
       'bower_components/angular-ui-grid/ui-grid.js',
       'bower_components/angular-md5/angular-md5.js',
@@ -39,7 +51,6 @@ module.exports = function(config) {
       'bower_components/pdfmakeoas/build/pdfmake.js',
       'bower_components/pdfmakeoas/build/vfs_fonts.js',
       'bower_components/ngstorage/ngStorage.js',
-      'bower_components/kjur-jsrsasign/jsrsasign-all-min.js',
       'bower_components/angular-websocket/dist/angular-websocket.js',
       'bower_components/angular-input-masks/angular-input-masks-standalone.js',
       'bower_components/moment/moment.js',
@@ -68,7 +79,10 @@ module.exports = function(config) {
       // endbower
       'app/scripts/**/*.js',
       //'test/mock/**/*.js',
-      'test/spec/controllers/seguimientoycontrol/financiero/contrato.js'
+      'test/spec/controllers/seguimientoycontrol/tecnico/carga_documentos_contratista.js',
+      'test/spec/controllers/aprobacion_supervisor.js',
+      'test/spec/controllers/aprobacion_ordenador.js'
+
     ],
 
     // list of files / patterns to exclude
@@ -87,13 +101,14 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: [
-      'PhantomJS'
+      'Chrome'
     ],
 
     // Which plugins to enable
     plugins: [
-      'karma-phantomjs-launcher',
-      'karma-jasmine'
+      'karma-chrome-launcher',
+      'karma-jasmine',
+      'karma-html-reporter'
     ],
 
     // Continuous Integration mode

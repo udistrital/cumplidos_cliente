@@ -14,6 +14,39 @@
                 <label>NOMBRE SUPERVISOR</label>
                 <input type="text" class="form-control" ng-model="aprobacionSupervisor.nombre_supervisor" disabled>
               </div>
+
+
+
+              <div class="form-group col-lg-6">
+                <label>DEPENDENCIA SUPERVISIÓN</label>
+                <select class="form-control" required="" ng-model="aprobacionSupervisor.dependencia" class="form-control">
+                  <option value="">---Seleccione la dependencia del certificado---</option>
+                  <option ng-repeat="iDep in aprobacionSupervisor.dependencias_supervisor.dependencias.dependencia" ng-value="iDep">{{iDep.nombre}}</option>
+                </select>
+              </div>
+
+
+
+            <div class="col-md-3">
+                <label>{{'MES' | translate }}</label>
+                <select class="form-control" required="" ng-model="aprobacionSupervisor.mes" ng-options="option.Nombre for option in aprobacionSupervisor.meses">
+                      <option value="">--Seleccione el mes del certificado--</option>
+                </select>
+              </div>
+
+
+              <div class="col-md-3">
+                <label>{{'ANO' | translate }}</label>
+                <select ng-model="aprobacionSupervisor.anio" required="" class="form-control">
+                  <option value="">---Seleccione el año del certificado---</option>
+                  <option ng-repeat="iAnio in aprobacionSupervisor.anios" ng-value="iAnio">{{iAnio}} </option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label> </label>
+                <input type="submit" class="form-control btn btn-success" value="{{'GEN_PDF' | translate}}" ng-click="aprobacionSupervisor.generarPDF()">
+            </div>
       </div>
 
         <br><br>

@@ -16,7 +16,6 @@ angular.module('gridApiService', [])
          * Fabrica sobre la cual se consumen los servicios para paginado externo en uigrid
          */
     .factory('gridApiService', function ($timeout) {
-        //var path = CONF.GENERAL.ACADEMICA_SERVICE;
         // Public API here
         var filter = function (grid) {
             var query = [];
@@ -82,4 +81,4 @@ angular.module('gridApiService', [])
                 };
             }
         };
-    });
+});

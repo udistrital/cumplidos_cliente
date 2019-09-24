@@ -13,16 +13,16 @@ angular.module('nuxeoClient',[])
        * @returns {Promise} Objeto de tipo promesa que indica si ya se cumplió la petición y se resuleve con la url del objeto cargado. 
        * @description 
        */
-      createDocument : function(nombre, descripcion, documento, callback) {
+      createDocument : function(nombre, descripcion, nombre_contratista,documento, callback) {
         var defer = $q.defer();
         nuxeo.connect().then(function(client) {
           nuxeo.operation('Document.Create')
           .params({
             type: 'File',
             name: nombre,
-            properties: 'dc:title=' +  nombre + ' \ndc:description=' + descripcion
+            properties: 'dc:title=' +  nombre + ' \ndc:description=' + descripcion +" \ndc:source="  +nombre_contratista+' \ndc:format=pdf \ndc:language=es \ndc:rights=asdasda'
           })
-          .input('/default-domain/workspaces/oas/oas_app/resoluciones')
+          .input('/default-domain/workspaces/oas/oas_app/Cumplidos')
           .execute()
           .then(function(doc) {
             var nuxeoBlob = new Nuxeo.Blob({

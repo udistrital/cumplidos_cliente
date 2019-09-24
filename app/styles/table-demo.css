@@ -26,3 +26,32 @@
     padding-top: 4px;
     padding-bottom: 4px;
 }
+
+/* Estilos de notificaciones*/
+#noleida, #enviada, #ENVIADA{
+    background-color: grey
+  }
+  
+    .notification-item{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+  }
+  
+    .notifications-image-container{
+    width: 25%;
+  }
+  
+    .notifications-text-container{
+    width: 68%;
+  }
+  
+    .notifications-text-container p{
+    margin: 0;
+    font-family: "Exo";
+    color: black;
+    white-space: normal;
+  }
+  /* End estilo de notificaciones*/
+  
