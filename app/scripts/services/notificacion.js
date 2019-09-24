@@ -63,7 +63,7 @@ angular.module('contractualClienteApp')
                 }
 
                 roles = roles.replace(/,/g, '%2C');
-                var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + payload.sub + "&profiles=" + roles);
+                var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + localStorage.getItem('access_token'));
                 dataStream.onMessage(function (message) {
                     var mensage = JSON.parse(message.data);
                     console.log(mensage);
@@ -129,4 +129,4 @@ angular.module('contractualClienteApp')
 
         };
         return methods;
-    });
+});

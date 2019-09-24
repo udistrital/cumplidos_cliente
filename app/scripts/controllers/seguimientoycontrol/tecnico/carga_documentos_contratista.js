@@ -537,7 +537,8 @@ angular.module('contractualClienteApp')
           //console.log(self.fileModel);
         self.mostrar_boton= false;
         var descripcion = self.item.ItemInforme.Nombre;
-        var aux = self.cargarDocumento(nombre_doc, descripcion, self.fileModel, function(url) {
+        var nombre_contratista = self.nombre_contratista;
+        var aux = self.cargarDocumento(nombre_doc, descripcion, nombre_contratista,self.fileModel, function(url) {
           //Objeto documento
           var date = new Date();
           date = moment(date).format('DD_MMM_YYYY_HH:mm:ss');
