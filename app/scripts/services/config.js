@@ -122,8 +122,6 @@ var conf_local = {
         SIGN_OUT_URL: "https://autenticacion.udistrital.edu.co/oidc/logout",
         SIGN_OUT_REDIRECT_URL: "http://localhost:9000/",
         SIGN_OUT_APPEND_TOKEN: "true",
-        REFRESH_TOKEN: "https://autenticacion.udistrital.edu.co/oauth2/token",
-        CLIENT_SECRET: "2crHq2IRkFHEVTBfpznLhKHyKVIa"
     },
 };
 
