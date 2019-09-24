@@ -867,10 +867,7 @@ var text_es = {
     ENLACE_GUARDADO: "Enlace guardado",
     ENLACE_SE_HA_GUARDADO: "Se ha guardado el enlace",
     DEBE_PEGAR_ENLACE: "Debe pegar el enlace y seleccionar un ítem",
-<<<<<<< HEAD
     SEL_PERIODO: "PERIODO",
-=======
->>>>>>> bd5814b6737812324f217d2584851a5e1b057023
 
     //Modal informe de gestión docente
     TITULO_MODAL_INFORME_DOC: "INFORME DE GESTIÓN DOCENTE",
