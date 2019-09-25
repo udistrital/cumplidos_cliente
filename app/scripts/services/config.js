@@ -75,7 +75,7 @@ var conf_pruebas = {
     TOKEN: {
         AUTORIZATION_URL: "https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize",
         URL_USER_INFO: "https://autenticacion.portaloas.udistrital.edu.co/oauth2/userinfo",
-        CLIENTE_ID: "LG8BZ_EE87Qw2y3hAsAZKoDBvasa ",
+        CLIENTE_ID: "LG8BZ_EE87Qw2y3hAsAZKoDBvasa",
         REDIRECT_URL: "https://pruebascumplidos.portaloas.udistrital.edu.co",
         RESPONSE_TYPE: "id_token token",
         SCOPE: "openid email documento",
