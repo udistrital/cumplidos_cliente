@@ -10,7 +10,7 @@
 //10.20.0.254/notificacion_api/register?id=1&profile=admin
 
 angular.module('contractualClienteApp')
-    .factory('notificacion', function ($websocket, CONF, configuracionRequest, token_service) {
+    .factory('notificacion', function ( CONF, configuracionRequest, token_service) { //$websocket
 
         var log = [];
         var payload = {};
@@ -63,13 +63,14 @@ angular.module('contractualClienteApp')
                 }
 
                 roles = roles.replace(/,/g, '%2C');
-                var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + localStorage.getItem('access_token'));
-                dataStream.onMessage(function (message) {
-                    var mensage = JSON.parse(message.data);
-                    console.log(mensage);
-                    methods.addMessage(mensage);
-                    methods.update_novistos();
-                });
+                // conexión websocket.
+                // var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + localStorage.getItem('access_token'));
+                // dataStream.onMessage(function (message) {
+                //     var mensage = JSON.parse(message.data);
+                //     console.log(mensage);
+                //     methods.addMessage(mensage);
+                //     methods.update_novistos();
+                // });
                 queryNotification();
             }
         }
