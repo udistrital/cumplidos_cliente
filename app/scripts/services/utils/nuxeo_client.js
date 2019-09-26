@@ -20,7 +20,7 @@ angular.module('nuxeoClient',[])
           .params({
             type: 'File',
             name: nombre,
-            properties: 'dc:title=' +  nombre + ' \ndc:description=' + descripcion +" \ndc:source="  +nombre_contratista+' \ndc:format=pdf \ndc:language=es \ndc:rights=asdasda'
+            properties: 'dc:title=' +  nombre + ' \ndc:description=' + descripcion +" \ndc:source="  +nombre_contratista+' \ndc:format=pdf \ndc:language=es \ndc:rights= '
           })
           .input('/default-domain/workspaces/oas/oas_app/Cumplidos')
           .execute()
