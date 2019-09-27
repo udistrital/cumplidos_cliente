@@ -81,16 +81,17 @@ var conf_cloud = {
 };
 
 var conf_test = {
-    WSO2_SERVICE: "http://jbpm.udistritaloas.edu.co:8280/services",
+    WSO2_SERVICE: "https://jbpm.udistritaloas.edu.co:8280/services",
     ADMINISTRATIVA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
     ADMINISTRATIVA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
     ADMINISTRATIVA_PRUEBAS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/",
     CONFIGURACION_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/",
     CORE_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/core_api/v1/",
-    FINANCIERA_MID_SERVICE: "http://pruebasapi.intranetoas.udistrital.edu.co:8089/v1/",
+    FINANCIERA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
     FINANCIERA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_crud_api/v1/",
     MODELS_SERVICE: "scripts/models/",
-    NOTIFICACION_WS: "ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws/join",
+    NOTIFICACION_WS: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
+    // NOTIFICACION_WS: "ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws/join",
     OIKOS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
     CONTRATO_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
     NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
