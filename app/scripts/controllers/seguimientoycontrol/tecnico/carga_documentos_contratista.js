@@ -11,7 +11,7 @@ angular.module('contractualClienteApp')
   .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, administrativaRequest, nuxeo, $q, coreRequest, $window,$sce, adminMidRequest,$routeParams, wso2GeneralService, amazonAdministrativaRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
-    var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
+  var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
   //Permite que el modal tenga scrooll
   $('body').on('hidden.bs.modal', '.modal', function (e) {
@@ -169,13 +169,13 @@ angular.module('contractualClienteApp')
         cellTemplate: '<a type="button" title="CARGAR SOPORTES" type="button" class="fa fa-upload fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.solicitar_pago();grid.appScope.cargaDocumentosContratista.cargar_soportes(row.entity)"  data-toggle="modal" data-target="#modal_carga_listas_docente">',
         width: "10%"
       }
-      ]
-    };
+    ]
+  };
 
 
-    self.gridOptions1.onRegisterApi = function (gridApi) {
-      self.gridApi = gridApi;
-    };
+  self.gridOptions1.onRegisterApi = function(gridApi) {
+    self.gridApi = gridApi;
+  };
 
   /*
     Función para consultar los contratos asociados al contratista
@@ -286,20 +286,20 @@ angular.module('contractualClienteApp')
           query: "CodigoAbreviacion:CD",
           limit: 0
         })).then(function (response) {
-          //Variable que contiene el Id del estado pago mensual
-          var id_estado = response.data[0].Id;
-          //Se arma elemento JSON para la solicitud
-          var pago_mensual = {
-            CargoResponsable: "CONTRATISTA",
-            EstadoPagoMensual: { Id: id_estado },
-            FechaModificacion: new Date(),
-            Mes: self.mes,
-            Ano: self.anio,
-            NumeroContrato: self.contrato.NumeroContratoSuscrito,
-            Persona: self.Documento,
-            Responsable: self.Documento,
-            VigenciaContrato: parseInt(self.contrato.Vigencia)
-          };
+        //Variable que contiene el Id del estado pago mensual
+        var id_estado = response.data[0].Id;
+      //Se arma elemento JSON para la solicitud
+      var pago_mensual = {
+        CargoResponsable: "CONTRATISTA",
+        EstadoPagoMensual: { Id: id_estado},
+        FechaModificacion: new Date(),
+        Mes: self.mes,
+        Ano: self.anio,
+        NumeroContrato: self.contrato.NumeroContratoSuscrito,
+        Persona: self.Documento,
+        Responsable: self.Documento,
+        VigenciaContrato: parseInt(self.contrato.Vigencia)
+      };
 
       ////console.log("Hizo el primero");
 
@@ -360,12 +360,12 @@ angular.module('contractualClienteApp')
 
     }
 
-    };
+  };
 
-    /*
-      Función para cargar los soportes
-    */
-    self.cargar_soportes = function (contrato) {
+  /*
+    Función para cargar los soportes
+  */
+  self.cargar_soportes = function(contrato) {
 
       self.seleccionado = false;
       self.gridOptions2.data = [];
@@ -374,7 +374,7 @@ angular.module('contractualClienteApp')
       administrativaRequest.get('pago_mensual', $.param({
         query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito + ",VigenciaContrato:" + self.contrato.Vigencia + ",Persona:"+self.Documento,
         limit: 0
-      })).then(function (response) {
+      })).then(function(response) {
 
         contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia)
         .then(function(response_ce) {
@@ -385,7 +385,7 @@ angular.module('contractualClienteApp')
           administrativaRequest.get("item_informe_tipo_contrato", $.param({
             query: "TipoContrato:" + self.tipo_contrato,
             limit: 0
-          })).then(function (response_iitc) {
+          })).then(function(response_iitc) {
 
             self.items = response_iitc.data;
 
@@ -483,6 +483,19 @@ angular.module('contractualClienteApp')
           //    });
     });
 
+
+
+  };
+
+
+//
+  /*
+    Función para cargar los documentos a la carpeta  destino
+  */
+  self.cargarDocumento = function(nombre, descripcion, documento, callback) {
+    var defered = $q.defer();
+    var promise = defered.promise;
+
     nuxeo.operation('Document.Create')
       .params({
         type: 'File',
@@ -521,8 +534,8 @@ angular.module('contractualClienteApp')
         throw error;
       });
 
-      return promise;
-    };
+    return promise;
+  };
 
 
   /*
@@ -537,8 +550,7 @@ angular.module('contractualClienteApp')
           //console.log(self.fileModel);
         self.mostrar_boton= false;
         var descripcion = self.item.ItemInforme.Nombre;
-        var nombre_contratista = self.nombre_contratista;
-        var aux = self.cargarDocumento(nombre_doc, descripcion, nombre_contratista,self.fileModel, function(url) {
+        var aux = self.cargarDocumento(nombre_doc, descripcion, self.fileModel, function(url) {
           //Objeto documento
           var date = new Date();
           date = moment(date).format('DD_MMM_YYYY_HH:mm:ss');
@@ -600,18 +612,18 @@ angular.module('contractualClienteApp')
             });
         });
 
-        } else {
+      } else {
 
-          swal({
-            title: 'Error',
-            text:'Debe subir un archivo en pdf no mayor a 1MB y/o seleccionar un ítem',
-            type:'error',
-            target: document.getElementById('modal_ver_soportes')
-          });
+        swal({
+          title: 'Error',
+          text:'Debe subir un archivo en pdf no mayor a 1MB y/o seleccionar un item',
+          type:'error',
+          target: document.getElementById('modal_ver_soportes')
+        });
 
-          self.mostrar_boton = true;
+        self.mostrar_boton= true;
 
-        }
+      }
 //}
   self.objeto_documento={};
 
@@ -689,27 +701,27 @@ angular.module('contractualClienteApp')
     });
   };
 
-    /*
-      Función para "borrar" un documento
-    */
-    self.borrar_doc = function () {
+  /*
+    Función para "borrar" un documento
+  */
+  self.borrar_doc = function(){
 
-      var documento = self.doc;
-      documento.Contenido = JSON.stringify(documento.Contenido)
-      documento.Activo = false;
-      coreRequest.put('documento', documento.Id, documento).
-      then(function(response){
+   var documento = self.doc;
+   documento.Contenido = JSON.stringify(documento.Contenido)
+   documento.Activo = false;
+   coreRequest.put('documento', documento.Id, documento).
+  then(function(response){
 
-      })
+  })
 
-    .catch(function(response){
-      self.obtener_doc(self.fila_sol_pago);
+  .catch(function(response){
+    self.obtener_doc(self.fila_sol_pago);
 
-    })
+  })
 
 }
 
-    self.set_doc = function (doc) {
+  self.set_doc = function (doc){
 
     self.doc = doc;
   };
@@ -741,4 +753,4 @@ if(self.fileModel === undefined){
 }
 };
 
-  });
+});
