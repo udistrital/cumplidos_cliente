@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, administrativaRequest, nuxeo, $q, coreRequest, $window,$sce, adminMidRequest,$routeParams, wso2GeneralService, amazonAdministrativaRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, administrativaRequest, nuxeo, $q, coreRequest, $window,$sce, adminMidRequest,$routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
   var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -555,6 +555,7 @@ angular.module('contractualClienteApp')
           var date = new Date();
           date = moment(date).format('DD_MMM_YYYY_HH:mm:ss');
           //var now = date
+          self.Id_doc_nuxeo = url;
           self.objeto_documento = {
             "Nombre": nombre_doc,
             "Descripcion": descripcion,
@@ -587,6 +588,13 @@ angular.module('contractualClienteApp')
                 },
                 "Aprobado": false
               };
+
+              console.info(self.Id_doc_nuxeo);
+              // inicio de flujo de documentos 
+              nuxeoMidRequest.post('workflow/'+self.Id_doc_nuxeo, null)
+              .then(function(response) {
+                //Bandera de validacion
+              });
 
               //Post a la tabla soporte documento
               administrativaRequest.post('soporte_pago_mensual', self.objeto_soporte)
