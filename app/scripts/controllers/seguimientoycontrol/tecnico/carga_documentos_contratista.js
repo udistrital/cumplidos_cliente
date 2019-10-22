@@ -591,7 +591,7 @@ angular.module('contractualClienteApp')
 
               console.info(self.Id_doc_nuxeo);
               // inicio de flujo de documentos 
-              nuxeoMidRequest.post('workflow/'+self.Id_doc_nuxeo, null)
+              nuxeoMidRequest.post('workflow?docID='+self.Id_doc_nuxeo, null)
               .then(function(response) {
                 //Bandera de validacion
               });
@@ -715,11 +715,15 @@ angular.module('contractualClienteApp')
   self.borrar_doc = function(){
 
    var documento = self.doc;
+   nuxeoMidRequest.delete('workflow', documento.Contenido.IdNuxeo)
+  .then(function(response) {
+    //Bandera de validacion
+  });
+   console.info(documento.Contenido.IdNuxeo)
    documento.Contenido = JSON.stringify(documento.Contenido)
    documento.Activo = false;
    coreRequest.put('documento', documento.Id, documento).
   then(function(response){
-
   })
 
   .catch(function(response){
