@@ -1,9 +1,42 @@
+<!-- <div id="menu" [ngClass]="{'aplicaciones_menu_container': true, 'menu_is_active': activo }">
+    <div class="title-notifications">
+        <p>Notificaciones</p>
+    </div>
+    <div class="row">
+        <div class="input-group">
+            <input type="text" class="form-control" (keyup)="searchTerm$.next($event.target.value)" placeholder="Buscar ...">
+            <span class="input-group-append">
+            </span>
+        </div>
+        </div>
+        <br>
+        <div class="notifications-container">
+            <div *ngFor="let notificacion of notificaciones" (click)="redirect(notificacion)"
+            [id]="notificacion.Estado" class="notification-item">
+                <div class="notifications-image-container">
+                <div class="menu-app" [id]="notificacion.EstiloIcono"></div>
+                </div>
+                <div class="notifications-text-container" >
+                <p> {{notificacion.Alias}} </p>
+                <p>
+                    {{notificacion.Content.Message.Message}}
+                </p>
+                <p>
+                    {{notificacion.FechaCreacion | amLocale:'es' | amTimeAgo:true}}
+                </p>
+                </div>
+        </div>
+        </div>
+    </div>
+
+ -->
+
+
+
+
 <div ng-cloak layout-gt-sm="row" layout="column">
     <div flex-gt-sm="100" flex>
-        <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></span>
             <input type="text" class="form-control" ng-model="buscador" placeholder="Filtrar Notificación">
-        </div>
     </div>
 </div>
 <br>
@@ -11,7 +44,7 @@
     <div class="notification-item" ng-repeat="m in notificacion.log | filter:{ $: buscador}"
      id="{{m.Estado}}" ng-click="redirect_url(m)">
         <div class="notifications-image-container">
-            <img class="menu-app" id="{{m.EstiloIcono}}">
+            <div class="menu-app" id="{{m.EstiloIcono}}"></div>
         </div>
         <div class="notifications-text-container">
             <p> {{m.Alias}} </p>
