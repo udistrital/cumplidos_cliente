@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -391,7 +391,10 @@ angular.module('contractualClienteApp')
       }).then(function () {
 
         self.solicitudes_seleccionadas = self.gridApi.selection.getSelectedRows();
+        // console.info(self.solicitudes_seleccionadas)
+        self.busqueda_aprovar_documentos_nuxeo(self.solicitudes_seleccionadas);
         adminMidRequest.post('aprobacion_pago/aprobar_pagos', self.solicitudes_seleccionadas).then(function (response) {
+          console.info(response);
           if (response.data === 'OK') {
             swal(
               'Pagos Aprobados',
@@ -413,7 +416,8 @@ angular.module('contractualClienteApp')
           }
         })
           .catch(function (response) { // en caso de nulos
-
+            console.info("funciona es el catch")
+            console.info(response)
             //if (response.data === 'OK'){
             swal(
               'Pagos Aprobados',
@@ -440,6 +444,39 @@ angular.module('contractualClienteApp')
           );
       });
     };
+
+    self.busqueda_aprovar_documentos_nuxeo = function (filas) {
+        // console.info(filas)
+        // console.info(filas.length)
+        for (var i = 0; i < filas.length; i++) {
+          const fila = filas[i];
+          console.info(fila)
+          var nombre_docs = fila.PagoMensual.VigenciaContrato + fila.PagoMensual.NumeroContrato + fila.PagoMensual.Persona + fila.PagoMensual.Mes + fila.PagoMensual.Ano;
+          console.info(nombre_docs);
+
+          coreRequest.get('documento', $.param({
+            query: "Nombre:" + nombre_docs + ",Activo:true",
+            limit: 0
+          })).then(function (response) {
+            self.documentos = response.data;
+            angular.forEach(self.documentos, function (value) {
+              // self.descripcion_doc = value.Descripcion;
+              // console.info(value.Contenido)
+              value.Contenido = JSON.parse(value.Contenido);
+              console.info(value.Contenido)
+              self.aprovacion_documentos_nuxeo(value.Contenido.IdNuxeo);
+            });
+          })
+        }
+    }
+
+    self.aprovacion_documentos_nuxeo = function (IdDocNuxeo) {
+        console.info(IdDocNuxeo);
+        nuxeoMidRequest.post('validacion/?docID='+IdDocNuxeo, null)
+        .then(function(response) {
+          //Bandera de validacion
+        });
+    }
 
 
     /*
