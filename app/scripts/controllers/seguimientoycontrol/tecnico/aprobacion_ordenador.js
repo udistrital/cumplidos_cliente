@@ -311,16 +311,6 @@ angular.module('contractualClienteApp')
 
             administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
               .then(function (response) {
-
-                swal(
-                  'Error',
-                  'No se ha podido registrar la aprobación del pago',
-                  'error'
-                );
-              })//Fin promesa THEN
-
-              //Manejo de excepciones
-              .catch(function (response) {
                 swal(
                   'Pago aprobado',
                   'Se ha registrado la aprobación del pago por parte del ordenador',
@@ -328,6 +318,28 @@ angular.module('contractualClienteApp')
                 )
                 self.obtener_informacion_ordenador(self.offset);
                 self.gridApi.core.refresh();
+
+                // swal(
+                //   'Error',
+                //   'No se ha podido registrar la aprobación del pago',
+                //   'error'
+                // );
+              })//Fin promesa THEN
+
+              //Manejo de excepciones
+              .catch(function (response) {
+                swal(
+                  'Error',
+                  'No se ha podido registrar la aprobación del pago',
+                  'error'
+                );
+                // swal(
+                //   'Pago aprobado',
+                //   'Se ha registrado la aprobación del pago por parte del ordenador',
+                //   'success'
+                // )
+                // self.obtener_informacion_ordenador(self.offset);
+                // self.gridApi.core.refresh();
               });
 
           })
