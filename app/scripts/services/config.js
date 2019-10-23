@@ -17,7 +17,7 @@ var conf_cloud = {
   FINANCIERA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
   FINANCIERA_SERVICE: "https://tuleap.udistrital.edu.co/go_api/financiera_api/v1/",
   MODELS_SERVICE: "scripts/models/",
-  NOTIFICACION_WS: "ws://10.20.2.134:8080/ws/join",
+  NOTIFICACION_WS: "wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws/join",
   OIKOS_SERVICE: "https://tuleap.udistrital.edu.co/go_api/oikos_api/v1/",
   CONTRATO_SERVICE: "https://autenticacion.udistrital.edu.co:8244/administrativa_jbpm/v1/",
   NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
@@ -76,8 +76,7 @@ var conf_cloud = {
     id: "sga",
     title: "SGA",
     url: "http://10.20.0.254/kronos"
-  }
-  ]
+  }]
 };
 
 var conf_test = {
@@ -90,8 +89,7 @@ var conf_test = {
     FINANCIERA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
     FINANCIERA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_crud_api/v1/",
     MODELS_SERVICE: "scripts/models/",
-    NOTIFICACION_WS: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
-    // NOTIFICACION_WS: "ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws/join",
+    NOTIFICACION_WS: "wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws/join",
     OIKOS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
     CONTRATO_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
     NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
@@ -162,7 +160,7 @@ var conf_local = {
   FINANCIERA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
   FINANCIERA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_crud_api/v1/",
   MODELS_SERVICE: "scripts/models/",
-  NOTIFICACION_WS: "ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws/join",
+  NOTIFICACION_WS: "ws://pruebasapi.portaloas.udistrital.edu.co:8116/ws/join",
   OIKOS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
   CONTRATO_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
   NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
