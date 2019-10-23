@@ -10,7 +10,8 @@
 //10.20.0.254/notificacion_api/register?id=1&profile=admin
 
 angular.module('contractualClienteApp')
-    .factory('notificacion', function ( CONF, configuracionRequest, token_service) { //$websocket
+    .factory('notificacion', function ( CONF, configuracionRequest, token_service, $websocket, $interval) {
+        var TIME_PING = 50000;
 
         var log = [];
         var payload = {};
@@ -21,7 +22,7 @@ angular.module('contractualClienteApp')
         };
 
         var queryNotification = function () {
-            configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=Fecha&order=asc&limit=-1', '')
+            configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
                 .then(function (response) {
                     if (response !== null) {
                         notificacion_estado_usuario = response.data;
@@ -64,13 +65,18 @@ angular.module('contractualClienteApp')
 
                 roles = roles.replace(/,/g, '%2C');
                 // conexión websocket.
-                // var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + localStorage.getItem('access_token'));
-                // dataStream.onMessage(function (message) {
-                //     var mensage = JSON.parse(message.data);
-                //     console.log(mensage);
-                //     methods.addMessage(mensage);
-                //     methods.update_novistos();
-                // });
+                var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + localStorage.getItem('access_token'));
+                dataStream.onMessage(function (message) {
+                    var mensage = JSON.parse(message.data);
+                    // console.log(mensage);
+                    methods.addMessage(mensage);
+                    methods.update_novistos();
+                });
+
+                dataStream.onOpen(function() {
+                    // console.log("open websocket with " + localStorage.getItem('access_token'))
+                    $interval(function(){dataStream.send('ping')}, TIME_PING)
+                });
                 queryNotification();
             }
         }
@@ -93,12 +99,12 @@ angular.module('contractualClienteApp')
             },
 
             changeStateNoView: function (user) {
-                console.info(user)
-                console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
+                // console.info(user)
+                // console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
                 if (methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }).length >= 1) {
                     configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
                         .then(function (response) {
-                            console.log(response);
+                            // console.log(response);
                             methods.log = [];
                             methods.queryNotification();
                         })
@@ -110,16 +116,16 @@ angular.module('contractualClienteApp')
             },
 
             update_novistos: function () {
-                console.info((methods.log.filter(function (data) { return ((data.Estado).toLowerCase() == 'enviada') })).length);
+                // console.info((methods.log.filter(function (data) { return ((data.Estado).toLowerCase() == 'enviada') })).length);
                 methods.no_vistos = (methods.log.filter(function (data) { return (data.Estado.toLowerCase() === 'enviada') })).length;
             },
 
             changeStateToView: function (id, estado) {
-                console.log(estado);
+                // console.log(estado);
                 if (estado === 'noleida') {
                     var noti = methods.getNotificacionEstadoUsuario(id);
                     var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
-                    console.log(path)
+                    // console.log(path)
                     configuracionRequest.get(path, '')
                         .then(function (response) {
                             methods.log = [];

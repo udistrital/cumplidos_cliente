@@ -21,7 +21,7 @@ angular.module('contractualClienteApp')
                 $scope.notificacion = notificacion;
 
                 $scope.redirect_url = function (notify) {
-                    console.log(notify);
+                    // console.log(notify);
                     var path_sub = window.location.origin;
                     notificacion.changeStateToView(notify.Id, notify.Estado);
                     if (notify.Content.Message.Link.indexOf(path_sub)) {
