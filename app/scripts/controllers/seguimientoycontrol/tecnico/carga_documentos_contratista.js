@@ -589,7 +589,7 @@ angular.module('contractualClienteApp')
                 "Aprobado": false
               };
 
-              console.info(self.Id_doc_nuxeo);
+              // console.info(self.Id_doc_nuxeo);
               // inicio de flujo de documentos 
               nuxeoMidRequest.post('workflow?docID='+self.Id_doc_nuxeo, null)
               .then(function(response) {
@@ -719,7 +719,7 @@ angular.module('contractualClienteApp')
   .then(function(response) {
     //Bandera de validacion
   });
-   console.info(documento.Contenido.IdNuxeo)
+   // console.info(documento.Contenido.IdNuxeo)
    documento.Contenido = JSON.stringify(documento.Contenido)
    documento.Activo = false;
    coreRequest.put('documento', documento.Id, documento).
