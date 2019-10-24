@@ -363,13 +363,21 @@ angular.module('contractualClienteApp')
 
           administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
             .then(function (response) {
-              swal(
-                'Error',
-                'No se ha podido registrar el rechazo del pago',
-                'error'
-              );
-            })//Fin promesa then
-            .catch(function (response) {
+              self.cambio_estado_pago = {
+                FechaCreacion: "",
+                FechaModificacion: "",
+                EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensual.Id,
+                DocumentoResponsableId: self.aux_pago_mensual.Responsable,
+                CargoResponsable: self.aux_pago_mensual.CargoResponsable,
+                Activo: true,
+                PagoMensualId: {
+                  Id: self.aux_pago_mensual.Id
+                }
+              }
+              administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
+              .then(function(responsePagoPost) {
+                
+              });
               swal(
                 'Pago rechazado',
                 'Se ha registrado el rechazo del pago',
@@ -377,6 +385,14 @@ angular.module('contractualClienteApp')
               )
               self.obtener_informacion_ordenador(self.offset);
               self.gridApi.core.refresh();
+              
+            })//Fin promesa then
+            .catch(function (response) {
+              swal(
+                'Error',
+                'No se ha podido registrar el rechazo del pago',
+                'error'
+              );
             }); //Fin catch
 
         })
