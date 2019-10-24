@@ -252,25 +252,52 @@ angular.module('contractualClienteApp')
 
           administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
           .then(function (response) {
+            self.cambio_estado_pago = {
+              FechaCreacion: "",
+              FechaModificacion: "",
+              EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensual.Id,
+              DocumentoResponsableId: self.aux_pago_mensual.Responsable,
+              CargoResponsable: self.aux_pago_mensual.CargoResponsable,
+              Activo: true,
+              PagoMensualId: {
+                Id: self.aux_pago_mensual.Id
+              }
+            }
+            administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
+            .then(function(responsePagoPost) {
+              swal(
+                'Visto bueno ',
+                'Tiene la validación del supervisor del contrato',
+                'success'
+              )
+              self.obtener_contratistas_supervisor();
+              self.gridApi.core.refresh();
+
+            });
+
+            
+            // swal(  // se comentarea y se intermacia de posicion con el catch ya quue esto mandaba error al arobar
+            //   'Error',
+            //   'No se ha podido registrar la validación del supervisor',
+            //   'error'
+            // );
+
+
+//Termina promesa then
+         })
+          .catch(function(response) { //Manejo de error
             swal(
               'Error',
               'No se ha podido registrar la validación del supervisor',
               'error'
             );
-
-
-
-         })//Termina promesa then
-
-         //Manejo de error
-         .catch(function(response) {
-             swal(
-               'Visto bueno ',
-               'Tiene la validación del supervisor del contrato',
-               'success'
-             )
-             self.obtener_contratistas_supervisor();
-             self.gridApi.core.refresh();
+            //  swal(
+            //    'Visto bueno ',
+            //    'Tiene la validación del supervisor del contrato',
+            //    'success'
+            //  )
+            //  self.obtener_contratistas_supervisor();
+            //  self.gridApi.core.refresh();
            });
 
         })
@@ -286,40 +313,72 @@ angular.module('contractualClienteApp')
         self.aux_pago_mensual = pago_mensual;
        // self.contrato = response.data.contrato;
         //self.aux_pago_mensual.Responsable = self.contrato.supervisor.documento_identificacion;
+        // self.aux_pago_mensual = pago_mensual;
+        self.contrato = response.data.contrato;
 
-        administrativaRequest.get('estado_pago_mensual', $.param({
-          limit: 0,
-          query: 'CodigoAbreviacion:RS'
-        })).then(function (responseCod) {
+        adminMidRequest.get('aprobacion_pago/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
+        .then(function (responseOrdenador){
+          self.ordenador = responseOrdenador.data;
+          self.aux_pago_mensual.Responsable = self.ordenador.NumeroDocumento.toString();
+          self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo; 
+        
+          administrativaRequest.get('estado_pago_mensual', $.param({
+            limit: 0,
+            query: 'CodigoAbreviacion:RS'
+          })).then(function (responseCod) {
+  
+            var sig_estado = responseCod.data;
+            self.aux_pago_mensual.EstadoPagoMensual.Id = sig_estado[0].Id;
+  
+            administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+            .then(function (response) {
+              self.cambio_estado_pago = {
+                FechaCreacion: "",
+                FechaModificacion: "",
+                EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensual.Id,
+                DocumentoResponsableId: self.aux_pago_mensual.Responsable,
+                CargoResponsable: self.aux_pago_mensual.CargoResponsable,
+                Activo: true,
+                PagoMensualId: {
+                  Id: self.aux_pago_mensual.Id
+                }
+              }
+              administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
+              .then(function(responsePagoPost) {
+                
+              });
+  
+  
+              swal(
+                'Rechazo registrado',
+                'Se ha registrado el rechazo de los soportes',
+                'success'
+              )
+              self.obtener_contratistas_supervisor();
+              self.gridApi.core.refresh();
+  
+  
+  
+            })//Termina promesa then
+  
+            //Manejo de error
+            .catch(function(response) {
 
-          var sig_estado = responseCod.data;
-          self.aux_pago_mensual.EstadoPagoMensual.Id = sig_estado[0].Id;
-
-          administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
-          .then(function (response) {
               swal(
                 'Error',
                 'No se ha podido registrar el rechazo',
                 'error'
               );
 
+                  
+              });
+  
+          })
+        
+        
+        });
 
-
-
-          })//Termina promesa then
-
-          //Manejo de error
-          .catch(function(response) {
-                swal(
-                  'Rechazo registrado',
-                  'Se ha registrado el rechazo de los soportes',
-                  'success'
-                )
-                self.obtener_contratistas_supervisor();
-                self.gridApi.core.refresh();
-            });
-
-        })
+        
       });
 
     };
@@ -470,7 +529,21 @@ angular.module('contractualClienteApp')
                 var date = new Date()
                 var dia = moment(date).format('D');
                 var mes = moment(date).format('M');
+                var mes_ss = self.mes.Id-1;
                 var anio = moment(date).format('YYYY');
+                
+                var mes_ss = 0;
+                var anio_ss = 0;
+
+                if (self.mes.Id =='01'){
+                    mes_ss = 12;
+                    anio_ss = self.anio-1;
+                }
+                else{
+                    mes_ss = self.mes.Id-1;
+                    anio_ss = self.anio;
+                }  
+
                 var contenidoInv = [];
                 var contenidoFun = [];
                 
@@ -502,12 +575,10 @@ angular.module('contractualClienteApp')
                    }
                 });
                 
-                
-
                 if(inversion.length>0 ){
                    contenidoInv.push( {text:'EL JEFE DE LA DEPENDENCIA ' +  self.dependencia.nombre  + ' DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS', bold: true,  alignment: 'center', style:'top_space'}, '\n\n\n\n');
                    contenidoInv.push({text:'CERTIFICA QUE: ', bold: true,  alignment: 'center', style:'top_space'}, '\n\n\n\n');
-                   contenidoInv.push({text:'Los contratos de prestación de servicios bajo esta supervisión listados a continuación cumplieron a satisfacción con el objeto establecido en el contrato y con el pago reglamentario de los aportes al sistema de seguridad social del Mes de '  +self.mes.Nombre+ ' de ' +self.anio+ '.', style:'general_font'}, '\n\n')
+                   contenidoInv.push({text:'Los contratos de prestación de servicios bajo esta supervisión listados a continuación cumplieron a satisfacción con el objeto establecido en el contrato en el Mes de ' + self.mes.Nombre + ' de ' + self.anio+ ' y con el pago reglamentario de los aportes al sistema de seguridad social del Mes de '  +self.meses[mes_ss-1].Nombre+ ' de ' +anio_ss+ '.', style:'general_font'}, '\n\n')
                    angular.forEach(inversion, function(valueInv) {
                    tablaInv.table.body.push([ valueInv.NumDocumento , valueInv.Nombre, valueInv.NumeroContrato , valueInv.Vigencia, valueInv.Rubro]);
                    });
@@ -521,7 +592,7 @@ angular.module('contractualClienteApp')
                 if(funcionamiento.length>0){
                    contenidoFun.push( {text:'EL JEFE DE LA DEPENDENCIA ' +  self.dependencia.nombre  + ' DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS', bold: true,  alignment: 'center', style:'top_space'}, '\n\n\n\n');
                    contenidoFun.push({text:'CERTIFICA QUE: ', bold: true,  alignment: 'center', style:'top_space'}, '\n\n\n\n');
-                   contenidoFun.push({text:'Los contratos de prestación de servicios bajo esta supervisión listados a continuación cumplieron a satisfacción con el objeto establecido en el contrato y con el pago reglamentario de los aportes al sistema de seguridad social del Mes de '  +self.mes.Nombre+ ' de ' +self.anio+ '.', style:'general_font'}, '\n\n')
+                   contenidoFun.push({text:'Los contratos de prestación de servicios bajo esta supervisión listados a continuación cumplieron a satisfacción con el objeto establecido en el contrato en el Mes de ' + self.mes.Nombre + ' de ' + self.anio+ ' y con el pago reglamentario de los aportes al sistema de seguridad social del Mes de '  +self.meses[mes_ss-1].Nombre+ ' de ' +anio_ss+ '.', style:'general_font'}, '\n\n')
                    angular.forEach(funcionamiento, function(valueFun) {
                    tablaFun.table.body.push([ valueFun.NumDocumento , valueFun.Nombre, valueFun.NumeroContrato , valueFun.Vigencia, valueFun.Rubro]);
                    });
