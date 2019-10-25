@@ -273,7 +273,14 @@ angular.module('contractualClienteApp')
               self.obtener_contratistas_supervisor();
               self.gridApi.core.refresh();
 
-            });
+            })
+            .catch(function(response) { //Manejo de error
+              swal(
+                'Error',
+                'No se ha podido registrar la validación del supervisor',
+                'error'
+              );
+             });
 
             
             // swal(  // se comentarea y se intermacia de posicion con el catch ya quue esto mandaba error al arobar
@@ -345,17 +352,20 @@ angular.module('contractualClienteApp')
               }
               administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
               .then(function(responsePagoPost) {
-                
+                swal(
+                  'Rechazo registrado',
+                  'Se ha registrado el rechazo de los soportes',
+                  'success'
+                )
+                self.obtener_contratistas_supervisor();
+                self.gridApi.core.refresh();
+              }).catch(function(response) {
+                swal(
+                  'Error',
+                  'No se ha podido registrar el rechazo',
+                  'error'
+                );    
               });
-  
-  
-              swal(
-                'Rechazo registrado',
-                'Se ha registrado el rechazo de los soportes',
-                'success'
-              )
-              self.obtener_contratistas_supervisor();
-              self.gridApi.core.refresh();
   
   
   
@@ -498,7 +508,7 @@ angular.module('contractualClienteApp')
       contratoRequest.get('dependencias_supervisor', self.Documento)
       .then(function (response) {
         self.dependencias_supervisor= response.data;
-        console.log(self.dependencias_supervisor);
+        // console.log(self.dependencias_supervisor);
       });
 
 

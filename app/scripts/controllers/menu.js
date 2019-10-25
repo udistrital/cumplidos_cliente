@@ -43,13 +43,13 @@ angular.module('contractualClienteApp')
 
                 roles = roles.replace(/,/g, '%2C');
                 configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas','').then(function(response) {
-                    console.log(response);
+                    // console.log(response);
                     $rootScope.my_menu = response.data;
 
                 })
                     .catch(
                         function (response) {
-                            console.log(response);
+                            // console.log(response);
                             $rootScope.my_menu = response.data;
 
                         });

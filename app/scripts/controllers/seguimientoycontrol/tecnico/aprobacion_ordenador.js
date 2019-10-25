@@ -311,13 +311,45 @@ angular.module('contractualClienteApp')
 
             administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
               .then(function (response) {
-                swal(
-                  'Pago aprobado',
-                  'Se ha registrado la aprobación del pago por parte del ordenador',
-                  'success'
-                )
-                self.obtener_informacion_ordenador(self.offset);
-                self.gridApi.core.refresh();
+
+                self.cambio_estado_pago = {
+                  FechaCreacion: "",
+                  FechaModificacion: "",
+                  EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensual.Id,
+                  DocumentoResponsableId: self.aux_pago_mensual.Responsable,
+                  CargoResponsable: self.aux_pago_mensual.CargoResponsable,
+                  Activo: true,
+                  PagoMensualId: {
+                    Id: self.aux_pago_mensual.Id
+                  }
+                }
+                administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
+                .then(function(responsePagoPost) {
+                  swal(
+                    'Pago aprobado',
+                    'Se ha registrado la aprobación del pago por parte del ordenador',
+                    'success'
+                  )
+                  self.obtener_informacion_ordenador(self.offset);
+                  self.gridApi.core.refresh();
+
+                })//Manejo de excepciones
+                .catch(function (response) {
+                  swal(
+                    'Error',
+                    'No se ha podido registrar la aprobación del pago',
+                    'error'
+                  );
+                });
+                
+
+                // swal(
+                //   'Pago aprobado',
+                //   'Se ha registrado la aprobación del pago por parte del ordenador',
+                //   'success'
+                // )
+                // self.obtener_informacion_ordenador(self.offset);
+                // self.gridApi.core.refresh();
 
                 // swal(
                 //   'Error',
@@ -376,15 +408,22 @@ angular.module('contractualClienteApp')
               }
               administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
               .then(function(responsePagoPost) {
-                
-              });
-              swal(
-                'Pago rechazado',
-                'Se ha registrado el rechazo del pago',
-                'success'
-              )
-              self.obtener_informacion_ordenador(self.offset);
-              self.gridApi.core.refresh();
+                swal(
+                  'Pago rechazado',
+                  'Se ha registrado el rechazo del pago',
+                  'success'
+                )
+                self.obtener_informacion_ordenador(self.offset);
+                self.gridApi.core.refresh();
+              })//Fin promesa then
+              .catch(function (response) {
+                swal(
+                  'Error',
+                  'No se ha podido registrar el rechazo del pago',
+                  'error'
+                );
+              }); //Fin catch
+              
               
             })//Fin promesa then
             .catch(function (response) {
@@ -422,7 +461,7 @@ angular.module('contractualClienteApp')
         // console.info(self.solicitudes_seleccionadas)
         self.busqueda_aprovar_documentos_nuxeo(self.solicitudes_seleccionadas);
         adminMidRequest.post('aprobacion_pago/aprobar_pagos', self.solicitudes_seleccionadas).then(function (response) {
-          console.info(response);
+          // console.info(response);
           if (response.data === 'OK') {
             swal(
               'Pagos Aprobados',
@@ -444,8 +483,8 @@ angular.module('contractualClienteApp')
           }
         })
           .catch(function (response) { // en caso de nulos
-            console.info("funciona es el catch")
-            console.info(response)
+            // console.info("funciona es el catch")
+            // console.info(response)
             //if (response.data === 'OK'){
             swal(
               'Pagos Aprobados',
@@ -478,9 +517,9 @@ angular.module('contractualClienteApp')
         // console.info(filas.length)
         for (var i = 0; i < filas.length; i++) {
           const fila = filas[i];
-          console.info(fila)
+          // console.info(fila)
           var nombre_docs = fila.PagoMensual.VigenciaContrato + fila.PagoMensual.NumeroContrato + fila.PagoMensual.Persona + fila.PagoMensual.Mes + fila.PagoMensual.Ano;
-          console.info(nombre_docs);
+          // console.info(nombre_docs);
 
           coreRequest.get('documento', $.param({
             query: "Nombre:" + nombre_docs + ",Activo:true",
@@ -491,7 +530,7 @@ angular.module('contractualClienteApp')
               // self.descripcion_doc = value.Descripcion;
               // console.info(value.Contenido)
               value.Contenido = JSON.parse(value.Contenido);
-              console.info(value.Contenido)
+              // console.info(value.Contenido)
               self.aprovacion_documentos_nuxeo(value.Contenido.IdNuxeo);
             });
           })
@@ -499,7 +538,7 @@ angular.module('contractualClienteApp')
     }
 
     self.aprovacion_documentos_nuxeo = function (IdDocNuxeo) {
-        console.info(IdDocNuxeo);
+        // console.info(IdDocNuxeo);
         nuxeoMidRequest.post('validacion/?docID='+IdDocNuxeo, null)
         .then(function(response) {
           //Bandera de validacion
