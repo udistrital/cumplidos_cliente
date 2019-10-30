@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest,adminJbpmV2Request) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -661,7 +661,8 @@ angular.module('contractualClienteApp')
     self.obtenerDependenciasContratos = function (){
 
         //Petición para obtener el Id de la relación de acuerdo a los campos
-    adminMidRequest.get('aprobacion_pago/dependencias_sic/' + self.Documento).
+        console.info(self.Documento)
+      adminJbpmV2Request.get('dependencias_sic/' + self.Documento, '').
           then(function (response) {
           self.dependencias_contratos= response.data;
       });
