@@ -1,12 +1,10 @@
 <div id="menu-sidebar">
 
     <div>
-
         <div class="container-sidebar">
-            
         <nav id="column_left">	
         <ul class="nav nav-list">
-              <li><a>Dashboard</a></li>	
+              <li><a id="inicio">Inicio</a></li>	
               <li ng-repeat="nivel_1 in ::my_menu">
                     <a ng-if="nivel_1.Opciones === null && nivel_1.TipoOpcion === 'Menú'" ng-click="redirect_url('/' + nivel_1.Url)" >
                         {{nivel_1.Nombre}} <b class="caret"></b>

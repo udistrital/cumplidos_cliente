@@ -1,4 +1,8 @@
 /* footer styles */
+@font-face {
+    font-family: opensans;
+    src: url(../fonts/OpenSans-Regular.ttf) format("opentype");
+  }
 
 #footer{
     width: 100%;
@@ -14,12 +18,18 @@
     box-shadow: 2px -2px 11px #888888;
     bottom: 0;
     left: 0;
+    border-left: 1px white solid
 }
 .container-footer{
     width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+.container-footer-off{
+    width: 85%;
 }
 
-.card-imageContainer{
+.footer-card-imageContainer{
     object-fit: cover;
     margin: 0;
     border-right: .1rem solid white;
@@ -29,7 +39,7 @@
     align-self: center;
 }
 .card-image{
-    width:230px;
+    width:220px;
 }
 
 .footer-column{
@@ -42,12 +52,9 @@
 
 .footer-title{
     text-align: center;
-}
-h3,h5{
-    font-family: OpenSans !important;
+    font-family: opensans;
     margin-bottom: .5rem;
-    font-size: 1rem;
-    font-family: Exo;
+    font-size: 13px;
     margin-top:0;
     color:white;
 }

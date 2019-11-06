@@ -15,6 +15,7 @@ angular.module('core')
             var sidebarDiv = document.getElementById('menu-sidebar');
             var sidebarContainer = document.getElementById('menu-sidebar-container');
             var containerDiv= document.getElementById('container-div');   
+            var containerFooter= document.getElementById('footer-id');   
             var containerBody= document.getElementById('container-body-id');   
             if (sidebarDiv.className.includes("sidebar_off")){
                 console.log("entro a funcion")
@@ -24,6 +25,8 @@ angular.module('core')
                 sidebarDiv.classList.remove('sidebar_off')
                 containerBody.classList.add('container-body-off')
                 containerBody.classList.remove('container-body')
+                containerFooter.classList.add('container-footer-off')
+                containerFooter.classList.remove('container-footer')
                 //*********************/
                 containerDiv.classList.add('container-view')
                 containerDiv.classList.remove('container-view-sidebar-off')
@@ -34,6 +37,8 @@ angular.module('core')
                 sidebarContainer.classList.remove('main-container-sidebar')
                 sidebarDiv.classList.add('sidebar_off')
                 sidebarDiv.classList.remove('sidebar_is_active')
+                containerFooter.classList.add('container-footer')
+                containerFooter.classList.remove('container-footer-off')
                 //*****************/
                 
             }
