@@ -35,50 +35,6 @@ var conf_cloud = {
     SIGN_OUT_REDIRECT_URL: "http://localhost:9000/",
     SIGN_OUT_APPEND_TOKEN: "true",
   },
-  MENU_APP: [{
-    id: "kronos",
-    title: "KRONOS",
-    url: "http://10.20.0.254/kronos"
-  }, {
-    id: "agora",
-    title: "AGORA",
-    url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/agora"
-  },
-  {
-    id: "argo",
-    title: "ARGO",
-    url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/argo"
-  },
-  {
-    id: "arka",
-    title: "ARKA",
-    url: "https://tpruebasfuncionarios.intranetoas.udistrital.edu.co/arka"
-  },
-  {
-    id: "temis",
-    title: "TEMIS",
-    url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/gefad"
-  },
-  {
-    id: "polux",
-    title: "POLUX",
-    url: "http://10.20.0.254/polux"
-  },
-  {
-    id: "jano",
-    title: "JANO",
-    url: "http://10.20.0.254/kronos"
-  },
-  {
-    id: "kyron",
-    title: "KYRON",
-    url: "http://10.20.0.254/kronos"
-  },
-  {
-    id: "sga",
-    title: "SGA",
-    url: "http://10.20.0.254/kronos"
-  }]
 };
 
 var conf_test = {
@@ -109,50 +65,7 @@ var conf_test = {
       SIGN_OUT_REDIRECT_URL: "https://pruebascumplidos.portaloas.udistrital.edu.co",
       SIGN_OUT_APPEND_TOKEN: "true",
     },
-    MENU_APP: [{
-      id: "kronos",
-      title: "KRONOS",
-      url: "http://10.20.0.254/kronos"
-    },
-    {
-      id: "argo",
-      title: "ARGO",
-      url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/argo"
-    },
-    {
-      id: "arka",
-      title: "ARKA",
-      url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/arka"
-    },
-    {
-      id: "temis",
-      title: "TEMIS",
-      url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/gefad"
-    },
-    {
-      id: "polux",
-      title: "POLUX",
-      url: "http://10.20.0.254/polux"
-    },
-    {
-      id: "jano",
-      title: "JANO",
-      url: "http://10.20.0.254/kronos"
-    },
-    {
-      id: "kyron",
-      title: "KYRON",
-      url: "http://10.20.0.254/kronos"
-    },
-    {
-      id: "sga",
-      title: "SGA",
-      url: "http://10.20.0.254/kronos"
-    }
-    ]
   };
-
-
 
 var conf_local = {
   WSO2_SERVICE: "http://jbpm.udistritaloas.edu.co:8280/services",
@@ -182,50 +95,9 @@ var conf_local = {
     SIGN_OUT_REDIRECT_URL: "http://localhost:9000/",
     SIGN_OUT_APPEND_TOKEN: "true",
   },
-  MENU_APP: [{
-    id: "kronos",
-    title: "KRONOS",
-    url: "http://10.20.0.254/kronos"
-  },
-  {
-    id: "argo",
-    title: "ARGO",
-    url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/argo"
-  },
-  {
-    id: "arka",
-    title: "ARKA",
-    url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/arka"
-  },
-  {
-    id: "temis",
-    title: "TEMIS",
-    url: "https://pruebasfuncionarios.intranetoas.udistrital.edu.co/gefad"
-  },
-  {
-    id: "polux",
-    title: "POLUX",
-    url: "http://10.20.0.254/polux"
-  },
-  {
-    id: "jano",
-    title: "JANO",
-    url: "http://10.20.0.254/kronos"
-  },
-  {
-    id: "kyron",
-    title: "KYRON",
-    url: "http://10.20.0.254/kronos"
-  },
-  {
-    id: "sga",
-    title: "SGA",
-    url: "http://10.20.0.254/kronos"
-  }
-  ]
 };
 
 angular.module('contractualClienteApp')
   .constant('CONF', {
-    GENERAL: conf_test
+    GENERAL: conf_local
   });

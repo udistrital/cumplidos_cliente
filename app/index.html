@@ -1,11 +1,11 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Sistema de Gestión Administrativa</title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://use.fontawesome.com/64b53ddd5b.js"></script>
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
@@ -41,7 +41,8 @@
 </head>
 
 <body ng-app="contractualClienteApp">
-    <div ng-include="'views/menu.html'" ng-controller="menuCtrl"></div>
+    <div ng-include="'core/header/header.html'" ng-controller="headerCtrl"></div>
+
     <!--[if lte IE 8]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -115,9 +116,13 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
+    <script src="core/core.module.js"></script>
+<script src="core/header/header.js"></script>
     <!-- endbuild -->
 </body>
 <!-- build:js({.tmp,app}) scripts/extras.js -->
+
+
 <script src="scripts/services/implicit_token.js"></script>
 <script src="scripts/services/notificacion.js"></script>
 <script src="scripts/controllers/menu.js"></script>
