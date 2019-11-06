@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="container-menu">
+    <article class="card" id="card-title">
+        <div class="card-text-container">
+            <h3 class="card-title">{{hola}}</h3>
+        </div>
+        <div class="button-container">
+            <div class="button-div">
+                <button class="button-header notification" (click)="toggleNotifications()">
+                    <i class="fa fa-bell-o"></i>
+                    <div class="badge1" *ngIf="noNotify">
+                        {{ noNotify }}
+                    </div>
+                </button>
+            </div>
+        </div>
+    </article>
+</div>
