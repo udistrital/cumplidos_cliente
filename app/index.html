@@ -26,6 +26,9 @@
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/menu-lateral.css">
+    <link rel="stylesheet" href="styles/core.css">
     <link rel="stylesheet" href="styles/estilo-cdve.css">
     <link rel="stylesheet" href="styles/custom.css">
     <link rel="stylesheet" href="styles/table-demo.css">
@@ -46,10 +49,22 @@
     <!--[if lte IE 8]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    <div class="container-fluid">
+    <!-- <div class="container-fluid">
         <div ng-view=""></div>
-    </div>
-    <div ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
+    </div> -->
+
+    <div class="container-app">
+        <div id="menu-sidebar-container" class="main-container-sidebar-off">
+            <div id="menu-sidebar" ng-include="'core/menu-lateral/menu-lateral.html'" ng-controller="menuLateralCtrl" class="sidebar_off"></div>
+        </div>
+        <div id="container-body-id" class="container-body">
+            <div ng-view="" id="container-div" class="container-view">
+    
+            </div>
+        <div class= "container-footer" ng-include="'core/footer/footer.html'" ng-controller="footerCtrl"></div>
+        </div>
+</div>
+
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -117,7 +132,9 @@
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="core/core.module.js"></script>
-<script src="core/header/header.js"></script>
+    <script src="core/header/header.js"></script>
+    <script src="core/footer/footer.js"></script>
+    <script src="core/menu-lateral/menu-lateral.js"></script>
     <!-- endbuild -->
 </body>
 <!-- build:js({.tmp,app}) scripts/extras.js -->
@@ -126,7 +143,6 @@
 <script src="scripts/services/implicit_token.js"></script>
 <script src="scripts/services/notificacion.js"></script>
 <script src="scripts/controllers/menu.js"></script>
-<script src="scripts/controllers/footer.js"></script>
 <script src="bower_components/moment/locale/es.js"></script>
 <script src="scripts/decorators/text_translate.js"></script>
 <script src="scripts/controllers/about.js"></script>

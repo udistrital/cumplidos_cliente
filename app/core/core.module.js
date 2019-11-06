@@ -1,6 +1,10 @@
 (function () {
     'use strict';
   
-    angular.module('core', []);
+    angular.module('core', [
+      'configuracionService',
+      'requestService',
+      'implicitToken',
+    ]);
   
   })();

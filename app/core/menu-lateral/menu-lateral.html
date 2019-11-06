@@ -1,0 +1,67 @@
+<div id="menu-sidebar">
+
+    <div>
+
+        <div class="container-sidebar">
+            
+        <nav id="column_left">	
+        <ul class="nav nav-list">
+              <li><a>Dashboard</a></li>	
+              <li ng-repeat="nivel_1 in ::my_menu">
+                    <a ng-if="nivel_1.Opciones === null && nivel_1.TipoOpcion === 'Menú'" ng-click="redirect_url('/' + nivel_1.Url)" >
+                        {{nivel_1.Nombre}} <b class="caret"></b>
+                      </a>
+            </li>
+            <li ng-repeat="nivel_1 in ::my_menu">
+                <a ng-if="nivel_1.Opciones !== null && nivel_1.TipoOpcion === 'Menú'" class="accordion-heading" data-toggle="collapse" data-target="#submenu1" >
+                        <span class="nav-header-primary">{{nivel_1.Nombre}} <span class="pull-right"><b class="caret"></b></span></span>
+
+      </a>
+                <ul class="nav nav-list collapse" id="submenu1">
+                    <li ng-repeat="nivel_2 in nivel_1.Opciones">
+                        <a ng-click="redirect_url('/' + nivel_2.Url)" ng-if="nivel_2.Opciones === null && nivel_2.TipoOpcion === 'Menú'" class="accordion-heading" data-toggle="collapse" data-target="#submenu2">
+            {{nivel_2.Nombre}}
+          </a>
+                    </li>
+                    <li class="dropdown dropdown-submenu" aria-haspopup="true" aria-expanded="false" ng-repeat="nivel_2 in nivel_1.Opciones">
+                        <a class="dropdown-toggle" data-toggle="dropdown" ng-if="nivel_2.Opciones !== null && nivel_2.TipoOpcion === 'Menú'" class="accordion-heading" data-toggle="collapse" data-target="#submenu2">
+            {{nivel_2.Nombre}}<span class="pull-right"><b class="caret"></b></span>
+          </a>
+                        <ul class="nav nav-list collapse" id="submenu2">
+                            <li ng-repeat="nivel_3 in nivel_2.Opciones ">
+                                <a ng-click="redirect_url('/' + nivel_3.Url)" ng-if="nivel_3.Opciones == null && nivel_3.TipoOpcion==='Menú'">
+                {{nivel_3.Nombre}}
+              </a>
+                            </li>
+                            <li class="dropdown dropdown-submenu " aria-haspopup="true " aria-expanded="false " ng-repeat="nivel_3 in nivel_2.Opciones ">
+                                <a class="dropdown-toggle " data-toggle="dropdown " ng-if="nivel_3.Opciones !== null && nivel_3.TipoOpcion==='Menú' ">{{nivel_3.Nombre}}
+              </a>
+                                <ul class="dropdown-menu ">
+                                    <li ng-repeat="nivel_4 in nivel_3.Opciones ">
+                                        <a ng-click="redirect_url('/' + nivel_4.Url)" ng-if="nivel_4.TipoOpcion === 'Menú' ">
+                    {{nivel_4.Nombre}}
+                  </a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+
+        </nav>
+
+        </div>
+
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>

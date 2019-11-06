@@ -1,13 +1,42 @@
 'use strict';
 /**
  * @ngdoc function
- * @name contractualClienteApp.controller:menuCtrl
+ * @name core.controller:headerCtrl
  * @description
- * # menuCtrl
- * Controller of the contractualClienteApp
+ * # headerCtrl
+ * Controller of the core
  */
 angular.module('core')
     .controller('headerCtrl', 
     function (token_service, configuracionRequest, notificacion, $translate, $route, $mdSidenav, $scope) {
         $scope.hola = "cordial saludo";
+        $scope.sidebarEvent= function(){
+            console.log("data");
+            var sidebarDiv = document.getElementById('menu-sidebar');
+            var sidebarContainer = document.getElementById('menu-sidebar-container');
+            var containerDiv= document.getElementById('container-div');   
+            var containerBody= document.getElementById('container-body-id');   
+            if (sidebarDiv.className.includes("sidebar_off")){
+                console.log("entro a funcion")
+                sidebarContainer.classList.add('main-container-sidebar')
+                sidebarContainer.classList.remove('main-container-sidebar-off')
+                sidebarDiv.classList.add('sidebar_is_active')
+                sidebarDiv.classList.remove('sidebar_off')
+                containerBody.classList.add('container-body-off')
+                containerBody.classList.remove('container-body')
+                //*********************/
+                containerDiv.classList.add('container-view')
+                containerDiv.classList.remove('container-view-sidebar-off')
+            }else{
+                containerBody.classList.add('container-body')
+                containerBody.classList.remove('container-body-off')
+                sidebarContainer.classList.add('main-container-sidebar-off')
+                sidebarContainer.classList.remove('main-container-sidebar')
+                sidebarDiv.classList.add('sidebar_off')
+                sidebarDiv.classList.remove('sidebar_is_active')
+                //*****************/
+                
+            }
+
+        }
     });
