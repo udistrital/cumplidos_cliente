@@ -22,8 +22,8 @@ angular.module('core')
 
 
         // optiene los menus segun el rol
-        var roles = "CONTRATISTA"
-        configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' + CONF.GENERAL.APP, '')
+        var roles = "DOCENTE"
+        configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' +'Campus')
         .then(function (response) {
             $rootScope.my_menu = response.data;
         }).catch(function(error){

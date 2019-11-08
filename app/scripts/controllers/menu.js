@@ -25,36 +25,36 @@ angular.module('contractualClienteApp')
         $scope.logout = function () {
             token_service.logout();
         };
-        if (token_service.live_token()) {
-            $scope.token = token_service.getPayload();
-            if (!angular.isUndefined($scope.token.role)) {
-                var roles = "";
-                if (typeof $scope.token.role === "object") {
-                    var rl = [];
-                    for (var index = 0; index < $scope.token.role.length; index++) {
-                        if ($scope.token.role[index].indexOf("/") < 0) {
-                            rl.push($scope.token.role[index]);
+            if (token_service.live_token()) {
+                $scope.token = token_service.getPayload();
+                if (!angular.isUndefined($scope.token.role)) {
+                    var roles = "";
+                    if (typeof $scope.token.role === "object") {
+                        var rl = [];
+                        for (var index = 0; index < $scope.token.role.length; index++) {
+                            if ($scope.token.role[index].indexOf("/") < 0) {
+                                rl.push($scope.token.role[index]);
+                            }
                         }
+                        roles = rl.toString();
+                    } else {
+                        roles = $scope.token.role;
                     }
-                    roles = rl.toString();
-                } else {
-                    roles = $scope.token.role;
+
+                    roles = roles.replace(/,/g, '%2C');
+                    configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas','').then(function(response) {
+                        // console.log(response);
+                        $rootScope.my_menu = response.data;
+
+                    })
+                        .catch(
+                            function (response) {
+                                // console.log(response);
+                                $rootScope.my_menu = response.data;
+
+                            });
                 }
-
-                roles = roles.replace(/,/g, '%2C');
-                configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas','').then(function(response) {
-                    // console.log(response);
-                    $rootScope.my_menu = response.data;
-
-                })
-                    .catch(
-                        function (response) {
-                            // console.log(response);
-                            $rootScope.my_menu = response.data;
-
-                        });
             }
-        }
 
         var update_url = function () {
             $scope.breadcrumb = [''];

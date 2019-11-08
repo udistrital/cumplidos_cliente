@@ -1,109 +1,35 @@
 <div id="menu-sidebar">
     <div class="container-sidebar">
         <nav id="column_left">
-            <div id="MainMenu">
-                <div class="list-group panel" >
-                    <a href="#" class="list-group-item list-group-item-success" data-parent="#MainMenu">Item 1</a>
-                    <a href="#" class="list-group-item list-group-item-success" data-parent="#MainMenu">Item 2</a>
-                    <a href="#demo3" class="list-group-item list-group-item-success" data-toggle="collapse"
-                        data-parent="#MainMenu">Item 3 <i class="fa fa-caret-down"></i></a>
-                    <div class="collapse" id="demo3">
-                        <a href="#SubMenu1" class="list-group-item" data-toggle="collapse"
-                            data-parent="#SubMenu1">Subitem 1 <i class="fa fa-caret-down"></i></a>
-                        <div class="collapse list-group-submenu" id="SubMenu1">
-                            <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 1 a</a>
-                            <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 2 b</a>
-                            <a href="#SubSubMenu1" class="list-group-item" data-toggle="collapse"
-                                data-parent="#SubSubMenu1">Subitem 3 c <i class="fa fa-caret-down"></i></a>
-                            <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu1">
-                                <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 1</a>
-                                <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 2</a>
-                            </div>
-                            <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 4 d</a>
+            <div ng-repeat="nivel_1 in ::my_menu">
+                <a ng-if="nivel_1.Opciones === null && nivel_1.TipoOpcion === 'Menú'" href="#"
+                    class="list-group-item list-group-item-success"
+                    ng-click="redirect_url(nivel_1.Url)">{{nivel_1.Nombre}}-</a>
+                <a ng-if="nivel_1.Opciones !== null && nivel_1.TipoOpcion === 'Menú'" href="#{{nivel_1.Nombre}}"
+                    class="list-group-item list-group-item-success" data-toggle="collapse">{{nivel_1.Nombre}}
+                    <i class="fa fa-caret-down"></i></a>
+                <div ng-repeat="nivel_2 in nivel_1.Opciones" class="collapse" id="{{nivel_1.Nombre}}">
+                    <a href="#" class="list-group-item" ng-click="redirect_url(nivel_2.Url)"
+                        ng-if="nivel_2.Opciones === null && nivel_2.TipoOpcion === 'Menú'">
+                        {{nivel_2.Nombre}}
+                    </a>
+                    <a ng-if="nivel_2.Opciones !== null && nivel_2.TipoOpcion === 'Menú'" href="#{{nivel_2.Nombre}}"
+                        class="list-group-item" data-toggle="collapse" data-parent="#{{nivel_2.Nombre}}">{{nivel_2.Nombre}}
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <!-- <div class="collapse list-group-submenu" id="SubMenu1">
+                        <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 1 a</a>
+                        <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 2 b</a>
+                        <a href="#SubSubMenu1" class="list-group-item" data-toggle="collapse"
+                            data-parent="#SubSubMenu1">Subitem 3 c <i class="fa fa-caret-down"></i></a>
+                        <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu1">
+                            <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 1</a>
+                            <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 2</a>
                         </div>
-                        <a href="javascript:;" class="list-group-item">Subitem 2</a>
-                        <a href="javascript:;" class="list-group-item">Subitem 3</a>
-                    </div>
-                    <a href="#demo4" class="list-group-item list-group-item-success" data-toggle="collapse"
-                        data-parent="#MainMenu">Item 4 <i class="fa fa-caret-down"></i></a>
-                    <div class="collapse" id="demo4">
-                        <a href="" class="list-group-item">Subitem 1</a>
-                        <a href="" class="list-group-item">Subitem 2</a>
-                        <a href="" class="list-group-item">Subitem 3</a>
-                    </div>
+                        <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 4 d</a>
+                    </div> -->
                 </div>
             </div>
-            <ul class="nav nav-list">
-                <li><a id="inicio">Inicio</a></li>
-                <li ng-repeat="nivel_1 in ::my_menu">
-                    <a ng-if="nivel_1.Opciones === null && nivel_1.TipoOpcion === 'Menú'"
-                        ng-click="redirect_url('/' + nivel_1.Url)" ng-href="{{nivel_1.Url}}">
-                        {{nivel_1.Nombre}} <b class="caret"></b>
-                    </a>
-                </li>
-                <li ng-repeat="nivel_1 in ::my_menu">
-                    <a ng-if="nivel_1.Opciones !== null && nivel_1.TipoOpcion === 'Menú'" class="accordion-heading"
-                        data-toggle="collapse" data-target="#submenu1">
-                        <span class="nav-header-primary">{{nivel_1.Nombre}} <span class="pull-right"><b
-                                    class="caret"></b></span></span>
-
-                    </a>
-                    <ul class="nav nav-list collapse" id="submenu1">
-                        <li ng-repeat="nivel_2 in nivel_1.Opciones">
-                            <a ng-click="redirect_url('/' + nivel_2.Url)"
-                                ng-if="nivel_2.Opciones === null && nivel_2.TipoOpcion === 'Menú'"
-                                class="accordion-heading" data-toggle="collapse" data-target="#submenu2">
-                                {{nivel_2.Nombre}}
-                            </a>
-                        </li>
-                        <li class="dropdown dropdown-submenu" aria-haspopup="true" aria-expanded="false"
-                            ng-repeat="nivel_2 in nivel_1.Opciones">
-                            <a class="dropdown-toggle" data-toggle="dropdown"
-                                ng-if="nivel_2.Opciones !== null && nivel_2.TipoOpcion === 'Menú'"
-                                class="accordion-heading" data-toggle="collapse" data-target="#submenu2">
-                                {{nivel_2.Nombre}}<span class="pull-right"><b class="caret"></b></span>
-                            </a>
-                            <ul class="nav nav-list collapse" id="submenu2">
-                                <li ng-repeat="nivel_3 in nivel_2.Opciones ">
-                                    <a ng-click="redirect_url('/' + nivel_3.Url)"
-                                        ng-if="nivel_3.Opciones == null && nivel_3.TipoOpcion==='Menú'">
-                                        {{nivel_3.Nombre}}
-                                    </a>
-                                </li>
-                                <li class="dropdown dropdown-submenu " aria-haspopup="true " aria-expanded="false "
-                                    ng-repeat="nivel_3 in nivel_2.Opciones ">
-                                    <a class="dropdown-toggle " data-toggle="dropdown "
-                                        ng-if="nivel_3.Opciones !== null && nivel_3.TipoOpcion==='Menú' ">{{nivel_3.Nombre}}
-                                    </a>
-                                    <ul class="dropdown-menu ">
-                                        <li ng-repeat="nivel_4 in nivel_3.Opciones ">
-                                            <a ng-click="redirect_url('/' + nivel_4.Url)"
-                                                ng-if="nivel_4.TipoOpcion === 'Menú' ">
-                                                {{nivel_4.Nombre}}
-                                            </a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
         </nav>
     </div>
-    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-    </div>
-</div>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-    crossorigin="anonymous"></script>
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2">
-            <!-- menu -->
-
-        </div>
-    </div>
-
 </div>

@@ -64,7 +64,7 @@ angular.module('configuracionService', [])
          * @description Metodo GET del servicio
          */
         get: function(tabla, params) {
-            return $http.get(path + tabla + params, token_service.getHeader());
+            return $http.get(path + tabla , token_service.getHeader());
         },
         /**
          * @ngdoc function
