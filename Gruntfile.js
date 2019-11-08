@@ -40,6 +40,13 @@ module.exports = function(grunt) {
         files: ['bower.json'],
         tasks: ['wiredep']
       },
+      core: {
+        files: ['<%= yeoman.app %>/core/**/*.js'],
+        tasks: ['newer:jshint:all', 'newer:jscs:all'],
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        }
+      },
       js: {
         files: ['<%= yeoman.app %>/scripts/**/*.js'],
         tasks: ['newer:jshint:all', 'newer:jscs:all'],
@@ -395,6 +402,11 @@ module.exports = function(grunt) {
           src: '**/*.html',
           dest: '<%= yeoman.dist %>/views'
         }, {
+          expand: true,
+          cwd: '<%= yeoman.app %>/core',
+          src: '**/*.*',
+          dest: '<%= yeoman.dist %>/core'
+        },{
           expand: true,
           cwd: 'bower_components/angular-ui-grid/fonts',
           src: ['*.eot', '*.svg', '*.ttf', '*.woff'],

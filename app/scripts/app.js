@@ -64,8 +64,7 @@ angular
         'colombiaHolidaysService',
         'nuxeoClient',
         'core'
-    ],
-    )
+    ])
     .run(function(amMoment) {
         amMoment.changeLocale('es');
     })

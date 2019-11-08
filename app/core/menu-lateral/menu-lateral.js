@@ -1,13 +1,14 @@
 'use strict';
 /**
  * @ngdoc function
- * @name contractualClienteApp.controller:menuLateralCtrl
+ * @name core.controller:menuLateralCtrl
  * @description
  * # menuLateralCtrl
- * Controller of the contractualClienteApp
+ * Controller of the core
  */
 angular.module('core')
-    .controller('menuLateralCtrl', function ($location, $http, rolesService, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, $mdSidenav) {
+    .controller('menuLateralCtrl', 
+    function ($location,CONF ,$http, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, $mdSidenav) {
         var paths = [];
         $scope.language = {
             es: "btn btn-primary btn-circle btn-outline active",
@@ -19,24 +20,14 @@ angular.module('core')
         $scope.token_service = token_service;
         $scope.breadcrumb = [];
 
-        $scope.perfil = "ADMINISTRADOR ARGO";
 
         // optiene los menus segun el rol
-        var roles = "DECANO"
-        configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/Argo', '').then(function (response) {
-
+        var roles = "CONTRATISTA"
+        configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' + CONF.GENERAL.APP, '')
+        .then(function (response) {
             $rootScope.my_menu = response.data;
-
         }).catch(function(error){
         });
-
-        /*
-        configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + "ADMINISTRADOR_ARGO" + '/Argo', '').then(function(response) {
-            $rootScope.my_menu = response.data;
-          });
-            /*configuracionRequest.update_menu(https://10.20.0.162:9443/store/apis/authenticate response.data);
-            $scope.menu_service = configuracionRequest.get_menu();*/
-
 
         var update_url = function () {
             $scope.breadcrumb = [''];
@@ -50,6 +41,9 @@ angular.module('core')
         };
 
         $scope.redirect_url = function (path) {
+            console.log(path);
+            console.log(CONF);
+            
             var path_sub = path.substring(0, 4);
             switch (path_sub.toUpperCase()) {
                 case "HTTP":
@@ -97,15 +91,4 @@ angular.module('core')
         $scope.toggleLeft = buildToggler('left');   
         $scope.toggleRight = buildToggler('right');
 
-        //Pendiente por definir json del menu
-        (function ($) {
-            $(document).ready(function () {
-                $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    $(this).parent().siblings().removeClass('open');
-                    $(this).parent().toggleClass('open');
-                });
-            });
-        })(jQuery);
 });

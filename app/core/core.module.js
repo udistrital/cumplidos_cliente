@@ -1,10 +1,9 @@
-(function () {
-    'use strict';
-  
-    angular.module('core', [
-      'configuracionService',
-      'requestService',
-      'implicitToken',
-    ]);
-  
-  })();
+
+'use strict';
+
+angular.module('core', [
+  'configuracionService',
+  'requestService',
+  'implicitToken',
+  'ngWebSocket',
+])

@@ -68,6 +68,7 @@ var conf_test = {
   };
 
 var conf_local = {
+  APP: 'contratistas',
   WSO2_SERVICE: "http://jbpm.udistritaloas.edu.co:8280/services",
   ADMINISTRATIVA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
   ADMINISTRATIVA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",

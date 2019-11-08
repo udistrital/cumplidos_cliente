@@ -2,14 +2,13 @@
 
 /**
  * @ngdoc service
- * @name notificacionesApp.notificacion
+ * @name core.notificacion
  * @description
  * # notificacion
- * Factory in the notificacionesApp.
+ * Factory in the core.
  */
-//10.20.0.254/notificacion_api/register?id=1&profile=admin
 
-angular.module('contractualClienteApp')
+angular.module('core')
     .factory('notificacion', function ( CONF, configuracionRequest, token_service, $websocket, $interval) {
         var TIME_PING = 50000;
 
