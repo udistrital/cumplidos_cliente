@@ -25,7 +25,10 @@ angular.module('core')
         var roles = "DOCENTE"
         configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' +'Campus')
         .then(function (response) {
+            console.log(response);
+
             $rootScope.my_menu = response.data;
+            $scope.my_menu = response.data;
         }).catch(function(error){
         });
 

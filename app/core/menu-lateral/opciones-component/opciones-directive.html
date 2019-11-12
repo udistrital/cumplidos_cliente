@@ -1,0 +1,21 @@
+<div ng-if="father">
+    <a ng-repeat="nivel in data" ng-if="nivel.Opciones === null && nivel.TipoOpcion === 'Menú'" href="#"
+        class="list-group-item list-group-item-success" ng-click="redirect_url(nivel.Url)">{{nivel.Nombre}}-</a>
+    <a ng-repeat="nivel in data" ng-if="nivel.Opciones !== null && nivel.TipoOpcion === 'Menú'" href="#{{nivel.Nombre}}"
+        class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#{{nivel.Nombre}}">{{nivel.Nombre}}
+        <i class="fa fa-caret-down"></i>
+    </a>
+    <opciones ng-if="nivel.Opciones !== null && nivel.TipoOpcion === 'Menú'" 
+    data="nivel.Opciones" father="false" idchildren="nivel.Nombre"></opciones>
+</div>
+
+<div ng-if="!father" data-toggle="collapse" id="{{idchildren}}" class="list-group-submenu">
+    <a ng-repeat="nivel in data" ng-if="nivel.Opciones === null && nivel.TipoOpcion === 'Menú'" href="#"
+        class="list-group-item" ng-click="redirect_url(nivel.Url)" data-parent="#{{idchildren}}" >{{nivel.Nombre}}</a>
+    <a ng-repeat="nivel in data" ng-if="nivel.Opciones !== null && nivel.TipoOpcion === 'Menú'" href="#{{nivel.Nombre}}"
+        class="list-group-item" data-toggle="collapse" data-parent="#{{idchildren}}">{{nivel.Nombre}}
+        <i class="fa fa-caret-down"></i>
+    </a>
+    <opciones ng-if="nivel.Opciones !== null && nivel.TipoOpcion === 'Menú'" 
+    data="nivel.Opciones" father="false" idchildren="{{nivel.Nombre}}"></opciones>
+</div>

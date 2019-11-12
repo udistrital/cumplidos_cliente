@@ -1,35 +1,42 @@
 <div id="menu-sidebar">
     <div class="container-sidebar">
         <nav id="column_left">
-            <div ng-repeat="nivel_1 in ::my_menu">
-                <a ng-if="nivel_1.Opciones === null && nivel_1.TipoOpcion === 'Menú'" href="#"
-                    class="list-group-item list-group-item-success"
-                    ng-click="redirect_url(nivel_1.Url)">{{nivel_1.Nombre}}-</a>
-                <a ng-if="nivel_1.Opciones !== null && nivel_1.TipoOpcion === 'Menú'" href="#{{nivel_1.Nombre}}"
-                    class="list-group-item list-group-item-success" data-toggle="collapse">{{nivel_1.Nombre}}
-                    <i class="fa fa-caret-down"></i></a>
-                <div ng-repeat="nivel_2 in nivel_1.Opciones" class="collapse" id="{{nivel_1.Nombre}}">
-                    <a href="#" class="list-group-item" ng-click="redirect_url(nivel_2.Url)"
-                        ng-if="nivel_2.Opciones === null && nivel_2.TipoOpcion === 'Menú'">
-                        {{nivel_2.Nombre}}
-                    </a>
-                    <a ng-if="nivel_2.Opciones !== null && nivel_2.TipoOpcion === 'Menú'" href="#{{nivel_2.Nombre}}"
-                        class="list-group-item" data-toggle="collapse" data-parent="#{{nivel_2.Nombre}}">{{nivel_2.Nombre}}
-                        <i class="fa fa-caret-down"></i>
-                    </a>
-                    <!-- <div class="collapse list-group-submenu" id="SubMenu1">
-                        <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 1 a</a>
-                        <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 2 b</a>
-                        <a href="#SubSubMenu1" class="list-group-item" data-toggle="collapse"
-                            data-parent="#SubSubMenu1">Subitem 3 c <i class="fa fa-caret-down"></i></a>
-                        <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu1">
-                            <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 1</a>
-                            <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 2</a>
-                        </div>
-                        <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 4 d</a>
-                    </div> -->
-                </div>
-            </div>
+            <opciones data="my_menu" father="true"></opciones>
         </nav>
     </div>
 </div>
+
+<!-- <div ng-repeat="nivel_1 in ::my_menu">
+    <a ng-if="nivel_1.Opciones === null && nivel_1.TipoOpcion === 'Menú'" href="#"
+        class="list-group-item list-group-item-success"
+        ng-click="redirect_url(nivel_1.Url)">{{nivel_1.Nombre}}-</a>
+    <a ng-if="nivel_1.Opciones !== null && nivel_1.TipoOpcion === 'Menú'" href="#{{nivel_1.Nombre}}"
+        class="list-group-item list-group-item-success" data-toggle="collapse">{{nivel_1.Nombre}}
+        <i class="fa fa-caret-down"></i>
+    </a>
+    <div ng-repeat="nivel_2 in [nivel_1.Opciones]" class="collapse" id="{{nivel_1.Nombre}}">
+        <a href="#" class="list-group-item" ng-click="redirect_url(nivel_2.Url)"
+            ng-if="nivel_2.Opciones === null && nivel_2.TipoOpcion === 'Menú'">
+            {{nivel_2.Nombre}}
+        </a>
+        <a ng-if="nivel_2.Opciones !== null && nivel_2.TipoOpcion === 'Menú'" href="#{{nivel_2.Nombre}}"
+            class="list-group-item" data-toggle="collapse"
+            data-parent="#{{nivel_2.Nombre}}">{{nivel_2.Nombre}}
+            <i class="fa fa-caret-down"></i>
+        </a>
+        <a>{{nivel_1.Opciones}}
+            <i class="fa fa-caret-down"></i>
+        </a>
+    </div>
+</div> -->
+<!-- <div class="collapse list-group-submenu" id="SubMenu1">
+    <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 1 a</a>
+    <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 2 b</a>
+    <a href="#SubSubMenu1" class="list-group-item" data-toggle="collapse"
+        data-parent="#SubSubMenu1">Subitem 3 c <i class="fa fa-caret-down"></i></a>
+    <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu1">
+        <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 1</a>
+        <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 2</a>
+    </div>
+    <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 4 d</a>
+</div> -->
