@@ -41,3 +41,25 @@
 .sidebar_off{
     display:none;
 }
+
+.content-menu{ 
+	height: 100%;
+	background-color: #333333;
+	color:#fff;
+	display: flex; 
+	flex-direction: column;
+	margin-bottom:10px;
+}
+
+.content-menu > div{
+	border: 1px solid;
+	margin-top: 15px;
+	padding-top: 15px;
+	padding-left: 15px;
+	border-color:"#fff"
+}
+
+.hide-children {
+	display: none;
+}
+
