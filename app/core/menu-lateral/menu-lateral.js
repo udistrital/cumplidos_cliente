@@ -9,7 +9,6 @@
 angular.module('core')
     .controller('menuLateralCtrl', 
     function ($location,CONF ,$http, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, $mdSidenav) {
-        var paths = [];
         $scope.language = {
             es: "btn btn-primary btn-circle btn-outline active",
             en: "btn btn-primary btn-circle btn-outline"
@@ -32,17 +31,6 @@ angular.module('core')
         }).catch(function(error){
         });
 
-        var update_url = function () {
-            $scope.breadcrumb = [''];
-            for (var i = 0; i < paths.length; i++) {
-                if ($scope.actual === "/" + paths[i].path) {
-                    $scope.breadcrumb = paths[i].padre;
-                } else if ('/' === $scope.actual) {
-                    $scope.breadcrumb = [''];
-                }
-            }
-        };
-
         $scope.redirect_url = function (path) {
             console.log(path);
             console.log(CONF);
@@ -58,15 +46,8 @@ angular.module('core')
             }
         };
 
-
-        $http.get("scripts/models/app_menus.json")
-            .then(function (response) {
-                $scope.menu_app = response.data;
-            });
-
         $scope.$on('$routeChangeStart', function ( /*next, current*/) {
             $scope.actual = $location.path();
-            update_url();
         });
 
         $scope.changeLanguage = function (key) {
@@ -84,14 +65,4 @@ angular.module('core')
             }
             $route.reload();
         };
-
-        function buildToggler(componentId) {
-            return function () {
-                $mdSidenav(componentId).toggle();
-            };
-        }
-
-        $scope.toggleLeft = buildToggler('left');   
-        $scope.toggleRight = buildToggler('right');
-
 });
