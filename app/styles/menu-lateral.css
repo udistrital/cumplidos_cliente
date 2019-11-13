@@ -1,66 +1,93 @@
-#inicio{
-    color: black;
-    background: white;
-    font-family: opensans;
+#inicio {
+  color: black;
+  background: white;
+  font-family: opensans;
 }
-.container-body{
-	display: flex;
-	width: 100%;
-	z-index: 2;
-	flex-wrap: wrap;
-}
-
-.container-body-off{
-	display: flex;
-	width: 85%;
-	z-index: 2;
-	flex-wrap: wrap;
+.container-body {
+  display: flex;
+  width: 100%;
+  z-index: 2;
+  flex-wrap: wrap;
 }
 
-.container-app{
-	display: flex;
-    flex-wrap: wrap;
-    height: 100%;
-    overflow-y: auto;
+.container-body-off {
+  display: flex;
+  width: 85%;
+  z-index: 2;
+  flex-wrap: wrap;
 }
 
-.container-view{
-    width: 100%;
-    height: 74%;
+.container-app {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.container-view {
+  width: 100%;
+  height: 74%;
 }
 
 .main-container-sidebar{
-    width: 15%;
+  width: 15%;
 	z-index: 3;
 	margin-bottom: 154px;
+  padding-top: 10px;
+  background-color: #333333;
 }
 
-.main-container-sidebar-off{
-	width: 0%;
+.main-container-sidebar-off {
+  width: 0%;
 }
 
-.sidebar_off{
-    display:none;
+.sidebar_off {
+  display: none;
 }
 
-.content-menu{ 
-	height: 100%;
-	background-color: #333333;
-	color:#fff;
-	display: flex; 
-	flex-direction: column;
-	margin-bottom:10px;
+.content-menu {
+  height: 100%;
+  background-color: #333333;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.opcion-down {
+  background-color: #333333;
+  padding: 0.675rem 0.75rem;
 }
 
-.content-menu > div{
-	border: 1px solid;
-	margin-top: 15px;
-	padding-top: 15px;
-	padding-left: 15px;
-	border-color:"#fff"
+.opcion-down::before {
+  position: relative;
+  left: 180px;
+  font-family: "FontAwesome";
+  content: "\f107";
 }
 
-.hide-children {
-	display: none;
+.opcion-left::before {
+  position: relative;
+  left: 180px;
+  font-family: "FontAwesome";
+  content: "\f104";
 }
 
+.content-menu > div {
+  border-color: "#fff";
+  padding: 0.675rem 0.75rem;
+}
+
+.content-menu > div:focus {
+  outline: 0;
+  /* background-color: #fff;
+  color: #000; */
+}
+
+.content-menu > div:hover {
+  outline: 0;
+  /* background-color: #fff;
+  color: #000; */
+}
+
+.content-menu-off {
+  display: none;
+}
