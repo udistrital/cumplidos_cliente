@@ -1,12 +1,12 @@
 <div id="menu-aplicaciones" class="apps_menu_container">
         <div class="container-aplicativos">
-          <article *ngFor="let categoria of categorias" class="card">
-            <div class="title-app-menu-div" [ngStyle]="{'background-color': categoria.color}">
+          <article ng-repeat="categoria in categorias" class="card">
+            <div class="title-app-menu-div" ng-style="{'background-color': categoria.color}">
               <h5 class="categoria-title" >{{categoria.nombre}}</h5>
             </div>
             <div class="app-image-container">
-              <div *ngFor="let aplicacion of categoria.aplicaciones" class="image-application" (click)="redirect(aplicacion.url)">
-                  <img class="menu-app" [id]="aplicacion.estilo_logo">
+              <div ng-repeat="aplicacion in categoria.aplicaciones" class="image-application" (click)="redirect(aplicacion.url)">
+                  <img class="menu-app" id="{{aplicacion.estilo}}">
               </div>
             </div>
           </article>
