@@ -17,6 +17,9 @@ angular.module('core')
             var containerDiv= document.getElementById('container-div');   
             var containerFooter= document.getElementById('footer-id');   
             var containerBody= document.getElementById('container-body-id');   
+            var containerLogoCollapsed= document.getElementById('argo'); 
+            var containerLogo= document.getElementById('argo-info'); 
+            console.log("container logo :"+containerLogo)
             if (sidebarDiv.className.includes("sidebar_off")){
                 console.log("entro a funcion")
                 sidebarContainer.classList.add('main-container-sidebar')
@@ -27,6 +30,8 @@ angular.module('core')
                 containerBody.classList.remove('container-body')
                 containerFooter.classList.add('container-footer-off')
                 containerFooter.classList.remove('container-footer')
+                containerLogo.style.display = "inline-block";
+                containerLogoCollapsed.style.display = "none";
                 //*********************/
                 containerDiv.classList.add('container-view')
                 containerDiv.classList.remove('container-view-sidebar-off')
@@ -40,6 +45,10 @@ angular.module('core')
                 containerFooter.classList.add('container-footer')
                 containerFooter.classList.remove('container-footer-off')
                 //*****************/
+                containerLogo.classList.remove('header-logo')
+                containerLogo.classList.add('header-logo-collapsed')
+                containerLogo.style.display = "none";
+                containerLogoCollapsed.style.display = "inline-block";
                 
             }
 
