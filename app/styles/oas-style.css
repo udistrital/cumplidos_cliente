@@ -583,6 +583,5 @@ table.dataTable thead .sorting:after {
 
 .panel-default>.panel-heading {
   color: white;
-  background-color: rgba(0, 62, 101, 1);
   border-color: #ddd;
 }

@@ -9,21 +9,20 @@
 }
 
 .footer-div{
-    background-color: #2B3643;
+    background-color: white;
     width: 100%;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     margin-top:1%;
-    box-shadow: 2px -2px 11px #888888;
     bottom: 0;
     left: 0;
-    border-left: 1px white solid
 }
 .container-footer{
     width: 100%;
-    position: absolute;
+    position: fixed;
     bottom: 0;
+    z-index: 10;
 }
 .container-footer-off{
     width: 85%;
@@ -32,7 +31,7 @@
 .footer-card-imageContainer{
     object-fit: cover;
     margin: 0;
-    border-right: .1rem solid white;
+    border-right: .1rem solid black;
     align-self: center;
 }
 .text-container{
@@ -43,7 +42,7 @@
 }
 
 .footer-column{
-    color:white;
+    color:black;
     width: 10%;
     margin-top:1%;
     align-self: center;
@@ -56,7 +55,7 @@
     margin-bottom: .5rem;
     font-size: 13px;
     margin-top:0;
-    color:white;
+    color:black;
 }
 
 .footer-logos{
@@ -69,7 +68,7 @@
     display: flex;
     padding-left: 5px;
     padding-right: 5px;
-    color:white;
+    color:black;
     justify-content: center;
     width:18%;
     align-self: center;

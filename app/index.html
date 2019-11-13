@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-stylus.css">
     <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-info.css">
     <link rel="stylesheet" href="./core/header/header.css">
+    <link rel="stylesheet" href="./core/menu-aplicaciones/menu-aplicaciones.css">
 </head>
 
 <body ng-app="contractualClienteApp">
@@ -51,7 +52,7 @@
     <!-- <div class="container-fluid">
         <div ng-view=""></div>
     </div> -->
-
+    <div class= "body-container-menuaplicaciones" ng-include="'core/menu-aplicaciones/menu-aplicaciones.html'" ng-controller="menuaplicacionesCtrl"></div>
     <div class="container-app">
         <div id="menu-sidebar-container" class="main-container-sidebar-off">
             <div id="menu-sidebar" ng-include="'core/menu-lateral/menu-lateral.html'" ng-controller="menuLateralCtrl" class="sidebar_off"></div>
@@ -60,9 +61,9 @@
             <div ng-view="" id="container-div" class="container-view">
     
             </div>
-        <div class= "container-footer" ng-include="'core/footer/footer.html'" ng-controller="footerCtrl"></div>
         </div>
-</div>
+    </div>
+    <div class= "container-footer" ng-include="'core/footer/footer.html'" ng-controller="footerCtrl"></div>
 
 
 
@@ -135,6 +136,7 @@
     <script src="core/menu-lateral/menu-lateral.js"></script>
     <script src="core/services/notificacion.js"></script>
     <script src="core/menu-lateral/opciones-component/opciones-directive.js"></script>
+    <script src="core/menu-aplicaciones/menu-aplicaciones.js"></script>
     <!-- endbuild -->
 </body>
 <!-- build:js({.tmp,app}) scripts/extras.js -->
