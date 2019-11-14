@@ -12,10 +12,10 @@ angular.module('core')
 
         
         $scope.token_service=token_service;
-
         if(token_service.live_token()){
-            $scope.token=token_service.getPayload();
+            $scope.isLogin=true
 
+            $scope.token=token_service.getPayload();
         }
         $scope.logout= function(){
             token_service.logout();
