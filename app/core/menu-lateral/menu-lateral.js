@@ -9,6 +9,7 @@
 angular.module('core')
     .controller('menuLateralCtrl', 
     function ($location,CONF ,$http, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, $mdSidenav) {
+        
         $scope.language = {
             es: "btn btn-primary btn-circle btn-outline active",
             en: "btn btn-primary btn-circle btn-outline"

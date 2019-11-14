@@ -1,4 +1,4 @@
-<div ng-class="father" >
+<div ng-class="father" ng-style="{'background-color': paleta[tema].color}">
     <div ng-repeat="nivel in data" ng-if="nivel.Opciones === null && nivel.TipoOpcion === 'Menú'"
         ng-click="redirect_url(nivel.Url)">{{nivel.Nombre}}
     </div>

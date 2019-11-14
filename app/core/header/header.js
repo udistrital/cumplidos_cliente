@@ -10,8 +10,32 @@ angular.module('core')
     .controller('headerCtrl', 
     function (token_service, configuracionRequest, notificacion, $translate, $route, $mdSidenav, $scope) {
 
-        
+        var valorTema = 0
+
+        var paletaColores =[
+            {   
+                nombre: "administrativa",
+                color : "rgb(142, 40, 37)"
+            },
+            {
+                nombre: "academica",
+                color: "rgb(21, 72, 94)"
+            },
+            {
+                nombre: "financiera",
+                color: "rgb(222, 158, 15)"
+            },
+            {
+                nombre: "analiticos",
+                color: "rgb(57, 122, 24)"
+            }
+            ]
+
         $scope.token_service=token_service;
+
+        $scope.tema = valorTema;
+
+        $scope.paleta = paletaColores
 
         if(token_service.live_token()){
             $scope.token=token_service.getPayload();

@@ -12,7 +12,7 @@
 
 .container-body-off {
   display: flex;
-  width: 85%;
+  width: 83%;
   z-index: 2;
   flex-wrap: wrap;
 }
@@ -30,7 +30,7 @@
 }
 
 .main-container-sidebar{
-  width: 15%;
+  width: 16.8%;
 	z-index: 3;
 	margin-bottom: 154px;
   padding-top: 10px;
@@ -47,13 +47,11 @@
 
 .content-menu {
   height: 100%;
-  background-color: #333333;
   color: #fff;
   display: flex;
   flex-direction: column;
 }
 .opcion-down {
-  background-color: #333333;
   padding: 0.675rem 0.75rem;
 }
 

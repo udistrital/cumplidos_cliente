@@ -54,7 +54,7 @@
     </div> -->
     <div class= "body-container-menuaplicaciones" ng-include="'core/menu-aplicaciones/menu-aplicaciones.html'" ng-controller="menuaplicacionesCtrl"></div>
     <div class="container-app">
-        <div id="menu-sidebar-container" class="main-container-sidebar-off">
+        <div id="menu-sidebar-container" class="main-container-sidebar-off" ng-controller="headerCtrl" ng-style="{'background-color': paleta[tema].color}">
             <div id="menu-sidebar" ng-include="'core/menu-lateral/menu-lateral.html'" ng-controller="menuLateralCtrl" class="sidebar_off"></div>
         </div>
         <div id="container-body-id" class="container-body">
