@@ -10,6 +10,18 @@
   box-shadow: 0px 0px 8px #888888;
 }
 
+.catalogo-button-container{
+  justify-content: center;
+  display: flex;
+  bottom: 10px;
+  position: absolute;
+  width: 100%;
+}
+
+#catalogo-button-icon{
+  font-size: 40px;
+}
+
 .title-app-menu-div{
   text-align: center;
   margin-bottom: 5px;
@@ -30,7 +42,7 @@
   border-radius: 2px;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 560px;
+  height: 480px;
   width: 320px;
   transition: 0.3s;
   z-index: 3;
