@@ -25,8 +25,8 @@ angular.module('core')
         var roles = "ADMIN_TITAN"
         configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' +'Titan')
         .then(function (response) {
-            console.log(response);
             $rootScope.my_menu = response.data;
+            console.log($rootScope.my_menu);
 
         }).catch(function(error){
         });

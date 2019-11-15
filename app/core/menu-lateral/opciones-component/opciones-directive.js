@@ -19,10 +19,10 @@ angular.module('core')
             controllerAs: 'd_opciones',
 
             controller: function ($scope) {
-                $scope.tema = (CONF.GENERAL.CATEGORIA.toLowerCase()).trim() ;
-                $scope.paleta = CONF.THEMES;
                 var self = this;
                 self.open = false;
+                $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim() ;
+                $scope.paleta = CONF.THEMES;
                 $scope.opciones = [];
                 console.log($scope.data);
                 $scope.redirect_url = function (path) {                    
