@@ -19,33 +19,12 @@ angular.module('core')
             controllerAs: 'd_opciones',
 
             controller: function ($scope) {
-                var valorTema = 0
-
-                var paletaColores =[
-                    {   
-                        nombre: "administrativa",
-                        color : "rgb(142, 40, 37)"
-                    },
-                    {
-                        nombre: "academica",
-                        color: "rgb(21, 72, 94)"
-                    },
-                    {
-                        nombre: "financiera",
-                        color: "rgb(222, 158, 15)"
-                    },
-                    {
-                        nombre: "analiticos",
-                        color: "rgb(57, 122, 24)"
-                    }
-                    ]
-
-                $scope.tema = valorTema;
-
-                $scope.paleta = paletaColores
+                $scope.tema = (CONF.GENERAL.CATEGORIA.toLowerCase()).trim() ;
+                $scope.paleta = CONF.THEMES;
                 var self = this;
                 self.open = false;
                 $scope.opciones = [];
+                console.log($scope.data);
                 $scope.redirect_url = function (path) {                    
                     var path_sub = path.substring(0, 4);
                     switch (path_sub.toUpperCase()) {

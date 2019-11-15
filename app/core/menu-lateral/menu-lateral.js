@@ -26,16 +26,12 @@ angular.module('core')
         configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' +'Titan')
         .then(function (response) {
             console.log(response);
-
             $rootScope.my_menu = response.data;
-            $scope.my_menu = response.data;
+
         }).catch(function(error){
         });
 
-        $scope.redirect_url = function (path) {
-            console.log(path);
-            console.log(CONF);
-            
+        $scope.redirect_url = function (path) {           
             var path_sub = path.substring(0, 4);
             switch (path_sub.toUpperCase()) {
                 case "HTTP":

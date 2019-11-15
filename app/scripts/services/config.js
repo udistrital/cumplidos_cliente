@@ -7,6 +7,8 @@
  * # config
  * Constant in the contractualClienteApp.
  */
+
+
 var conf_cloud = {
   WSO2_SERVICE: "http://jbpm.udistritaloas.edu.co:8280/services",
   ADMINISTRATIVA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/api/administrativa_mid_api/v1/",
@@ -53,6 +55,7 @@ var conf_test = {
     CONTRATO_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
     NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
     NUXEO_MID: "https://autenticacion.portaloas.udistrital.edu.co/apioas/nuxeo_mid/v1/",
+    CATEGORIA: "GAIA", //  GAIA - Gestión Administrativa, URANO - Gestión Académica, NIX - Gestión Financiera, ATHENEA - Analíticos
     TOKEN: {
       AUTORIZATION_URL: "https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize",
       URL_USER_INFO: "https://autenticacion.portaloas.udistrital.edu.co/oauth2/userinfo",
@@ -68,7 +71,6 @@ var conf_test = {
   };
 
 var conf_local = {
-  APP: 'contratistas',
   WSO2_SERVICE: "http://jbpm.udistritaloas.edu.co:8280/services",
   ADMINISTRATIVA_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
   ADMINISTRATIVA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
@@ -100,5 +102,21 @@ var conf_local = {
 
 angular.module('contractualClienteApp')
   .constant('CONF', {
-    GENERAL: conf_local
+    THEMES: {
+        gaia: {
+            color : "rgb(142, 40, 37)"
+        },
+        urano: {
+            color: "rgb(21, 72, 94)"
+        },
+        nix: {
+            color: "rgb(222, 158, 15)"
+        },
+        athenea: {
+            color: "rgb(57, 122, 24)"
+        }
+    },
+    CATEGORIA: "gaia", //  GAIA - Gestión Administrativa, URANO - Gestión Académica, NIX - Gestión Financiera, ATHENEA - Analíticos
+    APP: "cumplidos",
+    GENERAL: conf_local,
   });

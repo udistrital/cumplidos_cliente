@@ -8,34 +8,14 @@
  */
 angular.module('core')
     .controller('headerCtrl', 
-    function (token_service, configuracionRequest, notificacion, $translate, $route, $mdSidenav, $scope) {
-
-        var valorTema = 0
-
-        var paletaColores =[
-            {   
-                nombre: "administrativa",
-                color : "rgb(142, 40, 37)"
-            },
-            {
-                nombre: "academica",
-                color: "rgb(21, 72, 94)"
-            },
-            {
-                nombre: "financiera",
-                color: "rgb(222, 158, 15)"
-            },
-            {
-                nombre: "analiticos",
-                color: "rgb(57, 122, 24)"
-            }
-            ]
+    function (token_service, CONF, configuracionRequest, notificacion, $translate, $route, $mdSidenav, $scope) {
 
         $scope.token_service=token_service;
+        $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim() ;
+        $scope.paleta = CONF.THEMES;
 
-        $scope.tema = valorTema;
-
-        $scope.paleta = paletaColores
+        $scope.app = (CONF.APP.toLowerCase()).trim() ;
+        $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-info";
 
         if(token_service.live_token()){
             $scope.isLogin=true
@@ -71,8 +51,8 @@ angular.module('core')
             var sidebarContainer = document.getElementById('menu-sidebar-container');
             var containerDiv= document.getElementById('container-div');   
             var containerBody= document.getElementById('container-body-id');   
-            var containerLogoCollapsed= document.getElementById('argo'); 
-            var containerLogo= document.getElementById('argo-info'); 
+            var containerLogoCollapsed= document.getElementById($scope.app); 
+            var containerLogo= document.getElementById($scope.app_large); 
             console.log("container logo :"+containerLogo)
             if (sidebarDiv.className.includes("sidebar_off")){
                 sidebarContainer.classList.add('main-container-sidebar')
