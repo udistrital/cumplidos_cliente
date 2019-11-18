@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Sistema de Gestión Administrativa</title>
@@ -39,8 +40,9 @@
     <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/notificaciones.css">
     <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-stylus.css">
     <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-info.css">
-    <link rel="stylesheet" href="./core/header/header.css">
-    <link rel="stylesheet" href="./core/menu-aplicaciones/menu-aplicaciones.css">
+    <link rel="stylesheet" href="core/header/header.css">
+    <link rel="stylesheet" href="core/menu-aplicaciones/menu-aplicaciones.css">
+    <link rel="stylesheet" href="core/notificaciones/notificaciones.css">
 </head>
 
 <body ng-app="contractualClienteApp">
@@ -52,27 +54,34 @@
     <!-- <div class="container-fluid">
         <div ng-view=""></div>
     </div> -->
-    <div class= "body-container-menuaplicaciones" ng-include="'core/menu-aplicaciones/menu-aplicaciones.html'" ng-controller="menuaplicacionesCtrl"></div>
+    <div class="body-container-menuaplicaciones" ng-include="'core/menu-aplicaciones/menu-aplicaciones.html'"
+        ng-controller="menuaplicacionesCtrl"></div>
+
+    <div class="body-container-notificaciones" ng-include="'core/notificaciones/notificaciones.html'"
+        ng-controller="notificacionesCtrl"></div>
+
     <div class="container-app">
-        <div id="menu-sidebar-container" class="main-container-sidebar-off" ng-controller="headerCtrl" ng-style="{'background-color': paleta[tema].color}">
-            <div id="menu-sidebar" ng-include="'core/menu-lateral/menu-lateral.html'" ng-controller="menuLateralCtrl" class="sidebar_off"></div>
+        <div id="menu-sidebar-container" class="main-container-sidebar-off" ng-controller="headerCtrl"
+            ng-style="{'background-color': paleta[tema].color}">
+            <div id="menu-sidebar" ng-include="'core/menu-lateral/menu-lateral.html'" ng-controller="menuLateralCtrl"
+                class="sidebar_off"></div>
         </div>
         <div id="container-body-id" class="container-body">
             <div ng-view="" id="container-div" class="container-view">
-    
+
             </div>
         </div>
     </div>
-    <div class= "container-footer" ng-include="'core/footer/footer.html'" ng-controller="footerCtrl"></div>
+    <div class="container-footer" ng-include="'core/footer/footer.html'" ng-controller="footerCtrl"></div>
 
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>
-        ! function(A, n, g, u, l, a, r) {
-            A.GoogleAnalyticsObject = l, A[l] = A[l] || function() {
-                    (A[l].q = A[l].q || []).push(arguments)
-                }, A[l].l = +new Date, a = n.createElement(g),
+        ! function (A, n, g, u, l, a, r) {
+            A.GoogleAnalyticsObject = l, A[l] = A[l] || function () {
+                (A[l].q = A[l].q || []).push(arguments)
+            }, A[l].l = +new Date, a = n.createElement(g),
                 r = n.getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a, r)
         }(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
@@ -134,9 +143,10 @@
     <script src="core/header/header.js"></script>
     <script src="core/footer/footer.js"></script>
     <script src="core/menu-lateral/menu-lateral.js"></script>
-    <script src="core/services/notificacion.js"></script>
     <script src="core/menu-lateral/opciones-component/opciones-directive.js"></script>
     <script src="core/menu-aplicaciones/menu-aplicaciones.js"></script>
+    <script src="core/notificaciones/notificaciones.js"></script>
+    <script src="core/services/notificacion.js"></script>
     <!-- endbuild -->
 </body>
 <!-- build:js({.tmp,app}) scripts/extras.js -->
@@ -198,7 +208,6 @@
 <script src="scripts/services/necesidad/necesidad_service.js"></script>
 <script src="scripts/services/roles_service.js"></script>
 <script src="scripts/services/argo_nosql_service.js"></script>
-<script src="scripts/directives/notificacion_list/notificacion_list.js"></script>
 
 <!-- endbuild -->
 <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>

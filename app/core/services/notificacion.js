@@ -1,15 +1,30 @@
 'use strict';
 
+
 /**
- * @ngdoc service
- * @name core.notificacion
+ * @ngdoc overview
+ * @name notificacionService
  * @description
- * # notificacion
- * Factory in the core.
+ * # notificacionService
+ * Service in the core.
  */
 
-angular.module('core')
-    .factory('notificacion', function ( CONF, configuracionRequest, token_service, $websocket, $interval) {
+angular.module('notificacionService', [])
+
+/**
+ * @ngdoc service
+ * @name notificacionService.service:notificacionRequest
+ * @requires $http
+ * @param {injector} $http componente http de angular
+ * @requires $websocket
+ * @param {injector} $websocket componente websocket de angular-websocket
+ * @param {injector} $websocket componente websocket de angular-websocket
+ * @description
+ * # notificacion
+ * Permite gestionar workflow de notificaciones
+ */
+
+.factory('notificacion', function( CONF, configuracionRequest, token_service, $websocket, $interval) {
         var TIME_PING = 50000;
 
         var log = [];

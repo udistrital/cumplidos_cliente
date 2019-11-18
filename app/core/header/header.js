@@ -45,6 +45,18 @@ angular.module('core')
                 menuAplicaciones.classList.add("menu_is_active")
             }
         }
+
+        $scope.togglenotify = function() {
+            console.log("toogleNotifications");
+            var notificaciones = document.getElementById('notificaciones');
+            console.info(notificaciones);
+            if(notificaciones.className.includes("menu_is_active")){
+                notificaciones.classList.remove("menu_is_active")
+            }else{
+                notificaciones.classList.add("menu_is_active")
+            }
+        }
+
         $scope.sidebarEvent= function(){
             console.log("data");
             var sidebarDiv = document.getElementById('menu-sidebar');

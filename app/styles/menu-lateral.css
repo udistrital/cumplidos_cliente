@@ -51,9 +51,6 @@
   display: flex;
   flex-direction: column;
 }
-.opcion-down {
-  padding: 0.675rem 0.75rem;
-}
 
 .opcion-down::before {
   position: relative;
@@ -72,6 +69,8 @@
 .content-menu > div {
   border-color: "#fff";
   padding: 0.675rem 0.75rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .content-menu > div:focus {

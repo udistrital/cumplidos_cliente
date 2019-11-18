@@ -21,10 +21,10 @@ angular.module('core')
             controller: function ($scope) {
                 var self = this;
                 self.open = false;
+                $scope.nivel = null;
                 $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim() ;
                 $scope.paleta = CONF.THEMES;
-                $scope.opciones = [];
-                console.log($scope.data);
+                $scope.opciones = null;
                 $scope.redirect_url = function (path) {                    
                     var path_sub = path.substring(0, 4);
                     switch (path_sub.toUpperCase()) {
@@ -37,14 +37,16 @@ angular.module('core')
                     }
                 };
                 $scope.toogle = function(nivel) {
-                    $scope.opciones = nivel;
                     self.open = !self.open;
+                    $scope.nivel = nivel
+                    $scope.opciones = nivel.Opciones;
                     if(self.open){
-                        nivel.style_icon  = 'opcion-left';
-                        nivel.clase =  'content-menu-off';
+                        $scope.nivel.clase =  'content-menu-off';
+                        $scope.nivel.style_icon  = 'opcion-left';
+                        console.log($scope.opciones);
                     }else {
-                        nivel.clase =  'content-menu';
-                        nivel.style_icon  = 'opcion-down';
+                        $scope.nivel.clase =  'content-menu';
+                        $scope.nivel.style_icon  = 'opcion-down';
                     }
                 };
 

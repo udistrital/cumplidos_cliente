@@ -1,119 +1,120 @@
-.header-logo{
-    display: none;
-    border: none;
-    box-shadow: none;    
-    background: url(https://pruebasassets.portaloas.udistrital.edu.co/isotipos-75x75.png);
-    height: 75px;
-    width: 75px;
-    margin-top: 3px;
-    background-repeat: no-repeat;
-    cursor: pointer;
+.header-logo {
+  display: none;
+  border: none;
+  box-shadow: none;
+  background: url(https://pruebasassets.portaloas.udistrital.edu.co/isotipos-75x75.png);
+  height: 75px;
+  width: 75px;
+  margin-top: 3px;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 
-.menu-app-info{
-    border: none;
+.menu-app-info {
+  border: none;
 }
 
-div{ 
-outline: none; 
+div {
+  outline: none;
 }
 
-.header-container{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    z-index: 2;
-    background-color: white;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 0px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    box-shadow: 0 .5rem 1rem 0 rgba(44,51,73,.1);
+.header-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  z-index: 2;
+  background-color: white;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1);
 }
 
 .header-logo-container {
-    display: flex;
-    width: 554px;
-    align-items: center;
+  display: flex;
+  width: 554px;
+  align-items: center;
 }
 
 .header-buttons-container {
-    width: 30%;
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    align-items: center;
+  width: 30%;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .header-button-notification {
-    font-size: 25px;
-    font-family: 'Lucida Sans';
-    padding: 8px 15px;
-    width: 70px;
-    height: 50px;
+  font-size: 25px;
+  font-family: "Lucida Sans";
+  padding: 8px 15px;
+  width: 70px;
+  height: 50px;
+  cursor: pointer;
 }
 
 .header-button-user-container {
-    display: flex;
-    width: 200px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  width: 200px;
+  justify-content: center;
+  align-items: center;
 }
 
-#header-button-cerrarsesion-container{
+#header-button-cerrarsesion-container {
     position: absolute;
-    top: 66px;
+    top: 51px;
     z-index: 10;
     display: none;
-    border: 1px solid black;
-    border-radius: 4px;
-    background-color: lightgrey;
+    border-radius: 15px;
+    background-color: #fff;
+    box-shadow: 0px 0px 9px -2px rgba(0,0,0,0.84);
     width: 118px;
     height: 23px;
 }
 
-#header-user-icon{
-    font-size: 25px;
-    width: 36px;
+#header-user-icon {
+  font-size: 25px;
+  width: 36px;
 }
 
-.header-badge{
-    position: relative;
-    top: -45px;
-    right: -22px;
-    font-size: 1em;
-    background: #8E2825;
-    color: white;
-    width: 25px;
-    height: 25px;
-    text-align: center;
-    line-height: 25px;
-    border-radius: 50%;
-  }
+.header-badge {
+  position: relative;
+  top: -45px;
+  right: -22px;
+  font-size: 1em;
+  background: #8e2825;
+  color: white;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 50%;
+}
 
 @media screen and (max-width: 855px) {
-    .button-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 8px;
-    }
-    .button-header {
-        font-size: 20px;
-    }
-    .header-logo-container {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        justify-content: center;
-    }
+  .button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .button-header {
+    font-size: 20px;
+  }
+  .header-logo-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 @media screen and (max-width: 425px) {
-    .button-header {
-        font-size: 16px;
-    }
+  .button-header {
+    font-size: 16px;
+  }
 }

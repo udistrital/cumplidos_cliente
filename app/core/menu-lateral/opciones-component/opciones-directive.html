@@ -2,8 +2,22 @@
     <div ng-repeat="nivel in data" ng-if="nivel.Opciones === null && nivel.TipoOpcion === 'Menú'"
         ng-click="redirect_url(nivel.Url)">{{nivel.Nombre}}
     </div>
+    <div>
+        <div ng-repeat="nivel in data" ng-if="nivel.Opciones !== null && nivel.TipoOpcion === 'Menú'"
+            ng-click="toogle(nivel)" ng-class="nivel.style_icon?nivel.style_icon:'opcion-left'">{{nivel.Nombre}}
+        </div>
+        <opciones ng-if="opciones !== null" data="opciones" father="nivel.clase?nivel.clase:'content-menu-off'">
+        </opciones>
+    </div>
+</div>
+
+
+<!-- <div ng-class="father" ng-style="{'background-color': paleta[tema].color}">
+    <div ng-repeat="nivel in data" ng-if="nivel.Opciones === null && nivel.TipoOpcion === 'Menú'"
+        ng-click="redirect_url(nivel.Url)">{{nivel.Nombre}}
+    </div>
     <div ng-repeat="nivel in data" ng-if="nivel.Opciones !== null && nivel.TipoOpcion === 'Menú'" ng-click="toogle(nivel)" 
     ng-class="nivel.style_icon?nivel.style_icon:'opcion-left'">{{nivel.Nombre}}
         <opciones data="nivel.Opciones" father="nivel.clase?nivel.clase:'content-menu-off'" ng-click="toogle(nivel)"></opciones>
     </div>
-</div>
+</div> -->

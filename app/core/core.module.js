@@ -6,4 +6,5 @@ angular.module('core', [
   'requestService',
   'implicitToken',
   'ngWebSocket',
+  'notificacionService'
 ])
