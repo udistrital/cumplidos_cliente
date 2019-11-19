@@ -5,7 +5,7 @@
 }
 .container-body {
   display: flex;
-  width: 100%;
+  width: 94%;
   z-index: 2;
   flex-wrap: wrap;
 }
@@ -32,22 +32,44 @@
 .main-container-sidebar{
   width: 16.8%;
 	z-index: 3;
-	margin-bottom: 140px;
+  margin-bottom: 140px;
 }
 
 .main-container-sidebar-off {
-  width: 0%;
+  width: 44px;
 }
 
 .sidebar_off {
+  display: block;
+}
+
+.menulateral-icon-container{
+  width: 25px;
+}
+
+.menulateral-text{
+  width: 221px;
+  font-size: 16px;
+  text-align: left;
+}
+
+.menulateral-text.oculto{
   display: none;
+}
+
+.menulateral-icon {
+  font-size: 25px;
+  width: 24px;
+  color: white;
 }
 
 .content-menu {
   height: 100%;
   color: #fff;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
   padding: 10px 15px 10px 10px;
   border-top: 1px solid #fff;
 }
@@ -56,28 +78,36 @@
   position: absolute;
   left: 15.7vw;
   font-family: "FontAwesome";
-  content: "\f107";
+  content: "\f104";
 }
 
 .opcion-left::before {
   position: absolute;
   left: 15.7vw;
   font-family: "FontAwesome";
-  content: "\f104";
+  content: "\f107";
 }
 
+.opcion-up::before {
+  position: absolute;
+  left: 15.7vw;
+  font-family: "FontAwesome";
+  content: "\f106";
+}
 
 .content-menu > div {
   border-color: "#fff";
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .content-options > div {
   font-size: 1.7rem;
   border-color: "#fff";
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 
