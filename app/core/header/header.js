@@ -14,8 +14,8 @@ angular.module('core')
         $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim() ;
         $scope.paleta = CONF.THEMES;
 
-        $scope.app = (CONF.APP.toLowerCase()).trim() ;
-        $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-info";
+        $scope.app = (CONF.APP.toLowerCase()).trim()+ "-isotipo";
+        $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
 
         if(token_service.live_token()){
             $scope.isLogin=true
@@ -37,7 +37,6 @@ angular.module('core')
         }
         $scope.toogleAplicaciones = function() {
             var menuAplicaciones = document.getElementById('menu-aplicaciones');
-
             console.info(menuAplicaciones)
             if(menuAplicaciones.className.includes("menu_is_active")){
                 menuAplicaciones.classList.remove("menu_is_active")
@@ -86,7 +85,7 @@ angular.module('core')
                 sidebarDiv.classList.add('sidebar_off')
                 sidebarDiv.classList.remove('sidebar_is_active')
                 //*****************/
-                containerLogo.classList.remove('header-logo')
+                containerLogo.classList.remove('isotipo')
                 containerLogo.classList.add('header-logo-collapsed')
                 containerLogo.style.display = "none";
                 containerLogoCollapsed.style.display = "inline-block";

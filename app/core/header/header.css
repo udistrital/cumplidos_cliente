@@ -3,9 +3,7 @@
   border: none;
   box-shadow: none;
   background: url(https://pruebasassets.portaloas.udistrital.edu.co/isotipos-75x75.png);
-  height: 75px;
-  width: 75px;
-  margin-top: 3px;
+  margin: 10px;
   background-repeat: no-repeat;
   cursor: pointer;
 }
@@ -29,12 +27,12 @@ div {
   align-items: center;
   justify-content: space-between;
   margin-top: 0px;
-  padding-bottom: 10px;
   padding-left: 10px;
   box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1);
 }
 
 .header-logo-container {
+  padding: 5px 0 5px 0;
   display: flex;
   width: 554px;
   align-items: center;

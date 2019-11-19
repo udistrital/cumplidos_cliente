@@ -20,12 +20,12 @@ angular.module('core')
 
             controller: function ($scope) {
                 var self = this;
-                self.open = false;
+                self.open = true;
                 $scope.nivel = null;
-                $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim() ;
+                $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim();
                 $scope.paleta = CONF.THEMES;
                 $scope.opciones = null;
-                $scope.redirect_url = function (path) {                    
+                $scope.redirect_url = function (path) {
                     var path_sub = path.substring(0, 4);
                     switch (path_sub.toUpperCase()) {
                         case "HTTP":
@@ -36,17 +36,19 @@ angular.module('core')
                             break;
                     }
                 };
-                $scope.toogle = function(nivel) {
+                $scope.toogle = function (nivel, $event) {
+                    console.info($event)
                     self.open = !self.open;
                     $scope.nivel = nivel
                     $scope.opciones = nivel.Opciones;
-                    if(self.open){
-                        $scope.nivel.clase =  'content-menu-off';
-                        $scope.nivel.style_icon  = 'opcion-left';
+                    console.info($scope.opciones);
+                    if (self.open) {
+                        $scope.nivel.clase = 'content-menu-off';
+                        $scope.nivel.style_icon = 'opcion-left';
                         console.log($scope.opciones);
-                    }else {
-                        $scope.nivel.clase =  'content-menu';
-                        $scope.nivel.style_icon  = 'opcion-down';
+                    } else {
+                        $scope.nivel.clase = 'content-menu';
+                        $scope.nivel.style_icon = 'opcion-down';
                     }
                 };
 
