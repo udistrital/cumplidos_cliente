@@ -14,12 +14,8 @@ angular.module('core')
         function (token_service, CONF, configuracionRequest, notificacion, $translate, $route, $mdSidenav, $scope) {
 
             $scope.token_service = token_service;
-            $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim();
-            $scope.paleta = CONF.THEMES;
-
+            
             $scope.app = (CONF.APP.toLowerCase()).trim() + "-isotipo";
-            
-            
             $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
 
             if (token_service.live_token()) {

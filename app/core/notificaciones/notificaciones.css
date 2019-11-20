@@ -10,7 +10,7 @@
 }
 
 .menu-app {
-  border-color: #34495e;
+  border-color: var(--primary);
   border-radius: 7px;
   border: solid 1px;
   box-shadow: 0px 0px 8px #888888;

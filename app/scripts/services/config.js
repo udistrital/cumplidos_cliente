@@ -102,21 +102,7 @@ var conf_local = {
 
 angular.module('contractualClienteApp')
   .constant('CONF', {
-    THEMES: {
-        gaia: {
-            color : "rgb(142, 40, 37)"
-        },
-        urano: {
-            color: "rgb(21, 72, 94)"
-        },
-        nix: {
-            color: "rgb(222, 158, 15)"
-        },
-        athenea: {
-            color: "rgb(57, 122, 24)"
-        }
-    },
-    CATEGORIA: "gaia", //  GAIA - Gestión Administrativa, URANO - Gestión Académica, NIX - Gestión Financiera, ATHENEA - Analíticos
     APP: "cumplidos",
+    APP_MENU: "contratistas",
     GENERAL: conf_local,
   });

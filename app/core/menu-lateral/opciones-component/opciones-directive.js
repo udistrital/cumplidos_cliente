@@ -21,8 +21,6 @@ angular.module('core')
             controller: function ($scope) {
                 var self = this;
                 self.open = false;
-                $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim();
-                $scope.paleta = CONF.THEMES;
                 $scope.app = (CONF.APP.toLowerCase()).trim() + "-isotipo";
                 $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
                 $scope.redirect_url = function (path) {
@@ -37,7 +35,6 @@ angular.module('core')
                     }
                 };
                 $scope.toogle = function (nivel) {
-
                     var sidebarDiv = document.getElementById('menu-sidebar');
                     var sidebarContainer = document.getElementById('menu-sidebar-container');
                     var containerDiv = document.getElementById('container-div');
