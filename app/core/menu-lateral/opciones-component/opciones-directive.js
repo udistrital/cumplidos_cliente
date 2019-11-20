@@ -20,13 +20,11 @@ angular.module('core')
 
             controller: function ($scope) {
                 var self = this;
-                self.open = true;
-                $scope.nivel = null;
+                self.open = false;
                 $scope.tema = (CONF.CATEGORIA.toLowerCase()).trim();
                 $scope.paleta = CONF.THEMES;
                 $scope.app = (CONF.APP.toLowerCase()).trim() + "-isotipo";
                 $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
-                $scope.opciones = null;
                 $scope.redirect_url = function (path) {
                     var path_sub = path.substring(0, 4);
                     switch (path_sub.toUpperCase()) {
@@ -38,7 +36,7 @@ angular.module('core')
                             break;
                     }
                 };
-                $scope.toogle = function (nivel, $event) {
+                $scope.toogle = function (nivel) {
 
                     var sidebarDiv = document.getElementById('menu-sidebar');
                     var sidebarContainer = document.getElementById('menu-sidebar-container');
@@ -48,7 +46,7 @@ angular.module('core')
                     var containerLogo = document.getElementById($scope.app_large);
                     var textoMenuLateral = document.getElementsByClassName("menulateral-text");
                     if (sidebarDiv.className.includes("sidebar_off")) {
-                        for(var i =0, il = textoMenuLateral.length;i<il;i++){
+                        for (var i = 0, il = textoMenuLateral.length; i < il; i++) {
                             textoMenuLateral[i].classList.remove("oculto");
                         }
                         sidebarContainer.classList.add('main-container-sidebar')
@@ -58,24 +56,30 @@ angular.module('core')
                         containerBody.classList.add('container-body-off')
                         containerBody.classList.remove('container-body')
                         containerLogo.style.display = "inline-block";
-                        
+
                         containerLogoCollapsed.style.display = "none";
                         //*********************/
                         containerDiv.classList.add('container-view')
                         containerDiv.classList.remove('container-view-sidebar-off')
                     }
-                    console.info($event)
-                    self.open = !self.open;
-                    $scope.nivel = nivel
-                    $scope.opciones = nivel.Opciones;
-                    console.info($scope.opciones);
-                    if (self.open) {
-                        $scope.nivel.clase = 'content-menu-off';
-                        $scope.nivel.style_icon = 'opcion-up';
-                        console.log($scope.opciones);
+                    if (nivel.Opciones !== null) {
+                        var opcionAbierta = nivel.Opciones.filter(function (data) {
+                            return data.open
+                        });
+                        if (opcionAbierta.length > 0 && self.open) {
+                            nivel.open = self.open;
+                        }else {
+                            self.open = !self.open;
+                            nivel.open = self.open;
+                        }
+                    }
+
+                    if (!self.open) {
+                        nivel.clase = 'content-menu-off';
+                        nivel.style_icon = 'opcion-down';
                     } else {
-                        $scope.nivel.clase = 'content-menu';
-                        $scope.nivel.style_icon = 'opcion-down';
+                        nivel.clase = 'content-menu';
+                        nivel.style_icon = 'opcion-up';
                     }
                 };
 

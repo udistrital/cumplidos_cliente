@@ -31,10 +31,10 @@ angular.module('core')
                 token_service.logout();
             }
 
-            $("body")
-                .mouseup(function (event) {
-                    console.log(event);
-                })
+            // $("body")
+            //     .mouseup(function (event) {
+            //         console.log(event);
+            //     })
 
 
             $scope.toogleCerrarSesion = function () {
