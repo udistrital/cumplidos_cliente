@@ -1,6 +1,6 @@
 
 <div id="menu-aplicaciones" ng-class="claseAppContainer.clase">
-        <div class="container-aplicativos">
+        <div ng-class="claseAppContainer.scrollClase">
           <article ng-repeat="categoria in categorias" class="card">
             <div class="title-app-menu-div" ng-style="{'background-color': categoria.color}">
               <h5 class="categoria-title" >{{categoria.nombre}}</h5>

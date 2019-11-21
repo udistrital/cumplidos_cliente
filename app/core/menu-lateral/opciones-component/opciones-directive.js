@@ -7,7 +7,7 @@
  * # listaAvances
  */
 angular.module('core')
-    .directive('opciones', function (CONF, $window, $location) {
+    .directive('opciones', function (CONF, $window, $location,behaviorTheme) {
         return {
             restrict: 'E',
             scope: {
@@ -30,35 +30,13 @@ angular.module('core')
                             $window.open(path, "_blank");
                             break;
                         default:
+                            behaviorTheme.toogleCloseSideBar();
                             $location.path(path);
                             break;
                     }
                 };
                 $scope.toogle = function (nivel) {
-                    var sidebarDiv = document.getElementById('menu-sidebar');
-                    var sidebarContainer = document.getElementById('menu-sidebar-container');
-                    var containerDiv = document.getElementById('container-div');
-                    var containerBody = document.getElementById('container-body-id');
-                    var containerLogoCollapsed = document.getElementById($scope.app);
-                    var containerLogo = document.getElementById($scope.app_large);
-                    var textoMenuLateral = document.getElementsByClassName("menulateral-text");
-                    if (sidebarDiv.className.includes("sidebar_off")) {
-                        for (var i = 0, il = textoMenuLateral.length; i < il; i++) {
-                            textoMenuLateral[i].classList.remove("oculto");
-                        }
-                        sidebarContainer.classList.add('main-container-sidebar')
-                        sidebarContainer.classList.remove('main-container-sidebar-off')
-                        sidebarDiv.classList.add('sidebar_is_active')
-                        sidebarDiv.classList.remove('sidebar_off')
-                        containerBody.classList.add('container-body-off')
-                        containerBody.classList.remove('container-body')
-                        containerLogo.style.display = "inline-block";
-
-                        containerLogoCollapsed.style.display = "none";
-                        //*********************/
-                        containerDiv.classList.add('container-view')
-                        containerDiv.classList.remove('container-view-sidebar-off')
-                    }
+                    behaviorTheme.toogleOpenSideBar();
                     if (nivel.Opciones !== null) {
                         var opcionAbierta = nivel.Opciones.filter(function (data) {
                             return data.open

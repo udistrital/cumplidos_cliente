@@ -26,12 +26,7 @@ angular.module('core')
             $scope.logout = function () {
                 token_service.logout();
             }
-
-            // $("body")
-            //     .mouseup(function (event) {
-            //         console.log(event);
-            //     })
-
+            $scope.sidebarClases = behaviorTheme.sidebar;
 
             $scope.toogleCerrarSesion = function () {
                 var buttonCerrarSesion = document.getElementById('header-button-cerrarsesion-container');
@@ -50,48 +45,7 @@ angular.module('core')
             }
 
             $scope.sidebarEvent = function () {
-                console.log("data");
-                var sidebarDiv = document.getElementById('menu-sidebar');
-                var sidebarContainer = document.getElementById('menu-sidebar-container');
-                var containerDiv = document.getElementById('container-div');
-                var containerBody = document.getElementById('container-body-id');
-                var containerLogoCollapsed = document.getElementById($scope.app);
-                var containerLogo = document.getElementById($scope.app_large);
-                var textoMenuLateral = document.getElementsByClassName("menulateral-text");
-                if (sidebarDiv.className.includes("sidebar_off")) {
-                    for(var i =0, il = textoMenuLateral.length;i<il;i++){
-                        textoMenuLateral[i].classList.remove("oculto");
-                    }
-                    sidebarContainer.classList.add('main-container-sidebar')
-                    sidebarContainer.classList.remove('main-container-sidebar-off')
-                    sidebarDiv.classList.add('sidebar_is_active')
-                    sidebarDiv.classList.remove('sidebar_off')
-                    containerBody.classList.add('container-body-off')
-                    containerBody.classList.remove('container-body')
-                    containerLogo.style.display = "inline-block";
-                    
-                    containerLogoCollapsed.style.display = "none";
-                    //*********************/
-                    containerDiv.classList.add('container-view')
-                    containerDiv.classList.remove('container-view-sidebar-off')
-                } else {
-                    for(var i =0, il = textoMenuLateral.length;i<il;i++){
-                        textoMenuLateral[i].classList.add("oculto");
-                    }
-                    containerBody.classList.add('container-body')
-                    containerBody.classList.remove('container-body-off')
-                    sidebarContainer.classList.add('main-container-sidebar-off')
-                    sidebarContainer.classList.remove('main-container-sidebar')
-                    sidebarDiv.classList.add('sidebar_off')
-                    sidebarDiv.classList.remove('sidebar_is_active')
-                    //*****************/
-                    containerLogo.classList.remove('isotipo')
-                    containerLogo.classList.add('header-logo-collapsed')
-                    containerLogo.style.display = "none";
-                    containerLogoCollapsed.style.display = "inline-block";
-
-                }
-
+                behaviorTheme.toogleSidebar();
             }
         });
 

@@ -8,7 +8,7 @@
  */
 angular.module('core')
     .controller('menuLateralCtrl',
-        function ($location, CONF, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route) {
+        function ($location, CONF, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, behaviorTheme) {
 
             $scope.language = {
                 es: "btn btn-primary btn-circle btn-outline active",
@@ -19,15 +19,14 @@ angular.module('core')
             $scope.actual = "";
             $scope.token_service = token_service;
             $scope.breadcrumb = [];
-
+            $scope.sidebarClases = behaviorTheme.sidebar;
 
             // optiene los menus segun el rol
             var roles = "CONTRATISTA"
             configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' + CONF.APP_MENU)
                 .then(function (response) {
-                    $rootScope.my_menu = response.data;
-                    console.log($rootScope.my_menu);
-
+                    behaviorTheme.initMenu(response.data);
+                    $scope.menu = behaviorTheme.menu;
                 }).catch(function (error) {
                 });
 

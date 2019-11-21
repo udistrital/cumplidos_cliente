@@ -10,12 +10,19 @@
   box-shadow: 0px 0px 8px #888888;
 }
 
+.container-aplicativos{
+  height: 88%;
+}
+
+.container-aplicativos-scroll{
+  height: none;
+}
+
 .catalogo-button-container{
   justify-content: center;
   display: flex;
-  bottom: 10px;
-  position: absolute;
   width: 100%;
+  align-items: flex-end;
 }
 
 #catalogo-button-icon{
@@ -35,13 +42,13 @@
   color: #000;
   position: fixed;
   right: 80px;
-  top: 77px;
+  top: 69px;
   -webkit-border-radius: 2px;
   right: -100vw;
   border-radius: 2px;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 480px;
+  height: calc(-139px + 100vh);
   width: 320px;
   transition: 0.3s;
   z-index: 3;

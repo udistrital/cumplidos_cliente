@@ -172,32 +172,29 @@ angular.module('core')
                     //this.dataFilterSubject.next(this.categorias);
                 }
             }
+
+            var container_aplicativos = document.getElementById("menu-aplicaciones");
+            
             var existe = function (nombre, array) {
 
                 var filtro = array.filter(function (data) {
                     return (nombre.toLowerCase() === data.Nombre.toLowerCase())
                 });
-
-                console.log(filtro.length > 0)
                 return filtro.length > 0;
             }
 
             configuracionRequest.post('aplicacion_rol/aplicacion_rol', getRoles())
                 .then(function (response) {
 
-                    var nuevasAplicaciones = categorias.map(function (categoria) {
+                     var nuevasAplicaciones = categorias.map(function (categoria) {
 
                         categoria.aplicaciones = categoria.aplicaciones.filter(function (aplicacion) {
                             return existe(aplicacion.nombre, response.data)
                         })
                         return categoria
                     })
-                    nuevasAplicaciones = nuevasAplicaciones.filter(function (categoria) { return (categoria.aplicaciones.length > 0) });
-                    $scope.categorias = categorias;
-                }).catch(function (error) {
-                });
-
-
-
-
+                    nuevasAplicaciones = nuevasAplicaciones.filter(function (categoria) { return (categoria.aplicaciones.length > 0) });  
+                        $scope.categorias = nuevasAplicaciones;
+                    
+                }).catch(function (error) {console.log(error)});
         });

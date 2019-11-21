@@ -1,7 +1,7 @@
 <div class="header-container">
     <div class="header-logo-container" ng-click="sidebarEvent()">
-        <div id="{{app}}" class="isotipo"></div>
-        <div id="{{app_large}}" class="logo-header"> </div>
+        <div id="{{app}}" class="isotipo" ng-style="{'display': sidebarClases.containerLogoClase}"></div>
+        <div id="{{app_large}}" class="logo-header" ng-style="{'display': sidebarClases.containerLogoCollapsedClase}"> </div>
     </div>
     <div class="header-buttons-container">
         <div class="header-button-apps-container" ng-click="toogleAplicaciones()">
