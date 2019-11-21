@@ -42,13 +42,7 @@ angular.module('core')
                 }
             }
             $scope.toogleAplicaciones = function () {
-                var menuAplicaciones = document.getElementById('menu-aplicaciones');
-                console.info(menuAplicaciones)
-                if (menuAplicaciones.className.includes("menu_is_active")) {
-                    menuAplicaciones.classList.remove("menu_is_active")
-                } else {
-                    menuAplicaciones.classList.add("menu_is_active")
-                }
+                behaviorTheme.toogleAplicacion();
             }
 
             $scope.togglenotify = function () {

@@ -155,7 +155,7 @@ angular.module('core')
                     ],
                 },
             ];
-            $scope.clase_
+            $scope.claseAppContainer = behaviorTheme.aplicacion;
             var getRoles = function () {
 
                 var data = [];

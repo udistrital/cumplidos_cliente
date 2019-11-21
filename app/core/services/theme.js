@@ -32,8 +32,8 @@ angular.module('themeService', [])
                 class: ''
             },
             aplicacion: {
-                open:true,
-                class: ''
+                open:false,
+                clase: 'apps_menu_container'
             },
             notificacion: {
                 open:false,
@@ -45,11 +45,10 @@ angular.module('themeService', [])
             },
 
             toogleNotificacion: function () {
+                if (methods.aplicacion.open) {
+                    methods.toogleAplicacion();
+                }
                 methods.notificacion.open = !methods.notificacion.open;
-                console.log(methods.notificacion.open);
-                // if (methods.aplicacion.open) {
-                //     methods.toogleAplicacion();
-                // }
                 if (methods.notificacion.open) {
                     methods.notificacion.clase = 'notificacion_container menu_is_active';
                 }else {
@@ -59,7 +58,15 @@ angular.module('themeService', [])
 
 
             toogleAplicacion: function () {
+                if (methods.notificacion.open) {
+                    methods.toogleNotificacion();
+                }
                 methods.aplicacion.open = !methods.aplicacion.open;
+                if (methods.aplicacion.open) {
+                    methods.aplicacion.clase = 'apps_menu_container menu_is_active';
+                }else {
+                    methods.aplicacion.clase = 'apps_menu_container';
+                }
             },
         };
         return methods;
