@@ -11,10 +11,10 @@
 
 angular.module('core')
     .controller('headerCtrl',
-        function (token_service, CONF, configuracionRequest, notificacion, $translate, $route, $mdSidenav, $scope) {
+        function (token_service, CONF, behaviorTheme, $scope) {
 
             $scope.token_service = token_service;
-            
+
             $scope.app = (CONF.APP.toLowerCase()).trim() + "-isotipo";
             $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
 
@@ -40,7 +40,6 @@ angular.module('core')
                 } else {
                     buttonCerrarSesion.style.display = "none";
                 }
-
             }
             $scope.toogleAplicaciones = function () {
                 var menuAplicaciones = document.getElementById('menu-aplicaciones');
@@ -53,14 +52,7 @@ angular.module('core')
             }
 
             $scope.togglenotify = function () {
-                console.log("toogleNotifications");
-                var notificaciones = document.getElementById('notificaciones');
-                console.info(notificaciones);
-                if (notificaciones.className.includes("menu_is_active")) {
-                    notificaciones.classList.remove("menu_is_active")
-                } else {
-                    notificaciones.classList.add("menu_is_active")
-                }
+                behaviorTheme.toogleNotificacion();
             }
 
             $scope.sidebarEvent = function () {

@@ -8,10 +8,11 @@
  */
 angular.module('core')
     .controller('notificacionesCtrl',
-        function (notificacion, $scope) {
+        function (notificacion, $scope, behaviorTheme) {
             var self = this;
             $scope.notificacion = notificacion;
 
+            $scope.claseContainer = behaviorTheme.notificacion;
             $scope.redirect_url = function (notify) {
                 // console.log(notify);
                 var path_sub = window.location.origin;
