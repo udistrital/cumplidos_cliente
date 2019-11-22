@@ -19,9 +19,11 @@ angular.module('core')
             $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
 
             if (token_service.live_token()) {
-                $scope.isLogin = true
+                $scope.isLogin = true;
 
                 $scope.token = token_service.getPayload();
+            }else {
+                $scope.isLogin = false;
             }
             $scope.logout = function () {
                 token_service.logout();

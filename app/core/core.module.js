@@ -7,5 +7,5 @@ angular.module('core', [
   'implicitToken',
   'ngWebSocket',
   'notificacionService',
-  'themeService'
+  'themeService',
 ])
