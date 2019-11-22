@@ -8,6 +8,10 @@ body {
     box-shadow: 0 .5rem 1rem 0 rgba(44,51,73,.1);
 }
 
+.container-app{
+    height: 100vw;
+}
+
 @-webkit-keyframes spin {
     0% {
       transform: rotate(0)
