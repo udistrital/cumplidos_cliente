@@ -5,7 +5,7 @@
 }
 .container-body {
   display: flex;
-  width: 97%;
+  width: 96%;
   z-index: 2;
   flex-wrap: wrap;
 }

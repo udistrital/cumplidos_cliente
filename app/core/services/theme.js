@@ -53,6 +53,7 @@ angular.module('themeService', [])
             },
 
             toogleOpenSideBar: function (){
+                
                 var textoMenuLateral = document.getElementsByClassName("menulateral-text");
                 if (!methods.sidebar.open){
                     for(var i =0, il = textoMenuLateral.length;i<il;i++){
@@ -64,12 +65,13 @@ angular.module('themeService', [])
                     methods.sidebar.containerBodyClase = 'container-body-off';
                     methods.sidebar.containerLogoCollapsedClase = 'inline-block';
                     methods.sidebar.containerLogoClase = 'none';
+                    methods.sidebar.open=true;
+         
                 }
             },
             toogleCloseSideBar: function (){
                 var textoMenuLateral = document.getElementsByClassName("menulateral-text");
-                methods.sidebar.open = false;
-                    console.log("pillin");
+                if (methods.sidebar.open) {
                     methods.closeAllMenu(methods.menu);
                     for(var i =0, il = textoMenuLateral.length;i<il;i++){
                         textoMenuLateral[i].classList.add("oculto");
@@ -79,6 +81,9 @@ angular.module('themeService', [])
                     methods.sidebar.containerBodyClase = 'container-body';
                     methods.sidebar.containerLogoCollapsedClase = 'none';
                     methods.sidebar.containerLogoClase = 'inline-block';
+                    methods.sidebar.open=false;
+                }  
+                
             },
             toogleSidebar: function () {
                 var textoMenuLateral = document.getElementsByClassName("menulateral-text");
@@ -107,14 +112,18 @@ angular.module('themeService', [])
             },
 
             closeAllMenu(menu) {
+                
                 methods.menu = menu.map(function(n) {
                     var node = {};
                     node = {
                         open: false,
                         clase: "content-menu-off",
+                        style_icon : 'opcion-down'
                     }
+                    
                     if (n.hasOwnProperty('Opciones')) {
                         if (n.Opciones !== null) {
+
                             const children = methods.closeAllMenu(n.Opciones);
                             node = Object.assign(n, node, { Opciones: children });
                         }else {
@@ -122,6 +131,7 @@ angular.module('themeService', [])
                         }
                         return node;
                     } else {
+                        
                         return node;
                     }
                 });
