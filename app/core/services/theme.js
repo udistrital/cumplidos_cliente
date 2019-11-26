@@ -111,23 +111,22 @@ angular.module('themeService', [])
                 }
             },
 
-            closeAllMenu(menu) {
-                
+            closeAllMenu: function(menu) {           
                 methods.menu = menu.map(function(n) {
                     var node = {};
                     node = {
                         open: false,
                         clase: "content-menu-off",
                         style_icon : 'opcion-down'
-                    }
-                    
+                    };
                     if (n.hasOwnProperty('Opciones')) {
                         if (n.Opciones !== null) {
+                            var children = { Opciones: methods.closeAllMenu(n.Opciones)};
 
-                            const children = methods.closeAllMenu(n.Opciones);
-                            node = Object.assign(n, node, { Opciones: children });
+                            node = Object.assign(n, node, children);
                         }else {
-                            node = Object.assign(n, node, { Opciones: null });
+                            var children = { Opciones: null }
+                            node = Object.assign(n, node, children);
                         }
                         return node;
                     } else {
