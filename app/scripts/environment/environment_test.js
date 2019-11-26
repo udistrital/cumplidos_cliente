@@ -38,7 +38,7 @@ angular.module('contractualClienteApp')
         SCOPE: "openid email documento",
         BUTTON_CLASS: "btn btn-warning btn-sm",
         SIGN_OUT_URL: "https://autenticacion.portaloas.udistrital.edu.co/oidc/logout",
-        SIGN_OUT_REDIRECT_URL: "https://pruebascumplidos.portaloas.udistrital.edu.co",
+        SIGN_OUT_REDIRECT_URL: "https://pruebascatalogo.portaloas.udistrital.edu.co",
         SIGN_OUT_APPEND_TOKEN: "true",
       },
     },
