@@ -1,7 +1,10 @@
 # cumplidos-cliente
 
-..... ......
+El aplicativo tiene la funcionalidad de ser un gestor de los cumplidos de los diferentes contratistas, en dicho aplicativo los contratistas realizan el proceso de subir los documentos respectivos a sus tareas del mes o periodo designado. 
 
+El supervisor realizara una revisión detallada de los informes de cada contratista bajo su supervisión, el supervisor en el aplicativo podra devolver documentos para su corrección o aprobarlos.
+
+En seguida de la aprobación del supervisor, el ordenador podrá aprobar los documentos para el respectivo pago del contratista.
 ## Especificaciones Técnicas
 
 En este repositorio se encuentra el cliente del modulo de cumplidos.
