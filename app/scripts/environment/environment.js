@@ -1,16 +1,16 @@
 "use strict";
 
-// Reemplace MODULE_APP por el nombre del módulo de la aplicación principal
+// Reemplace contractualClienteApp por el nombre del módulo de la aplicación principal
 
 /**
  * @ngdoc service
- * @name MODULE_APP.config
+ * @name contractualClienteApp.config
  * @description
  * # config
- * Constant in the MODULE_APP.
+ * Constant in the contractualClienteApp.
  */
 
-angular.module("MODULE_APP").constant("CONF", {
+angular.module("contractualClienteApp").constant("CONF", {
   APP: "cumplidos", // Nombre de la app, esto cargará el logo.
   APP_MENU: "contratistas", // Ingrese valor de la aplicación asociado al menú registrado en wso2
   GENERAL: {
