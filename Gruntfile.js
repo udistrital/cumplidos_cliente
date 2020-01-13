@@ -396,9 +396,9 @@ module.exports = function(grunt) {
           dest: '<%= yeoman.dist %>/views'
         }, {
           expand: true,
-          cwd: '<%= yeoman.app %>/views',
-          src: '**/*.html',
-          dest: '<%= yeoman.dist %>/views'
+          cwd: '<%= yeoman.app %>/core',
+          src: '**/*.*',
+          dest: '<%= yeoman.dist %>/core'
         }, {
           expand: true,
           cwd: 'bower_components/angular-ui-grid/fonts',
