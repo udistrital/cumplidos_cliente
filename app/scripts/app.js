@@ -48,6 +48,8 @@ angular
         'financieraService',
         'coreService',
         'administrativaService',
+        'cumplidosCrudService',
+        'cumplidosMidService',
         'agoraService',
         'oikosService',
         'financieraMidService',

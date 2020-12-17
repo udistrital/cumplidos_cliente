@@ -19,6 +19,10 @@ angular.module("contractualClienteApp").constant("CONF", {
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
     ADMINISTRATIVA_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
+    CUMPLIDOS_CRUD_SERVICE:
+      "http://localhost:8080/v1/",
+    CUMPLIDOS_MID_SERVICE:
+      "http://localhost:8090/v1/",
     ADMINISTRATIVA_JBPM_V2:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/",
     ADMINISTRATIVA_PRUEBAS_SERVICE:

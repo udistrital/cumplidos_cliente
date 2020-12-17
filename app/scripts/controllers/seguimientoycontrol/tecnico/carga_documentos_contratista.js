@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, administrativaRequest, nuxeo, $q, coreRequest, $window,$sce, adminMidRequest,$routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, administrativaRequest, nuxeo, $q, coreRequest, $window,$sce, adminMidRequest,$routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
   var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -184,7 +184,7 @@ angular.module('contractualClienteApp')
        //Petición para obtener la información de los contratos del contratista
        self.gridOptions1.data = [];
       //Petición para obtener las contratos relacionados al contratista
-      adminMidRequest.get('aprobacion_pago/contratos_contratista/' + self.Documento)
+      cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
       .then(function(response) {
         if(response.data){
           //Contiene la respuesta de la petición
@@ -259,7 +259,7 @@ angular.module('contractualClienteApp')
         //width:'*',
       },
       {
-        field: 'EstadoPagoMensual.Nombre',
+        field: 'EstadoPagoMensualId.Nombre',
         cellTemplate: tmpl,
         displayName: $translate.instant('EST_SOL'),
         //width:'*',
@@ -282,35 +282,38 @@ angular.module('contractualClienteApp')
     if (self.mes !== undefined && self.anio !== undefined) {
       //Petición para obtener id de estado pago mensual
       self.mostrar_boton= false;
-      administrativaRequest.get('estado_pago_mensual', $.param({
+      cumplidosCrudRequest.get('estado_pago_mensual', $.param({
           query: "CodigoAbreviacion:CD",
           limit: 0
         })).then(function (response) {
         //Variable que contiene el Id del estado pago mensual
-        var id_estado = response.data[0].Id;
+        var id_estado = response.data.Data[0].Id;
       //Se arma elemento JSON para la solicitud
       var pago_mensual = {
         CargoResponsable: "CONTRATISTA",
-        EstadoPagoMensual: { Id: id_estado},
+        EstadoPagoMensualId: { Id: id_estado},
         FechaModificacion: new Date(),
         Mes: self.mes,
         Ano: self.anio,
         NumeroContrato: self.contrato.NumeroContratoSuscrito,
-        Persona: self.Documento,
-        Responsable: self.Documento,
+        DocumentoPersonaId: self.Documento,
+        DocumentoResponsableId: self.Documento,
         VigenciaContrato: parseInt(self.contrato.Vigencia)
       };
 
       ////console.log("Hizo el primero");
-
-      administrativaRequest.get('pago_mensual', $.param({
+      cumplidosCrudRequest.get('pago_mensual', $.param({
         query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito +
           ",VigenciaContrato:" + self.contrato.Vigencia +
           ",Mes:" + self.mes +
           ",Ano:" + self.anio +
-          ",Persona:" + self.Documento,
+          ",DocumentoPersonaId:" + self.Documento,
         limit: 0
       })).then(function(responsePago) {
+        console.log((responsePago.data.Data[0]))
+        if(responsePago.data.Data[0].id == null) {
+          console.log("ENTRO")
+        }
           //SweetAlert si la solicitud ya esta creada
           swal(
             'Error',
@@ -371,8 +374,8 @@ angular.module('contractualClienteApp')
       self.gridOptions2.data = [];
       self.contrato = contrato;
       //self.obtener_informacion_coordinador(self.contrato.IdDependencia);
-      administrativaRequest.get('pago_mensual', $.param({
-        query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito + ",VigenciaContrato:" + self.contrato.Vigencia + ",Persona:"+self.Documento,
+      cumplidosCrudRequest.get('pago_mensual', $.param({
+        query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito + ",VigenciaContrato:" + self.contrato.Vigencia + ",DocumentoPersonaId:"+self.Documento,
         limit: 0
       })).then(function(response) {
 
@@ -382,18 +385,18 @@ angular.module('contractualClienteApp')
           self.tipo_contrato = response_ce.data.contrato.tipo_contrato;
 
 
-          administrativaRequest.get("item_informe_tipo_contrato", $.param({
-            query: "TipoContrato:" + self.tipo_contrato,
+          cumplidosCrudRequest.get("item_informe_tipo_contrato", $.param({
+            query: "TipoContratoId:" + self.tipo_contrato,
             limit: 0
           })).then(function(response_iitc) {
 
-            self.items = response_iitc.data;
+            self.items = response_iitc.data.Data;
 
           });
 
         });
 
-        self.gridOptions2.data = response.data;
+        self.gridOptions2.data = response.data.Data;
 
       })
 
