@@ -267,7 +267,7 @@ angular.module('contractualClienteApp')
         field: 'Acciones',
         displayName: $translate.instant('ACC'),
         cellTemplate: '<a type="button" title="{{\'VER_SOP\'| translate }}" type="button" class="fa fa-folder-open-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.obtener_doc(row.entity)" data-toggle="modal" data-target="#modal_ver_soportes">' +
-          '</a>&nbsp;' + ' <a ng-if="row.entity.EstadoPagoMensual.CodigoAbreviacion === \'CD\' || row.entity.EstadoPagoMensual.CodigoAbreviacion === \'RS\' || row.entity.EstadoPagoMensual.CodigoAbreviacion === \'RP\'" type="button" title="ENVIAR A REVISION SUPERVISOR" type="button" class="fa fa-send-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.enviar_revision(row.entity)"  >',
+          '</a>&nbsp;' + '<a ng-if="row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'CD\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RS\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RP\'" type="button" title="ENVIAR A REVISION SUPERVISOR" type="button" class="fa fa-send-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.enviar_revision(row.entity)"  >',
         //width:'*'
       }
       ]
@@ -379,7 +379,7 @@ angular.module('contractualClienteApp')
         query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito + ",VigenciaContrato:" + self.contrato.Vigencia + ",DocumentoPersonaId:" + self.Documento,
         limit: 0
       })).then(function (response) {
-
+        console.log(response)
         contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia)
           .then(function (response_ce) {
 
@@ -392,7 +392,7 @@ angular.module('contractualClienteApp')
             })).then(function (response_iitc) {
 
               self.items = response_iitc.data.Data;
-
+              console.log(self.items)
             });
 
           });
@@ -409,18 +409,18 @@ angular.module('contractualClienteApp')
               self.tipo_contrato = response_ce.data.contrato.tipo_contrato;
 
 
-              administrativaRequest.get("item_informe_tipo_contrato", $.param({
-                query: "TipoContrato:" + self.tipo_contrato,
+              cumplidosCrudRequest.get("item_informe_tipo_contrato", $.param({
+                query: "TipoContratoId:" + self.tipo_contrato,
                 limit: 0
               })).then(function (response_iitc) {
 
-                self.items = response_iitc.data;
+                self.items = response_iitc.data.Data;
 
               });
 
             });
 
-          self.gridOptions2.data = response.data;
+          self.gridOptions2.data = response.data.Data;
         });
     };
 
@@ -438,7 +438,7 @@ angular.module('contractualClienteApp')
         confirmButtonText: 'Enviar'
       }).then(function () {
 
-        var nombre_docs = solicitud.VigenciaContrato + solicitud.NumeroContrato + solicitud.Persona + solicitud.Mes + solicitud.Ano;
+        var nombre_docs = solicitud.VigenciaContrato + solicitud.NumeroContrato + solicitud.DocumentoPersonaId + solicitud.Mes + solicitud.Ano;
         //console.log(nombre_docs);
         //  administrativaRequest.get('soporte_pago_mensual', $.param({
         //    query: "PagoMensual:" + solicitud.Id,
@@ -447,13 +447,14 @@ angular.module('contractualClienteApp')
 
         self.obtener_doc(solicitud);
         if (self.documentos) {
-          solicitud.EstadoPagoMensual = { "Id": 11 };
-          solicitud.Responsable = self.responsable;
+          solicitud.EstadoPagoMensualId = { "Id": 11 };
+          solicitud.DocumentoResponsableId = self.responsable;
           solicitud.CargoResponsable = "SUPERVISOR " + self.contrato.NombreDependencia;
           //console.log(self.contrato.NombreDependencia);
           solicitud.CargoResponsable = solicitud.CargoResponsable.substring(0, 69);
-          administrativaRequest.put('pago_mensual', solicitud.Id, solicitud).
+          cumplidosCrudRequest.put('pago_mensual', solicitud.Id, solicitud).
             then(function (response) {
+              console.log("Entró")
               //self.documentos = {};
             })
 
@@ -553,7 +554,8 @@ angular.module('contractualClienteApp')
       if (self.fileModel !== undefined && self.item !== undefined && self.fileModel.type === 'application/pdf' && self.fileModel.size <= 1000000) {
         //console.log(self.fileModel);
         self.mostrar_boton = false;
-        var descripcion = self.item.ItemInforme.Nombre;
+        var descripcion = self.item.ItemInformeId.Nombre;
+        console.log(descripcion)
         var aux = self.cargarDocumento(nombre_doc, descripcion, self.fileModel, function (url) {
           //Objeto documento
           var date = new Date();
