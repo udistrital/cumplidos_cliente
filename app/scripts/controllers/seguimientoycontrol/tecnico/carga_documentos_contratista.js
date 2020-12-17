@@ -267,7 +267,7 @@ angular.module('contractualClienteApp')
         field: 'Acciones',
         displayName: $translate.instant('ACC'),
         cellTemplate: '<a type="button" title="{{\'VER_SOP\'| translate }}" type="button" class="fa fa-folder-open-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.obtener_doc(row.entity)" data-toggle="modal" data-target="#modal_ver_soportes">' +
-          '</a>&nbsp;' + '<a ng-if="row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'CD\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RS\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RP\'" type="button" title="ENVIAR A REVISION SUPERVISOR" type="button" class="fa fa-send-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.enviar_revision(row.entity)"  >',
+          '</a>&nbsp;' + '<a ng-if="row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'CD\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RS\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RP\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RO\'" type="button" title="ENVIAR A REVISION SUPERVISOR" type="button" class="fa fa-send-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.enviar_revision(row.entity)"  >',
         //width:'*'
       }
       ]
@@ -447,7 +447,7 @@ angular.module('contractualClienteApp')
 
         self.obtener_doc(solicitud);
         if (self.documentos) {
-          solicitud.EstadoPagoMensualId = { "Id": 11 };
+          solicitud.EstadoPagoMensualId = { "Id": 9 };
           solicitud.DocumentoResponsableId = self.responsable;
           solicitud.CargoResponsable = "SUPERVISOR " + self.contrato.NombreDependencia;
           //console.log(self.contrato.NombreDependencia);
@@ -455,19 +455,19 @@ angular.module('contractualClienteApp')
           cumplidosCrudRequest.put('pago_mensual', solicitud.Id, solicitud).
             then(function (response) {
               console.log("Entró")
+              swal(
+                'Solicitud enviada',
+                'Su solicitud se encuentra a la espera de revisión',
+                'success'
+              )
+  
+              self.cargar_soportes(self.contrato);
               //self.documentos = {};
             })
 
             //Manejo de excepcion para el put
             .catch(function (response) {
               //console.error('Error 500 WSO2: ', response.status, response.data);
-              swal(
-                'Solicitud enviada',
-                'Su solicitud se encuentra a la espera de revisión',
-                'success'
-              )
-
-              self.cargar_soportes(self.contrato);
             });
 
 
@@ -585,11 +585,11 @@ angular.module('contractualClienteApp')
 
               //Objeto soporte_pago_mensual
               self.objeto_soporte = {
-                "PagoMensual": {
+                "PagoMensualId": {
                   "Id": self.fila_sol_pago.Id
                 },
                 "Documento": self.id_documento,
-                "ItemInformeTipoContrato": {
+                "ItemInformeTipoContratoId": {
                   "Id": self.item.Id
                 },
                 "Aprobado": false
@@ -603,7 +603,7 @@ angular.module('contractualClienteApp')
                 });
 
               //Post a la tabla soporte documento
-              administrativaRequest.post('soporte_pago_mensual', self.objeto_soporte)
+              cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
                 .then(function (response) {
                   //Bandera de validacion
                   swal({

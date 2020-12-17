@@ -147,7 +147,7 @@
               <div class="col-md-9">
                 <select ng-model="cargaDocumentosContratista.item" class="form-control">
                   <option value="">--{{'SEL_ITEM' | translate}}--</option>
-                  <option ng-repeat="iItem in cargaDocumentosContratista.items" ng-value="iItem">{{iItem.ItemInforme.Nombre}} </option>
+                  <option ng-repeat="iItem in cargaDocumentosContratista.items" ng-value="iItem">{{iItem.ItemInformeId.Nombre}} </option>
                 </select>
               </div>
 
@@ -205,7 +205,7 @@
               <md-card-actions layout="row" layout-align="end center">
                 <md-button ng-if="iDoc.Contenido.Tipo === 'Archivo'" ng-click="cargaDocumentosContratista.getDocumento(iDoc.Contenido.IdNuxeo)" class="md-primary">{{'SEE_DOC' | translate}}</md-button>
                   <md-button ng-if="iDoc.Contenido.Tipo === 'Enlace'" ng-click="cargaDocumentosContratista.getDocumento(iDoc.Contenido.IdNuxeo); cargaDocumentosContratista.visualizar_enlace(iDoc.Contenido.Enlace)" class="md-primary">{{'SEE_DOC' | translate}}</md-button>
-                <md-button class="md-warn" ng-if="cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensual.CodigoAbreviacion === 'CD' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensual.CodigoAbreviacion === 'RS' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensual.CodigoAbreviacion === 'RP'" ng-click="cargaDocumentosContratista.set_doc(iDoc)" data-toggle="modal" data-target="#modal_borrar_soportes">{{'DEL_DOC' | translate}}</md-button>
+                <md-button class="md-warn" ng-if="cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'CD' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RS' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RP'" ng-click="cargaDocumentosContratista.set_doc(iDoc)" data-toggle="modal" data-target="#modal_borrar_soportes">{{'DEL_DOC' | translate}}</md-button>
               </md-card-actions>
             </md-card>
           </div>
