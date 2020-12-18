@@ -237,7 +237,7 @@ angular.module('contractualClienteApp')
               self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
 
               cumplidosCrudRequest.get('estado_pago_mensual', $.param({
-              //administrativaRequest.get('estado_pago_mensual', $.param({
+                //administrativaRequest.get('estado_pago_mensual', $.param({
                 limit: 0,
                 query: 'CodigoAbreviacion:AS'
               })).then(function (responseCod) {
@@ -249,7 +249,7 @@ angular.module('contractualClienteApp')
                 //console.log(self.aux_pago_mensual);
 
                 cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
-                //administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+                  //administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
                   .then(function (response) {
                     self.cambio_estado_pago = {
                       //FechaCreacion: "",
@@ -263,7 +263,7 @@ angular.module('contractualClienteApp')
                       }
                     }
                     cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
-                    //administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
+                      //administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
                       .then(function (responsePagoPost) {
                         swal(
                           'Visto bueno ',
@@ -529,8 +529,8 @@ angular.module('contractualClienteApp')
         self.mes.Id = '0' + self.mes.Id.toString();
 
       }
-
-      adminMidRequest.get('aprobacion_pago/certificacion_cumplidos_contratistas/' + self.dependencia.codigo + '/' + self.mes.Id + '/' + self.anio).
+      cumplidosMidRequest.get('solicitudes_ordenador_contratistas/certificaciones/' + self.dependencia.codigo + '/' + self.mes.Id + '/' + self.anio).
+        //adminMidRequest.get('aprobacion_pago/certificacion_cumplidos_contratistas/' + self.dependencia.codigo + '/' + self.mes.Id + '/' + self.anio).
         then(function (responseMid) {
 
           //console.log(responseMid.data[0]['Rubro']);
