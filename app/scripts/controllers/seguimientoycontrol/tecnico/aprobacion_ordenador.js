@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest,adminJbpmV2Request) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest,adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -118,7 +118,7 @@ angular.module('contractualClienteApp')
           width: "8%"
         },
         {
-          field: 'PagoMensual.Persona',
+          field: 'PagoMensual.DocumentoPersonaId',
           cellTemplate: tmpl,
           displayName: $translate.instant('DOCUMENTO'),
           sort: {
@@ -232,7 +232,7 @@ angular.module('contractualClienteApp')
         //Petición para obtener el Id de la relación de acuerdo a los campos
         if (((self.dependencia) && Object.keys(self.dependencia).length === 0)  || self.validador === 1) {
 
-            adminMidRequest.get('aprobacion_pago/solicitudes_ordenador_contratistas/' + self.Documento, $.param({
+            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes/' + self.Documento, $.param({
             limit: self.gridOptions1.paginationPageSize,
             offset: offset,
             // query: typeof(query) === "string" ? query : query.join(",")
@@ -242,7 +242,7 @@ angular.module('contractualClienteApp')
         }
        else{ 
 
-            adminMidRequest.get('aprobacion_pago/solicitudes_ordenador_contratistas_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
+            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_ordenador_contratistas_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
                 limit: self.gridOptions1.paginationPageSize,
                 offset: offset,
                 // query: typeof(query) === "string" ? query : query.join(",")
@@ -280,7 +280,7 @@ angular.module('contractualClienteApp')
 
             }else{
 
-               self.gridApi = gridApiService.pagination(self.gridApi,adminMidRequest.get('aprobacion_pago/solicitudes_ordenador_contratistas_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
+               self.gridApi = gridApiService.pagination(self.gridApi,cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_ordenador_contratistas_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
                     limit: self.gridOptions1.paginationPageSize,
                     offset: self.offset,
                     // query: typeof(query) === "string" ? query : query.join(",")
@@ -301,29 +301,29 @@ angular.module('contractualClienteApp')
           self.aux_pago_mensual = pago_mensual;
 
 
-          administrativaRequest.get('estado_pago_mensual', $.param({
+          cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
             query: 'CodigoAbreviacion:AP'
           })).then(function (responseCod) {
 
-            var sig_estado = responseCod.data;
-            self.aux_pago_mensual.EstadoPagoMensual.Id = sig_estado[0].Id;
+            var sig_estado = responseCod.data.Data;
+            self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
-            administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+            cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
               .then(function (response) {
 
                 self.cambio_estado_pago = {
-                  FechaCreacion: "",
-                  FechaModificacion: "",
-                  EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensual.Id,
-                  DocumentoResponsableId: self.aux_pago_mensual.Responsable,
+                  //FechaCreacion: "",
+                  //FechaModificacion: "",
+                  EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensualId.Id,
+                  DocumentoResponsableId: self.aux_pago_mensual.DocumentoResponsableId,
                   CargoResponsable: self.aux_pago_mensual.CargoResponsable,
                   Activo: true,
                   PagoMensualId: {
                     Id: self.aux_pago_mensual.Id
                   }
                 }
-                administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
+                cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
                 .then(function(responsePagoPost) {
                   swal(
                     'Pago aprobado',
@@ -384,29 +384,29 @@ angular.module('contractualClienteApp')
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato).then(function (response) {
         self.aux_pago_mensual = pago_mensual;
 
-
-        administrativaRequest.get('estado_pago_mensual', $.param({
+        cumplidosCrudRequest.get('estado_pago_mensual', $.param({
           limit: 0,
-          query: 'CodigoAbreviacion:RP'
+          query: 'CodigoAbreviacion:RO'
         })).then(function (responseCod) {
 
-          var sig_estado = responseCod.data;
-          self.aux_pago_mensual.EstadoPagoMensual.Id = sig_estado[0].Id;
+          var sig_estado = responseCod.data.Data;
+          self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
-          administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+          cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
             .then(function (response) {
               self.cambio_estado_pago = {
-                FechaCreacion: "",
-                FechaModificacion: "",
-                EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensual.Id,
-                DocumentoResponsableId: self.aux_pago_mensual.Responsable,
+                ///FechaCreacion: "",
+               // FechaModificacion: "",
+                EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensualId.Id,
+                DocumentoResponsableId: self.aux_pago_mensual.DocumentoResponsableId,
                 CargoResponsable: self.aux_pago_mensual.CargoResponsable,
                 Activo: true,
                 PagoMensualId: {
                   Id: self.aux_pago_mensual.Id
                 }
               }
-              administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
+              console.log(self.cambio_estado_pago)
+              cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
               .then(function(responsePagoPost) {
                 swal(
                   'Pago rechazado',
@@ -460,8 +460,9 @@ angular.module('contractualClienteApp')
         self.solicitudes_seleccionadas = self.gridApi.selection.getSelectedRows();
         // console.info(self.solicitudes_seleccionadas)
         self.busqueda_aprovar_documentos_nuxeo(self.solicitudes_seleccionadas);
-        adminMidRequest.post('aprobacion_pago/aprobar_pagos', self.solicitudes_seleccionadas).then(function (response) {
+        cumplidosMidRequest.post('solicitudes_ordenador_contratistas/aprobar_pagos', self.solicitudes_seleccionadas).then(function (response) {
           // console.info(response);
+          console.log(response)
           if (response.data === 'OK') {
             swal(
               'Pagos Aprobados',
@@ -518,7 +519,7 @@ angular.module('contractualClienteApp')
         for (var i = 0; i < filas.length; i++) {
           const fila = filas[i];
           // console.info(fila)
-          var nombre_docs = fila.PagoMensual.VigenciaContrato + fila.PagoMensual.NumeroContrato + fila.PagoMensual.Persona + fila.PagoMensual.Mes + fila.PagoMensual.Ano;
+          var nombre_docs = fila.PagoMensual.VigenciaContrato + fila.PagoMensual.NumeroContrato + fila.PagoMensual.DocumentoPersonaId + fila.PagoMensual.Mes + fila.PagoMensual.Ano;
           // console.info(nombre_docs);
 
           coreRequest.get('documento', $.param({
@@ -551,7 +552,7 @@ angular.module('contractualClienteApp')
     */
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
-      var nombre_docs = self.fila_sol_pago.VigenciaContrato + self.fila_sol_pago.NumeroContrato + self.fila_sol_pago.Persona + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
+      var nombre_docs = self.fila_sol_pago.VigenciaContrato + self.fila_sol_pago.NumeroContrato + self.fila_sol_pago.DocumentoPersonaId + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
       coreRequest.get('documento', $.param({
         query: "Nombre:" + nombre_docs + ",Activo:true",
         limit: 0
