@@ -242,7 +242,7 @@ angular.module('contractualClienteApp')
         }
        else{ 
 
-            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_ordenador_contratistas_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
+            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
                 limit: self.gridOptions1.paginationPageSize,
                 offset: offset,
                 // query: typeof(query) === "string" ? query : query.join(",")
@@ -263,7 +263,7 @@ angular.module('contractualClienteApp')
         
         if (typeof self.dependencia === 'undefined') {
 
-            adminMidRequest.get('aprobacion_pago/solicitudes_ordenador_contratistas/' + self.Documento, $.param({
+            cumplidosMidRequest.get('aprobacion_pago/solicitudes_ordenador_contratistas/' + self.Documento, $.param({
             limit: self.gridOptions1.paginationPageSize,
             offset: offset,
             // query: typeof(query) === "string" ? query : query.join(",")
@@ -280,7 +280,7 @@ angular.module('contractualClienteApp')
 
             }else{
 
-               self.gridApi = gridApiService.pagination(self.gridApi,cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_ordenador_contratistas_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
+               self.gridApi = gridApiService.pagination(self.gridApi,cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
                     limit: self.gridOptions1.paginationPageSize,
                     offset: self.offset,
                     // query: typeof(query) === "string" ? query : query.join(",")
