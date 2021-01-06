@@ -16,6 +16,7 @@ steps:
      - sonar-scanner-$RELEASE-linux/bin/sonar-scanner
     when:
       branch:
+      - dev2020
       - dev
       - test
       - master
