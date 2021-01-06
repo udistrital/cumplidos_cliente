@@ -22,7 +22,7 @@ angular.module("contractualClienteApp").constant("CONF", {
     CUMPLIDOS_CRUD_SERVICE:
       "http://pruebasapi.intranetoas.udistrital.edu.co:8511/v1/",
     CUMPLIDOS_MID_SERVICE:
-      "http://localhost:8090/v1/",
+      "http://pruebasapi2.intranetoas.udistrital.edu.co:8513/v1/",
     ADMINISTRATIVA_JBPM_V2:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/",
     ADMINISTRATIVA_PRUEBAS_SERVICE:
