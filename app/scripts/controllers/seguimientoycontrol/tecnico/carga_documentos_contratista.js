@@ -185,9 +185,9 @@ angular.module('contractualClienteApp')
       //Petición para obtener las contratos relacionados al contratista
       cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
         .then(function (response) {
-          if (response.data) {
+          if (response.data.Data) {
             //Contiene la respuesta de la petición
-            self.informacion_contratos = response.data;
+            self.informacion_contratos = response.data.Data;
             //Se envia la data a la tabla
             self.gridOptions1.data = self.informacion_contratos;
             //Contiene el numero de documento del Responsable

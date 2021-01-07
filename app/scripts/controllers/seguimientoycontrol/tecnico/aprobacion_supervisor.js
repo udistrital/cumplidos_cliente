@@ -190,7 +190,7 @@ angular.module('contractualClienteApp')
       self.obtener_informacion_supervisor(self.Documento);
       //Petición para obtener el Id de la relación de acuerdo a los campos
       cumplidosMidRequest.get('/solicitudes_supervisor_contratistas/' + self.Documento).then(function (response) {
-        self.documentos = response.data;
+        self.documentos = response.data.Data;
         //console.log(self.documentos);
         //self.obtener_informacion_docente();
         self.gridOptions1.data = self.documentos;
@@ -232,7 +232,7 @@ angular.module('contractualClienteApp')
           cumplidosMidRequest.get('solicitudes_ordenador/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             //adminMidRequest.get('aprobacion_pago/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             .then(function (responseOrdenador) {
-              self.ordenador = responseOrdenador.data;
+              self.ordenador = responseOrdenador.data.Data;
               self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
               self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
 
@@ -325,7 +325,7 @@ angular.module('contractualClienteApp')
           cumplidosMidRequest.get('/solicitudes_ordenador/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             //adminMidRequest.get('aprobacion_pago/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             .then(function (responseOrdenador) {
-              self.ordenador = responseOrdenador.data;
+              self.ordenador = responseOrdenador.data.Data;
               self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
               self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
               cumplidosCrudRequest.get('estado_pago_mensual', $.param({
@@ -534,7 +534,7 @@ angular.module('contractualClienteApp')
         then(function (responseMid) {
 
           //console.log(responseMid.data[0]['Rubro']);
-          self.docentes_incumplidos = responseMid.data;
+          self.docentes_incumplidos = responseMid.data.Data;
 
 
           // self.facultad = responseHom.data[0];
