@@ -232,7 +232,7 @@ angular.module('contractualClienteApp')
         //Petición para obtener el Id de la relación de acuerdo a los campos
         if (((self.dependencia) && Object.keys(self.dependencia).length === 0)  || self.validador === 1) {
 
-            cumplidosCrudRequest.get('solicitudes_ordenador_contratistas/solicitudes/' + self.Documento, $.param({
+            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes/' + self.Documento, $.param({
             limit: self.gridOptions1.paginationPageSize,
             offset: offset,
             // query: typeof(query) === "string" ? query : query.join(",")
