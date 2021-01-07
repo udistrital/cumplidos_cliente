@@ -72,10 +72,10 @@ angular.module('gridApiService', [])
             },
             paginationFunc: function (table, offset) {
                 return function (response) {
-                    if (response.data === null) {
+                    if (response.data.Data === null) {
                         table.data = [];
                     } else {
-                        table.data = response.data;
+                        table.data = response.data.Data;
                         table.totalItems = offset + table.data.length + 1;
                     }
                 };
