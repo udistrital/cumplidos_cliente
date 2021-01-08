@@ -19,7 +19,7 @@ angular.module("contractualClienteApp").constant("CONF", {
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
     ADMINISTRATIVA_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
-      CUMPLIDOS_CRUD_SERVICE:
+    CUMPLIDOS_CRUD_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
     CUMPLIDOS_MID_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v1/",
