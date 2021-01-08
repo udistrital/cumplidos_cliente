@@ -78,6 +78,7 @@ steps:
   - npm install natives
   - npm install
   - bower install --allow-root
+  - rm app/scripts/environment/environment.js
   - cp -f app/scripts/environment/environment_test.js app/scripts/environment/environment.js
   - grunt build
   when:
