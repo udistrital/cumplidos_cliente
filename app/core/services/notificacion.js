@@ -37,30 +37,30 @@ angular.module('notificacionService', [])
         var user = "";
 
         var queryNotification = function () {
-            // configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
-            //     .then(function (response) {
-            //         if (response !== null) {
-            //             notificacion_estado_usuario = response.data;
-            //             notificacion_estado_usuario.map(function (notify) {
-            //                 if (typeof notify.Notificacion !== 'undefined') {
-            //                     var message = {
-            //                         Id: notify.Id,
-            //                         Type: notify.Notificacion.NotificacionConfiguracion.Tipo.Id,
-            //                         Content: JSON.parse(notify.Notificacion.CuerpoNotificacion),
-            //                         User: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Nombre,
-            //                         Alias: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Alias,
-            //                         EstiloIcono: notify.Notificacion.NotificacionConfiguracion.Aplicacion.EstiloIcono,
-            //                         FechaCreacion: new Date(notify.Notificacion.FechaCreacion),
-            //                         FechaEdicion: new Date(notify.Fecha),
-            //                         Estado: notify.NotificacionEstado.CodigoAbreviacion,
-            //                     };
+            configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
+                .then(function (response) {
+                    if (response !== null) {
+                        notificacion_estado_usuario = response.data;
+                        notificacion_estado_usuario.map(function (notify) {
+                            if (typeof notify.Notificacion !== 'undefined') {
+                                var message = {
+                                    Id: notify.Id,
+                                    Type: notify.Notificacion.NotificacionConfiguracion.Tipo.Id,
+                                    Content: JSON.parse(notify.Notificacion.CuerpoNotificacion),
+                                    User: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Nombre,
+                                    Alias: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Alias,
+                                    EstiloIcono: notify.Notificacion.NotificacionConfiguracion.Aplicacion.EstiloIcono,
+                                    FechaCreacion: new Date(notify.Notificacion.FechaCreacion),
+                                    FechaEdicion: new Date(notify.Fecha),
+                                    Estado: notify.NotificacionEstado.CodigoAbreviacion,
+                                };
 
-            //                     methods.addMessage(message);
-            //                 }
-            //             });
-            //             methods.update_novistos();
-            //         }
-            //     });
+                                methods.addMessage(message);
+                            }
+                        });
+                        methods.update_novistos();
+                    }
+                });
         };
         if (token_service.live_token()) {
 
@@ -117,16 +117,16 @@ angular.module('notificacionService', [])
             },
 
             changeStateNoView: function () {
-                // console.info(user)
-                // console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
-                // if (methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }).length >= 1) {
-                //     configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
-                //         .then(function (response) {
-                //             // console.log(response);
-                //             methods.log = [];
-                //             methods.queryNotification();
-                //         })
-                // }
+                console.info(user)
+                console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
+                if (methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }).length >= 1) {
+                    configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
+                        .then(function (response) {
+                            // console.log(response);
+                            methods.log = [];
+                            methods.queryNotification();
+                        })
+                }
             },
 
             getNotificacionEstadoUsuario: function (id) {
@@ -143,12 +143,12 @@ angular.module('notificacionService', [])
                 if (estado === 'noleida') {
                     var noti = methods.getNotificacionEstadoUsuario(id);
                     var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
-                    // console.log(path)
-                    // configuracionRequest.get(path, '')
-                    //     .then(function (response) {
-                    //         methods.log = [];
-                    //         methods.queryNotification();
-                    //     });
+                    console.log(path)
+                    configuracionRequest.get(path, '')
+                        .then(function (response) {
+                            methods.log = [];
+                            methods.queryNotification();
+                        });
                 }
             },
 
