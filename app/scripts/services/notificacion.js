@@ -22,7 +22,7 @@ angular.module('contractualClienteApp')
         };
 
         var queryNotification = function () {
-            configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
+           /* configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
                 .then(function (response) {
                     if (response !== null) {
                         notificacion_estado_usuario = response.data;
@@ -45,7 +45,7 @@ angular.module('contractualClienteApp')
                         });
                         methods.update_novistos();
                     }
-                });
+                });*/
         };
         if (token_service.live_token()) {
             payload = token_service.getPayload();
