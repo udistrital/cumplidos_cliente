@@ -444,9 +444,6 @@ angular.module('contractualClienteApp')
 
 
     self.aprobar_multiples_pagos = function () {
-
-
-
       swal({
         title: '¿Está seguro(a) de aprobar varias solicitudes a la vez?',
         type: 'warning',
@@ -463,7 +460,7 @@ angular.module('contractualClienteApp')
         cumplidosMidRequest.post('solicitudes_ordenador_contratistas/aprobar_pagos', self.solicitudes_seleccionadas).then(function (response) {
           // console.info(response);
           console.log(response)
-          if (response.data === 'OK') {
+          if (response.data.Data === 'OK') {
             swal(
               'Pagos Aprobados',
               'Se han aprobado los pagos de las solicitudes seleccionadas',
@@ -513,7 +510,7 @@ angular.module('contractualClienteApp')
       });
     };
 
-    self.busqueda_aprovar_documentos_nuxeo = function (filas) {
+    self. busqueda_aprovar_documentos_nuxeo = function (filas) {
         // console.info(filas)
         // console.info(filas.length)
         for (var i = 0; i < filas.length; i++) {
