@@ -510,7 +510,7 @@ angular.module('contractualClienteApp')
       });
     };
 
-    self. busqueda_aprovar_documentos_nuxeo = function (filas) {
+    self.busqueda_aprovar_documentos_nuxeo = function (filas) {
         // console.info(filas)
         // console.info(filas.length)
         for (var i = 0; i < filas.length; i++) {
