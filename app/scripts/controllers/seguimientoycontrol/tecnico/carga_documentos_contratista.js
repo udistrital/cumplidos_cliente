@@ -311,7 +311,6 @@ angular.module('contractualClienteApp')
           })).then(function (responsePago) {
             
             if (Object.keys(responsePago.data.Data[0]).length === 0) {
-              console.log("ENTRO")
               //no existe pago para ese mes y se crea 
               cumplidosCrudRequest.post("pago_mensual", pago_mensual)
                 .then(function (responsePagoPost) {
@@ -379,7 +378,6 @@ angular.module('contractualClienteApp')
         query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito + ",VigenciaContrato:" + self.contrato.Vigencia + ",DocumentoPersonaId:" + self.Documento,
         limit: 0
       })).then(function (response) {
-        console.log(response)
         contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia)
           .then(function (response_ce) {
 
@@ -392,7 +390,6 @@ angular.module('contractualClienteApp')
             })).then(function (response_iitc) {
 
               self.items = response_iitc.data.Data;
-              console.log(self.items)
             });
 
           });
@@ -454,7 +451,6 @@ angular.module('contractualClienteApp')
           solicitud.CargoResponsable = solicitud.CargoResponsable.substring(0, 69);
           cumplidosCrudRequest.put('pago_mensual', solicitud.Id, solicitud).
             then(function (response) {
-              console.log("Entró")
               swal(
                 'Solicitud enviada',
                 'Su solicitud se encuentra a la espera de revisión',
@@ -555,7 +551,6 @@ angular.module('contractualClienteApp')
         //console.log(self.fileModel);
         self.mostrar_boton = false;
         var descripcion = self.item.ItemInformeId.Nombre;
-        console.log(descripcion)
         var aux = self.cargarDocumento(nombre_doc, descripcion, self.fileModel, function (url) {
           //Objeto documento
           var date = new Date();

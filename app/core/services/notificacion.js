@@ -143,7 +143,6 @@ angular.module('notificacionService', [])
                 if (estado === 'noleida') {
                     var noti = methods.getNotificacionEstadoUsuario(id);
                     var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
-                    console.log(path)
                     configuracionRequest.get(path, '')
                         .then(function (response) {
                             methods.log = [];
