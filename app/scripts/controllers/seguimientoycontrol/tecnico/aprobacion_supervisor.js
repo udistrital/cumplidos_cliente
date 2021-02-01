@@ -209,11 +209,9 @@ angular.module('contractualClienteApp')
         query: "NumDocumento:" + documento,
         limit: 0
       })).then(function (response) {
-        //console.log(response.data);
         //Información contratista
         self.info_supervisor = response.data;
         self.nombre_supervisor = self.info_supervisor[0].NomProveedor;
-        //console.log(self.nombre_supervisor);
       });
     };
 

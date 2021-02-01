@@ -295,7 +295,7 @@ angular.module('contractualClienteApp')
 
 
     self.aprobarPago = function (pago_mensual) {
-
+      console.log("ENTRO A APROBAR PAGO")
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
@@ -405,7 +405,6 @@ angular.module('contractualClienteApp')
                   Id: self.aux_pago_mensual.Id
                 }
               }
-              console.log(self.cambio_estado_pago)
               cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
               .then(function(responsePagoPost) {
                 swal(
@@ -459,7 +458,6 @@ angular.module('contractualClienteApp')
         self.busqueda_aprovar_documentos_nuxeo(self.solicitudes_seleccionadas);
         cumplidosMidRequest.post('solicitudes_ordenador_contratistas/aprobar_pagos', self.solicitudes_seleccionadas).then(function (response) {
           // console.info(response);
-          console.log(response)
           if (response.data.Data === 'OK') {
             swal(
               'Pagos Aprobados',
