@@ -657,7 +657,7 @@ angular.module('contractualClienteApp')
     self.obtenerDependenciasContratos = function (){
 
         //Petición para obtener el Id de la relación de acuerdo a los campos
-        console.info(self.Documento)
+        //console.info(self.Documento)
       adminJbpmV2Request.get('dependencias_sic/' + self.Documento, '').
           then(function (response) {
           self.dependencias_contratos= response.data;
