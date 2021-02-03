@@ -117,8 +117,8 @@ angular.module('notificacionService', [])
             },
 
             changeStateNoView: function () {
-                console.info(user)
-                console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
+                //console.info(user)
+                //console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
                 if (methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }).length >= 1) {
                     configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
                         .then(function (response) {
@@ -143,7 +143,6 @@ angular.module('notificacionService', [])
                 if (estado === 'noleida') {
                     var noti = methods.getNotificacionEstadoUsuario(id);
                     var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
-                    console.log(path)
                     configuracionRequest.get(path, '')
                         .then(function (response) {
                             methods.log = [];

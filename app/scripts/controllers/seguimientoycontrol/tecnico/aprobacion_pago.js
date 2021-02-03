@@ -351,7 +351,6 @@ angular.module('contractualClienteApp')
                   oikosRequest.get('dependencia/'+ self.facultad_homologada)
                   .then(function(responseFac)
                 {
-                  console.log(responseFac.data);
                   self.facultad = responseFac.data;
 
                   //Generación documento
