@@ -203,7 +203,6 @@ angular.module('contractualClienteApp')
           self.nombre_coordinador = self.informacion_coordinador.coordinadorCollection.coordinador[0].nombre_coordinador;
         })
     };
-
     /**/
 
     self.obtener_docentes_coordinador();
