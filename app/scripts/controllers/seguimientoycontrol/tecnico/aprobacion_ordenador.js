@@ -295,7 +295,6 @@ angular.module('contractualClienteApp')
 
 
     self.aprobarPago = function (pago_mensual) {
-      console.log("ENTRO A APROBAR PAGO")
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
