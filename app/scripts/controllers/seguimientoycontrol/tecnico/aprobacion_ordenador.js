@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest,adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -18,7 +18,7 @@ angular.module('contractualClienteApp')
     self.contratistas = [];
     self.dependencias_contratos = {};
     self.dependencia = {};
-    self.validador =  1;
+    self.validador = 1;
 
     self.offset = 0;
 
@@ -205,22 +205,22 @@ angular.module('contractualClienteApp')
 
       });
 
-      
+
       self.gridApi = gridApiService.pagination(self.gridApi, self.obtener_informacion_ordenador, $scope);
-      
+
     };
 
-    $(document).ready(function() {
-      $("form").keydown(function(e) {
-          if (e.which == 8 || e.which == 46 || e.which == 13) {
-              return false;
-          }
+    $(document).ready(function () {
+      $("form").keydown(function (e) {
+        if (e.which == 8 || e.which == 46 || e.which == 13) {
+          return false;
+        }
       });
     });
     /*
       Función para consultar los datos del ordenador del contrato y los contratistas asociados a este
     */
-    self.obtener_informacion_ordenador = function (offset,query) {
+    self.obtener_informacion_ordenador = function (offset, query) {
       //Petición para obtener la información del ordenador del contrato
       self.gridOptions1.data = [];
       self.contratistas = [];
@@ -228,26 +228,26 @@ angular.module('contractualClienteApp')
       contratoRequest.get('ordenador', self.Documento).then(function (response) {
 
         self.ordenador = response.data.ordenador;
-      
-        //Petición para obtener el Id de la relación de acuerdo a los campos
-        if (((self.dependencia) && Object.keys(self.dependencia).length === 0)  || self.validador === 1) {
 
-            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes/' + self.Documento, $.param({
+        //Petición para obtener el Id de la relación de acuerdo a los campos
+        if (((self.dependencia) && Object.keys(self.dependencia).length === 0) || self.validador === 1) {
+
+          cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes/' + self.Documento, $.param({
             limit: self.gridOptions1.paginationPageSize,
             offset: offset,
             // query: typeof(query) === "string" ? query : query.join(",")
-             }, true)).then(gridApiService.paginationFunc(self.gridOptions1, offset));
-            self.offset=offset;
-            
-        }
-       else{ 
+          }, true)).then(gridApiService.paginationFunc(self.gridOptions1, offset));
+          self.offset = offset;
 
-            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
-                limit: self.gridOptions1.paginationPageSize,
-                offset: offset,
-                // query: typeof(query) === "string" ? query : query.join(",")
-            }, true)).then(gridApiService.paginationFunc(self.gridOptions1, offset)); 
-          
+        }
+        else {
+
+          cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
+            limit: self.gridOptions1.paginationPageSize,
+            offset: offset,
+            // query: typeof(query) === "string" ? query : query.join(",")
+          }, true)).then(gridApiService.paginationFunc(self.gridOptions1, offset));
+
         }
 
       });
@@ -256,39 +256,39 @@ angular.module('contractualClienteApp')
     self.obtener_informacion_ordenador(self.offset);
 
 
-    $scope.$watch('aprobacionOrdenador.dependencia', function(offset,query) {
-        
-        self.gridOptions1.data = [];
-        self.contratistas = [];
-        
-        if (typeof self.dependencia === 'undefined') {
+    $scope.$watch('aprobacionOrdenador.dependencia', function (offset, query) {
 
-            cumplidosMidRequest.get('aprobacion_pago/solicitudes_ordenador_contratistas/' + self.Documento, $.param({
+      self.gridOptions1.data = [];
+      self.contratistas = [];
+
+      if (typeof self.dependencia === 'undefined') {
+
+        cumplidosMidRequest.get('aprobacion_pago/solicitudes_ordenador_contratistas/' + self.Documento, $.param({
+          limit: self.gridOptions1.paginationPageSize,
+          offset: offset,
+          // query: typeof(query) === "string" ? query : query.join(",")
+        }, true)).then(gridApiService.paginationFunc(self.gridOptions1, offset));
+        self.offset = offset;
+        self.gridOptions1.paginationCurrentPage = 1;
+        self.validador = 1;
+
+      } else {
+
+
+        if ((Object.keys(self.dependencia).length === 0)) {
+          self.validador = 1;
+
+        } else {
+
+          self.gridApi = gridApiService.pagination(self.gridApi, cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
             limit: self.gridOptions1.paginationPageSize,
-            offset: offset,
+            offset: self.offset,
             // query: typeof(query) === "string" ? query : query.join(",")
-          }, true)).then(gridApiService.paginationFunc(self.gridOptions1, offset));
-            self.offset=offset;
-            self.gridOptions1.paginationCurrentPage=1;
-            self.validador = 1;
-            
-        } else{
-
-
-            if ((Object.keys(self.dependencia).length === 0)){
-                   self.validador=1; 
-
-            }else{
-
-               self.gridApi = gridApiService.pagination(self.gridApi,cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes_dependencia/' + self.Documento + '/' + self.dependencia.ESFCODIGODEP, $.param({
-                    limit: self.gridOptions1.paginationPageSize,
-                    offset: self.offset,
-                    // query: typeof(query) === "string" ? query : query.join(",")
-                 }, true)).then(gridApiService.paginationFunc(self.gridOptions1, self.offset)), $scope); 
-                  self.gridOptions1.paginationCurrentPage=1;
-                  self.validador=0;              
-            }
-       }
+          }, true)).then(gridApiService.paginationFunc(self.gridOptions1, self.offset)), $scope);
+          self.gridOptions1.paginationCurrentPage = 1;
+          self.validador = 0;
+        }
+      }
 
     }, true);
 
@@ -308,53 +308,31 @@ angular.module('contractualClienteApp')
             var sig_estado = responseCod.data.Data;
             self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
-            cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+            var pago_mensual_auditoria = {
+              Pago: {
+                CargoResponsable: response.data.contrato.ordenador_gasto.rol_ordenador,
+                EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
+                FechaModificacion: new Date(),
+                Mes: self.aux_pago_mensual.Mes,
+                Ano: self.aux_pago_mensual.Ano,
+                NumeroContrato: self.aux_pago_mensual.NumeroContrato,
+                DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
+                DocumentoResponsableId: self.Documento,
+                VigenciaContrato: parseInt(response.data.contrato.vigencia)
+              },
+              CargoEjecutor: (response.data.contrato.ordenador_gasto.rol_ordenador).substring(0, 69),
+              DocumentoEjecutor: self.Documento
+            }
+
+            cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
               .then(function (response) {
-
-                self.cambio_estado_pago = {
-                  //FechaCreacion: "",
-                  //FechaModificacion: "",
-                  EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensualId.Id,
-                  DocumentoResponsableId: self.aux_pago_mensual.DocumentoResponsableId,
-                  CargoResponsable: self.aux_pago_mensual.CargoResponsable,
-                  Activo: true,
-                  PagoMensualId: {
-                    Id: self.aux_pago_mensual.Id
-                  }
-                }
-                cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
-                .then(function(responsePagoPost) {
-                  swal(
-                    'Pago aprobado',
-                    'Se ha registrado la aprobación del pago por parte del ordenador',
-                    'success'
-                  )
-                  self.obtener_informacion_ordenador(self.offset);
-                  self.gridApi.core.refresh();
-
-                })//Manejo de excepciones
-                .catch(function (response) {
-                  swal(
-                    'Error',
-                    'No se ha podido registrar la aprobación del pago',
-                    'error'
-                  );
-                });
-                
-
-                // swal(
-                //   'Pago aprobado',
-                //   'Se ha registrado la aprobación del pago por parte del ordenador',
-                //   'success'
-                // )
-                // self.obtener_informacion_ordenador(self.offset);
-                // self.gridApi.core.refresh();
-
-                // swal(
-                //   'Error',
-                //   'No se ha podido registrar la aprobación del pago',
-                //   'error'
-                // );
+                swal(
+                  'Pago aprobado',
+                  'Se ha registrado la aprobación del pago por parte del ordenador',
+                  'success'
+                )
+                self.obtener_informacion_ordenador(self.offset);
+                self.gridApi.core.refresh();
               })//Fin promesa THEN
 
               //Manejo de excepciones
@@ -364,13 +342,6 @@ angular.module('contractualClienteApp')
                   'No se ha podido registrar la aprobación del pago',
                   'error'
                 );
-                // swal(
-                //   'Pago aprobado',
-                //   'Se ha registrado la aprobación del pago por parte del ordenador',
-                //   'success'
-                // )
-                // self.obtener_informacion_ordenador(self.offset);
-                // self.gridApi.core.refresh();
               });
 
           })
@@ -391,38 +362,31 @@ angular.module('contractualClienteApp')
           var sig_estado = responseCod.data.Data;
           self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
-          cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+          var pago_mensual_auditoria = {
+            Pago: {
+              CargoResponsable: "CONTRATISTA",
+              EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
+              FechaModificacion: new Date(),
+              Mes: self.aux_pago_mensual.Mes,
+              Ano: self.aux_pago_mensual.Ano,
+              NumeroContrato: self.aux_pago_mensual.NumeroContrato,
+              DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
+              DocumentoResponsableId: self.aux_pago_mensual.DocumentoPersonaId,
+              VigenciaContrato: parseInt(response.data.contrato.vigencia)
+            },
+            CargoEjecutor: (response.data.contrato.ordenador_gasto.rol_ordenador).substring(0, 69),
+            DocumentoEjecutor: self.Documento
+          }
+
+          cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
             .then(function (response) {
-              self.cambio_estado_pago = {
-                ///FechaCreacion: "",
-               // FechaModificacion: "",
-                EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensualId.Id,
-                DocumentoResponsableId: self.aux_pago_mensual.DocumentoResponsableId,
-                CargoResponsable: self.aux_pago_mensual.CargoResponsable,
-                Activo: true,
-                PagoMensualId: {
-                  Id: self.aux_pago_mensual.Id
-                }
-              }
-              cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
-              .then(function(responsePagoPost) {
-                swal(
-                  'Pago rechazado',
-                  'Se ha registrado el rechazo del pago',
-                  'success'
-                )
-                self.obtener_informacion_ordenador(self.offset);
-                self.gridApi.core.refresh();
-              })//Fin promesa then
-              .catch(function (response) {
-                swal(
-                  'Error',
-                  'No se ha podido registrar el rechazo del pago',
-                  'error'
-                );
-              }); //Fin catch
-              
-              
+              swal(
+                'Pago rechazado',
+                'Se ha registrado el rechazo del pago',
+                'success'
+              )
+              self.obtener_informacion_ordenador(self.offset);
+              self.gridApi.core.refresh();
             })//Fin promesa then
             .catch(function (response) {
               swal(
@@ -452,34 +416,40 @@ angular.module('contractualClienteApp')
         confirmButtonText: 'Aceptar'
       }).then(function () {
 
+        
+
         self.solicitudes_seleccionadas = self.gridApi.selection.getSelectedRows();
         // console.info(self.solicitudes_seleccionadas)
         self.busqueda_aprovar_documentos_nuxeo(self.solicitudes_seleccionadas);
-        cumplidosMidRequest.post('solicitudes_ordenador_contratistas/aprobar_pagos', self.solicitudes_seleccionadas).then(function (response) {
-          // console.info(response);
-          if (response.data.Data === 'OK') {
-            swal(
-              'Pagos Aprobados',
-              'Se han aprobado los pagos de las solicitudes seleccionadas',
-              'success'
-            )
-            self.obtener_informacion_ordenador(self.offset);
-            self.gridApi.core.refresh();
-
-
-          } else {
-
-            swal(
-              'Error',
-              'No se han podido aprobar los pagos de las solicitudes seleccionadas',
-              'error'
-            );
-
+        contratoRequest.get('contrato', self.solicitudes_seleccionadas[0].PagoMensual.NumeroContrato + '/' + self.solicitudes_seleccionadas[0].PagoMensual.VigenciaContrato).then(function (response) {
+          var arreglo_aux = [];
+          for (let i = 0; i < self.solicitudes_seleccionadas.length; i++) {
+            arreglo_aux.push(self.solicitudes_seleccionadas[i].PagoMensual)
           }
-        })
-          .catch(function (response) { // en caso de nulos
-            // console.info("funciona es el catch")
-            // console.info(response)
+          var pago_mensual_auditoria_masiva = {
+            Pagos: arreglo_aux,
+            CargoEjecutor: (response.data.contrato.ordenador_gasto.rol_ordenador).substring(0, 69),
+            DocumentoEjecutor: self.Documento
+          }
+          cumplidosCrudRequest.post('tr_aprobacion_masiva_pagos', pago_mensual_auditoria_masiva).then(function(response_transaccion){
+            if (response_transaccion.data.Data === 'OK') {
+              swal(
+                'Pagos Aprobados',
+                'Se han aprobado los pagos de las solicitudes seleccionadas',
+                'success'
+              )
+              self.obtener_informacion_ordenador(self.offset);
+              self.gridApi.core.refresh();
+            }else {
+
+              swal(
+                'Error',
+                'No se han podido aprobar los pagos de las solicitudes seleccionadas',
+                'error'
+              );
+  
+            }
+          }).catch(function (response) { // en caso de nulos
             //if (response.data === 'OK'){
             swal(
               'Pagos Aprobados',
@@ -488,54 +458,45 @@ angular.module('contractualClienteApp')
             )
             self.obtener_informacion_ordenador(self.offset);
             self.gridApi.core.refresh();
-
-
-            // }else{
-
-            //   swal(
-            //     'Error',
-            //     'No se han podido aprobar los pagos de las solicitudes seleccionadas',
-            //     'error'
-            //   );
-
-            // }
           }
 
 
 
           );
+        });
+
       });
     };
 
     self.busqueda_aprovar_documentos_nuxeo = function (filas) {
-        // console.info(filas)
-        // console.info(filas.length)
-        for (var i = 0; i < filas.length; i++) {
-          const fila = filas[i];
-          // console.info(fila)
-          var nombre_docs = fila.PagoMensual.VigenciaContrato + fila.PagoMensual.NumeroContrato + fila.PagoMensual.DocumentoPersonaId + fila.PagoMensual.Mes + fila.PagoMensual.Ano;
-          // console.info(nombre_docs);
+      // console.info(filas)
+      // console.info(filas.length)
+      for (var i = 0; i < filas.length; i++) {
+        const fila = filas[i];
+        // console.info(fila)
+        var nombre_docs = fila.PagoMensual.VigenciaContrato + fila.PagoMensual.NumeroContrato + fila.PagoMensual.DocumentoPersonaId + fila.PagoMensual.Mes + fila.PagoMensual.Ano;
+        // console.info(nombre_docs);
 
-          coreRequest.get('documento', $.param({
-            query: "Nombre:" + nombre_docs + ",Activo:true",
-            limit: 0
-          })).then(function (response) {
-            self.documentos = response.data;
-            angular.forEach(self.documentos, function (value) {
-              // self.descripcion_doc = value.Descripcion;
-              // console.info(value.Contenido)
-              value.Contenido = JSON.parse(value.Contenido);
-              // console.info(value.Contenido)
-              self.aprovacion_documentos_nuxeo(value.Contenido.IdNuxeo);
-            });
-          })
-        }
+        coreRequest.get('documento', $.param({
+          query: "Nombre:" + nombre_docs + ",Activo:true",
+          limit: 0
+        })).then(function (response) {
+          self.documentos = response.data;
+          angular.forEach(self.documentos, function (value) {
+            // self.descripcion_doc = value.Descripcion;
+            // console.info(value.Contenido)
+            value.Contenido = JSON.parse(value.Contenido);
+            // console.info(value.Contenido)
+            self.aprovacion_documentos_nuxeo(value.Contenido.IdNuxeo);
+          });
+        })
+      }
     }
 
     self.aprovacion_documentos_nuxeo = function (IdDocNuxeo) {
-        // console.info(IdDocNuxeo);
-        nuxeoMidRequest.post('validacion/?docID='+IdDocNuxeo, null)
-        .then(function(response) {
+      // console.info(IdDocNuxeo);
+      nuxeoMidRequest.post('validacion/?docID=' + IdDocNuxeo, null)
+        .then(function (response) {
           //Bandera de validacion
         });
     }
@@ -653,18 +614,18 @@ angular.module('contractualClienteApp')
       Función que obtiene las dependencias que se encuentran en argo
     */
 
-    self.obtenerDependenciasContratos = function (){
+    self.obtenerDependenciasContratos = function () {
 
-        //Petición para obtener el Id de la relación de acuerdo a los campos
-        //console.info(self.Documento)
+      //Petición para obtener el Id de la relación de acuerdo a los campos
+      //console.info(self.Documento)
       adminJbpmV2Request.get('dependencias_sic/' + self.Documento, '').
-          then(function (response) {
-          self.dependencias_contratos= response.data;
-      });
- 
+        then(function (response) {
+          self.dependencias_contratos = response.data;
+        });
+
     };
 
 
     self.obtenerDependenciasContratos();
 
- });
+  });

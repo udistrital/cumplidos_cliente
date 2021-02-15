@@ -228,81 +228,51 @@ angular.module('contractualClienteApp')
 
           //Obtiene la información correspondiente del ordenador
           cumplidosMidRequest.get('solicitudes_ordenador/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
-            //adminMidRequest.get('aprobacion_pago/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             .then(function (responseOrdenador) {
               self.ordenador = responseOrdenador.data.Data;
               self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
               self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
 
               cumplidosCrudRequest.get('estado_pago_mensual', $.param({
-                //administrativaRequest.get('estado_pago_mensual', $.param({
                 limit: 0,
                 query: 'CodigoAbreviacion:AS'
               })).then(function (responseCod) {
 
                 var sig_estado = responseCod.data.Data;
-                //console.log(sig_estado);
                 self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
-                //console.log(self.aux_pago_mensual);
+                var pago_mensual_auditoria = {
+                  Pago: {
+                    CargoResponsable: self.ordenador.Cargo,
+                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id},
+                    FechaModificacion: new Date(),
+                    Mes: self.aux_pago_mensual.Mes,
+                    Ano: self.aux_pago_mensual.Ano,
+                    NumeroContrato: self.aux_pago_mensual.NumeroContrato,
+                    DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
+                    DocumentoResponsableId: (self.ordenador.NumeroDocumento).toString(),
+                    VigenciaContrato: parseInt(self.contrato.vigencia)
+                  },
+                  CargoEjecutor: ("SUPERVISOR: " + self.contrato.supervisor.cargo).substring(0, 69),
+                  DocumentoEjecutor: self.contrato.supervisor.documento_identificacion
+                }
 
-                cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
-                  //administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+                cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
                   .then(function (response) {
-                    self.cambio_estado_pago = {
-                      //FechaCreacion: "",
-                      //FechaModificacion: "",
-                      EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensualId.Id,
-                      DocumentoResponsableId: self.aux_pago_mensual.DocumentoResponsableId,
-                      CargoResponsable: self.aux_pago_mensual.CargoResponsable,
-                      Activo: true,
-                      PagoMensualId: {
-                        Id: self.aux_pago_mensual.Id
-                      }
-                    }
-                    cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
-                      //administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
-                      .then(function (responsePagoPost) {
-                        swal(
-                          'Visto bueno ',
-                          'Tiene la validación del supervisor del contrato',
-                          'success'
-                        )
-                        self.obtener_contratistas_supervisor();
-                        self.gridApi.core.refresh();
-
-                      })
-                      .catch(function (response) { //Manejo de error
-                        swal(
-                          'Error',
-                          'No se ha podido registrar la validación del supervisor',
-                          'error'
-                        );
-                      });
-
-
-                    // swal(  // se comentarea y se intermacia de posicion con el catch ya quue esto mandaba error al arobar
-                    //   'Error',
-                    //   'No se ha podido registrar la validación del supervisor',
-                    //   'error'
-                    // );
-
-
-                    //Termina promesa then
-                  })
+                    swal(
+                      'Visto bueno ',
+                      'Tiene la validación del supervisor del contrato',
+                      'success'
+                    )
+                    self.obtener_contratistas_supervisor();
+                    self.gridApi.core.refresh();
+                 })
                   .catch(function (response) { //Manejo de error
                     swal(
                       'Error',
                       'No se ha podido registrar la validación del supervisor',
                       'error'
                     );
-                    //  swal(
-                    //    'Visto bueno ',
-                    //    'Tiene la validación del supervisor del contrato',
-                    //    'success'
-                    //  )
-                    //  self.obtener_contratistas_supervisor();
-                    //  self.gridApi.core.refresh();
                   });
 
               })
@@ -316,74 +286,54 @@ angular.module('contractualClienteApp')
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
-          // self.contrato = response.data.contrato;
-          //self.aux_pago_mensual.Responsable = self.contrato.supervisor.documento_identificacion;
-          // self.aux_pago_mensual = pago_mensual;
           self.contrato = response.data.contrato;
           cumplidosMidRequest.get('/solicitudes_ordenador/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
-            //adminMidRequest.get('aprobacion_pago/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             .then(function (responseOrdenador) {
               self.ordenador = responseOrdenador.data.Data;
               self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
               self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
               cumplidosCrudRequest.get('estado_pago_mensual', $.param({
-                //administrativaRequest.get('estado_pago_mensual', $.param({
                 limit: 0,
                 query: 'CodigoAbreviacion:RS'
               })).then(function (responseCod) {
-
+                
                 var sig_estado = responseCod.data.Data;
                 self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
-                cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
-                  //administrativaRequest.put('pago_mensual', self.aux_pago_mensual.Id, self.aux_pago_mensual)
+
+                var pago_mensual_auditoria = {
+                  Pago: {
+                    CargoResponsable: "CONTRATISTA",
+                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id},
+                    FechaModificacion: new Date(),
+                    Mes: self.aux_pago_mensual.Mes,
+                    Ano: self.aux_pago_mensual.Ano,
+                    NumeroContrato: self.aux_pago_mensual.NumeroContrato,
+                    DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
+                    DocumentoResponsableId: self.aux_pago_mensual.DocumentoPersonaId,
+                    VigenciaContrato: parseInt(self.contrato.vigencia)
+                  },
+                  CargoEjecutor: ("SUPERVISOR: " + self.contrato.supervisor.cargo).substring(0, 69),
+                  DocumentoEjecutor: self.contrato.supervisor.documento_identificacion
+                }
+                
+                cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
                   .then(function (response) {
-
-                    self.cambio_estado_pago = {
-                      //FechaCreacion: "",
-                      //FechaModificacion: "",
-                      EstadoPagoMensualId: self.aux_pago_mensual.EstadoPagoMensualId.Id,
-                      DocumentoResponsableId: self.aux_pago_mensual.DocumentoResponsableId,
-                      CargoResponsable: self.aux_pago_mensual.CargoResponsable,
-                      Activo: true,
-                      PagoMensualId: {
-                        Id: self.aux_pago_mensual.Id
-                      }
-                    }
-                    cumplidosCrudRequest.post("cambio_estado_pago", self.cambio_estado_pago)
-                      //administrativaRequest.post("cambio_estado_pago", self.cambio_estado_pago)
-                      .then(function (responsePagoPost) {
-
-                        swal(
-                          'Rechazo registrado',
-                          'Se ha registrado el rechazo de los soportes',
-                          'success'
-                        )
-                        self.obtener_contratistas_supervisor();
-                        self.gridApi.core.refresh();
-                      }).catch(function (response) {
-                        swal(
-                          'Error',
-                          'No se ha podido registrar el rechazo',
-                          'error'
-                        );
-                      });
-
-
-
-                  })//Termina promesa then
-
-                  //Manejo de error
-                  .catch(function (response) {
-
+                    swal(
+                      'Rechazo registrado',
+                      'Se ha registrado el rechazo de los soportes',
+                      'success'
+                    )
+                    self.obtener_contratistas_supervisor();
+                    self.gridApi.core.refresh();
+                  }).catch(function (response) {
                     swal(
                       'Error',
                       'No se ha podido registrar el rechazo',
                       'error'
                     );
+                  })//Termina promesa then
 
-
-                  });
-
+                  //Manejo de error
               })
 
 
@@ -528,7 +478,6 @@ angular.module('contractualClienteApp')
 
       }
       cumplidosMidRequest.get('solicitudes_ordenador_contratistas/certificaciones/' + self.dependencia.codigo + '/' + self.mes.Id + '/' + self.anio).
-        //adminMidRequest.get('aprobacion_pago/certificacion_cumplidos_contratistas/' + self.dependencia.codigo + '/' + self.mes.Id + '/' + self.anio).
         then(function (responseMid) {
 
           //console.log(responseMid.data[0]['Rubro']);

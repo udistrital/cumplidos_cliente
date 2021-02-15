@@ -288,17 +288,24 @@ angular.module('contractualClienteApp')
           //Variable que contiene el Id del estado pago mensual
           var id_estado = response.data.Data[0].Id;
           //Se arma elemento JSON para la solicitud
-          var pago_mensual = {
-            CargoResponsable: "CONTRATISTA",
-            EstadoPagoMensualId: { Id: id_estado },
-            FechaModificacion: new Date(),
-            Mes: self.mes,
-            Ano: self.anio,
-            NumeroContrato: self.contrato.NumeroContratoSuscrito,
-            DocumentoPersonaId: self.Documento,
-            DocumentoResponsableId: self.Documento,
-            VigenciaContrato: parseInt(self.contrato.Vigencia)
-          };
+
+          var pago_mensual_auditoria = {
+            Pago: {
+              CargoResponsable: "CONTRATISTA",
+              EstadoPagoMensualId: { Id: id_estado },
+              FechaModificacion: new Date(),
+              FechaCreacion: new Date(),
+              Mes: self.mes,
+              Ano: self.anio,
+              Activo: true,
+              NumeroContrato: self.contrato.NumeroContratoSuscrito,
+              DocumentoPersonaId: self.Documento,
+              DocumentoResponsableId: self.Documento,
+              VigenciaContrato: parseInt(self.contrato.Vigencia)
+            },
+            CargoEjecutor: "CONTRATISTA",
+            DocumentoEjecutor: self.Documento
+          }
 
           ////console.log("Hizo el primero");
           cumplidosCrudRequest.get('pago_mensual', $.param({
@@ -312,7 +319,7 @@ angular.module('contractualClienteApp')
             
             if (Object.keys(responsePago.data.Data[0]).length === 0) {
               //no existe pago para ese mes y se crea 
-              cumplidosCrudRequest.post("pago_mensual", pago_mensual)
+              cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
                 .then(function (responsePagoPost) {
 
                   //console.log(responsePagoPost.data);
@@ -436,52 +443,59 @@ angular.module('contractualClienteApp')
       }).then(function () {
 
         var nombre_docs = solicitud.VigenciaContrato + solicitud.NumeroContrato + solicitud.DocumentoPersonaId + solicitud.Mes + solicitud.Ano;
-        //console.log(nombre_docs);
-        //  administrativaRequest.get('soporte_pago_mensual', $.param({
-        //    query: "PagoMensual:" + solicitud.Id,
-        //    limit: 0
-        //  })).then(function(responseVal){
 
-        self.obtener_doc(solicitud);
-        if (self.documentos) {
-          solicitud.EstadoPagoMensualId = { "Id": 9 };
-          solicitud.DocumentoResponsableId = self.responsable;
-          solicitud.CargoResponsable = "SUPERVISOR " + self.contrato.NombreDependencia;
-          //console.log(self.contrato.NombreDependencia);
-          solicitud.CargoResponsable = solicitud.CargoResponsable.substring(0, 69);
-          cumplidosCrudRequest.put('pago_mensual', solicitud.Id, solicitud).
-            then(function (response) {
-              swal(
-                'Solicitud enviada',
-                'Su solicitud se encuentra a la espera de revisión',
-                'success'
-              )
+        contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia).then(function (response) {
+          
+          self.obtener_doc(solicitud);
+          if (self.documentos) {          
   
-              self.cargar_soportes(self.contrato);
-              //self.documentos = {};
-            })
+            var pago_mensual_auditoria = {
+              Pago: {
+                CargoResponsable: ("SUPERVISOR: " + response.data.contrato.supervisor.cargo).substring(0, 69),
+                EstadoPagoMensualId: { "Id": 9},
+                FechaModificacion: new Date(),
+                Mes: solicitud.Mes,
+                Ano: solicitud.Ano,
+                NumeroContrato: self.contrato.NumeroContratoSuscrito,
+                DocumentoPersonaId: self.Documento,
+                DocumentoResponsableId: self.responsable,
+                VigenciaContrato: parseInt(self.contrato.Vigencia)
+              },
+              CargoEjecutor: "CONTRATISTA",
+              DocumentoEjecutor: self.Documento
+            }
+            
+            cumplidosCrudRequest.put('pago_mensual', solicitud.Id, pago_mensual_auditoria).
+              then(function (response) {
+                swal(
+                  'Solicitud enviada',
+                  'Su solicitud se encuentra a la espera de revisión',
+                  'success'
+                )
+    
+                self.cargar_soportes(self.contrato);
+                //self.documentos = {};
+              })
+  
+              //Manejo de excepcion para el put
+              .catch(function (response) {
+                swal(
+                  'Error',
+                  'No se ha podido enviar la solicitud de cumplido',
+                  'error'
+                );
+              });
+          } else {
+  
+            swal(
+              'Error',
+              'No puede enviar a revisión sin cargar algún documento',
+              'error'
+            )
+          }//else
+          //    });
+        });
 
-            //Manejo de excepcion para el put
-            .catch(function (response) {
-              //console.error('Error 500 WSO2: ', response.status, response.data);
-            });
-
-
-
-
-
-
-          //  self.gridApi2.core.refresh();
-
-        } else {
-
-          swal(
-            'Error',
-            'No puede enviar a revisión sin cargar algún documento',
-            'error'
-          )
-        }//else
-        //    });
       });
 
 
