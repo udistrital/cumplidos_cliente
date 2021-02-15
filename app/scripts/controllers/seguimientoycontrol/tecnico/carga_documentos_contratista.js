@@ -307,6 +307,7 @@ angular.module('contractualClienteApp')
             DocumentoEjecutor: self.Documento
           }
 
+          
           ////console.log("Hizo el primero");
           cumplidosCrudRequest.get('pago_mensual', $.param({
             query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito +
