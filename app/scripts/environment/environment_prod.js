@@ -34,11 +34,11 @@ angular.module("contractualClienteApp").constant("CONF", {
     FINANCIERA_MID_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
     FINANCIERA_SERVICE:
-      "https://tuleap.udistrital.edu.co/go_api/financiera_api/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_crud_api/v1/",
     MODELS_SERVICE: "scripts/models/",
     NOTIFICACION_WS:
       "wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws/join",
-    OIKOS_SERVICE: "https://tuleap.udistrital.edu.co/go_api/oikos_api/v1/",
+    OIKOS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
     CONTRATO_SERVICE:
       "https://autenticacion.udistrital.edu.co:8244/administrativa_jbpm/v1/",
     NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
