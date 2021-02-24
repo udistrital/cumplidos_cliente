@@ -49,14 +49,14 @@ angular.module("contractualClienteApp").constant("CONF", {
         "https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize",
       URL_USER_INFO:
         "https://autenticacion.portaloas.udistrital.edu.co/oauth2/userinfo",
-      CLIENTE_ID: "pszmROXqfec4pTShgF_fn2DAAX0a",
-      REDIRECT_URL: "http://localhost:9000/",
+      CLIENTE_ID: "v4TA_7pywLw8WaimycHrH9QdBUIa",
+      REDIRECT_URL: "https://cumplidos.portaloas.udistrital.edu.co",
       RESPONSE_TYPE: "id_token token",
       SCOPE: "openid email documento",
       BUTTON_CLASS: "btn btn-warning btn-sm",
       SIGN_OUT_URL:
         "https://autenticacion.portaloas.udistrital.edu.co/oidc/logout",
-      SIGN_OUT_REDIRECT_URL: "http://localhost:9000/",
+      SIGN_OUT_REDIRECT_URL: "https://cumplidos.portaloas.udistrital.edu.co",
       SIGN_OUT_APPEND_TOKEN: "true"
     }
   }
