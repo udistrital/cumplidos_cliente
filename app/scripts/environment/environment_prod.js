@@ -16,9 +16,9 @@ angular.module("contractualClienteApp").constant("CONF", {
   GENERAL: {
     WSO2_SERVICE: "http://jbpm.udistritaloas.edu.co:8280/services",
     ADMINISTRATIVA_MID_SERVICE:
-      "https://autenticacion.portaloas.udistrital.edu.co/api/administrativa_mid_api/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
     ADMINISTRATIVA_SERVICE:
-      "https://autenticacion.portaloas.udistrital.edu.co/api/administrativa_crud_api/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
     CUMPLIDOS_CRUD_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
     CUMPLIDOS_MID_SERVICE:
@@ -26,11 +26,11 @@ angular.module("contractualClienteApp").constant("CONF", {
     ADMINISTRATIVA_JBPM_V2:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/",
     ADMINISTRATIVA_PRUEBAS_SERVICE:
-      "https://autenticacion.portaloas.udistrital.edu.co/api/administrativa_amazon_api/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/",
     CONFIGURACION_SERVICE:
-      "https://autenticacion.portaloas.udistrital.edu.co/api/configuracion_crud_api/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/",
     CORE_SERVICE:
-      "https://autenticacion.portaloas.udistrital.edu.co/api/core_api/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/core_api/v1/",
     FINANCIERA_MID_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
     FINANCIERA_SERVICE:
@@ -40,7 +40,7 @@ angular.module("contractualClienteApp").constant("CONF", {
       "wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws/join",
     OIKOS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
     CONTRATO_SERVICE:
-      "https://autenticacion.udistrital.edu.co:8244/administrativa_jbpm/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
     NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
     NUXEO_MID:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/nuxeo_mid/v1/",
