@@ -449,43 +449,49 @@ angular.module('contractualClienteApp')
           
           self.obtener_doc(solicitud);
           if (self.documentos) {          
-  
-            var pago_mensual_auditoria = {
-              Pago: {
-                CargoResponsable: ("SUPERVISOR: " + response.data.contrato.supervisor.cargo).substring(0, 69),
-                EstadoPagoMensualId: { "Id": 9},
-                FechaModificacion: new Date(),
-                Mes: solicitud.Mes,
-                Ano: solicitud.Ano,
-                NumeroContrato: self.contrato.NumeroContratoSuscrito,
-                DocumentoPersonaId: self.Documento,
-                DocumentoResponsableId: self.responsable,
-                VigenciaContrato: parseInt(self.contrato.Vigencia)
-              },
-              CargoEjecutor: "CONTRATISTA",
-              DocumentoEjecutor: self.Documento
-            }
             
-            cumplidosCrudRequest.put('pago_mensual', solicitud.Id, pago_mensual_auditoria).
-              then(function (response) {
-                swal(
-                  'Solicitud enviada',
-                  'Su solicitud se encuentra a la espera de revisión',
-                  'success'
-                )
+            cumplidosCrudRequest.get('estado_pago_mensual', $.param({
+              limit: 0,
+              query: 'CodigoAbreviacion:PRS'
+            })).then(function (responseCod) {
+              var sig_estado = responseCod.data.Data;
+              var pago_mensual_auditoria = {
+                Pago: {
+                  CargoResponsable: ("SUPERVISOR: " + response.data.contrato.supervisor.cargo).substring(0, 69),
+                  EstadoPagoMensualId: { "Id": sig_estado[0].Id},
+                  FechaModificacion: new Date(),
+                  Mes: solicitud.Mes,
+                  Ano: solicitud.Ano,
+                  NumeroContrato: self.contrato.NumeroContratoSuscrito,
+                  DocumentoPersonaId: self.Documento,
+                  DocumentoResponsableId: self.responsable,
+                  VigenciaContrato: parseInt(self.contrato.Vigencia)
+                },
+                CargoEjecutor: "CONTRATISTA",
+                DocumentoEjecutor: self.Documento
+              }
+              
+              cumplidosCrudRequest.put('pago_mensual', solicitud.Id, pago_mensual_auditoria).
+                then(function (response) {
+                  swal(
+                    'Solicitud enviada',
+                    'Su solicitud se encuentra a la espera de revisión',
+                    'success'
+                  )
+      
+                  self.cargar_soportes(self.contrato);
+                  //self.documentos = {};
+                })
     
-                self.cargar_soportes(self.contrato);
-                //self.documentos = {};
-              })
-  
-              //Manejo de excepcion para el put
-              .catch(function (response) {
-                swal(
-                  'Error',
-                  'No se ha podido enviar la solicitud de cumplido',
-                  'error'
-                );
-              });
+                //Manejo de excepcion para el put
+                .catch(function (response) {
+                  swal(
+                    'Error',
+                    'No se ha podido enviar la solicitud de cumplido',
+                    'error'
+                  );
+                });
+            })
           } else {
   
             swal(
@@ -493,14 +499,10 @@ angular.module('contractualClienteApp')
               'No puede enviar a revisión sin cargar algún documento',
               'error'
             )
-          }//else
-          //    });
+          }
+
         });
-
       });
-
-
-
     };
 
 
