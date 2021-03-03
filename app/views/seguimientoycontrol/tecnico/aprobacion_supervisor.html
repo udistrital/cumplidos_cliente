@@ -87,17 +87,17 @@
               <md-card >
                 <md-card-title>
                   <md-card-title-text>
-                    <span class="md-headline"> {{iDoc.Contenido.NombreArchivo}}</span>
+                    <span class="md-headline"> {{iDoc.Metadatos.NombreArchivo}}</span>
                     <span class="md-subhead">{{iDoc.Descripcion}}</span>
 
                   </md-card-title-text>
                   <md-card-title-media>
                     <!-- <div class="md-media-sm card-media"><textarea ng-model="iDoc.Contenido.Observaciones"></textarea></div> -->
-                  <label layout="row" layout-align="start"  >Observaciones: </label> <textarea  layout="row" layout-align="start center" cols="30" ng-model="iDoc.Contenido.Observaciones"></textarea>
+                  <label layout="row" layout-align="start"  >Observaciones: </label> <textarea  layout="row" layout-align="start center" cols="30" ng-model="iDoc.Metadatos.Observaciones"></textarea>
                   </md-card-title-media>
                 </md-card-title>
                 <md-card-actions layout="row" layout-align="end center">
-                  <md-button ng-if="iDoc.Contenido.Tipo === 'Archivo'" ng-click="aprobacionSupervisor.getDocumento(iDoc.Contenido.IdNuxeo)" class="btn btn-primary btn-outline">Ver documento</md-button>
+                  <md-button ng-if="iDoc.Metadatos.Tipo === 'Archivo'" ng-click="aprobacionSupervisor.getDocumento(iDoc.Enlace)" class="btn btn-primary btn-outline">Ver documento</md-button>
                   <md-button class="btn btn-danger btn-outline" ng-click="aprobacionSupervisor.enviar_comentario(iDoc)">Enviar observaciones</md-button>
                 </md-card-actions>
               </md-card>

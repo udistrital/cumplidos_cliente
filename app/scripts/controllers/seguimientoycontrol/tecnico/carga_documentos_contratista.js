@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, administrativaRequest, nuxeo, $q, coreRequest, $window, $sce, adminMidRequest, $routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, adminMidRequest, $routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -578,21 +578,21 @@ angular.module('contractualClienteApp')
             "Nombre": nombre_doc,
             "Descripcion": descripcion,
             "TipoDocumento": {
-              "Id": 3
+              "Id": 19
             },
-            "Contenido": JSON.stringify({
+            "Enlace": url,
+            "Metadatos": JSON.stringify({
               "NombreArchivo": self.fileModel.name,
-              "FechaCreacion": date,
               "Tipo": "Archivo",
-              "IdNuxeo": url,
               "Observaciones": self.observaciones
             }),
             "Activo": true
           };
 
-          //Post a la tabla documento del core
-          coreRequest.post('documento', self.objeto_documento)
+          //Post a la tabla documento del   
+          documentoRequest.post('documento', self.objeto_documento)
             .then(function (response) {
+              console.log(response)
               self.id_documento = response.data.Id;
 
               //Objeto soporte_pago_mensual
@@ -709,14 +709,16 @@ angular.module('contractualClienteApp')
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
       var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-      coreRequest.get('documento', $.param({
+      documentoRequest.get('documento', $.param({
         query: "Nombre:" + nombre_docs + ",Activo:true",
         limit: 0
       })).then(function (response) {
+        console.log("obtener documento")
+        console.log(response)
         self.documentos = response.data;
         angular.forEach(self.documentos, function (value) {
           self.descripcion_doc = value.Descripcion;
-          value.Contenido = JSON.parse(value.Contenido);
+          value.Metadatos = JSON.parse(value.Metadatos);
         });
       })
 
@@ -733,20 +735,34 @@ angular.module('contractualClienteApp')
     self.borrar_doc = function () {
 
       var documento = self.doc;
-      nuxeoMidRequest.delete('workflow', documento.Contenido.IdNuxeo)
+      console.log(documento)
+      nuxeoMidRequest.delete('workflow', documento.Enlace)
         .then(function (response) {
           //Bandera de validacion
         });
-      // console.info(documento.Contenido.IdNuxeo)
-      documento.Contenido = JSON.stringify(documento.Contenido)
+      console.info(documento.Id)
+      documento.Metadatos = JSON.stringify(documento.Metadatos);
       documento.Activo = false;
-      coreRequest.put('documento', documento.Id, documento).
-        then(function (response) {
+      //documento.Descripcion = "PRUEBA DE CAMBIO"
+      documentoRequest.put('documento', documento.Id, documento).then(function (response) {
+          console.log(response)
+          //self.obtener_doc(self.fila_sol_pago)
+          swal({
+            title: 'Documento borrado',
+            text: 'Se ha borrado exitosamente el documento',
+            type: 'success',
+            target: self.obtener_doc(self.fila_sol_pago)
+          });
         })
 
         .catch(function (response) {
-          self.obtener_doc(self.fila_sol_pago);
-
+         // self.obtener_doc(self.fila_sol_pago);
+         swal({
+          title: 'Error',
+          text: 'Hubo un error al momento de borrar el documento',
+          type: 'error',
+          target: self.obtener_doc(self.fila_sol_pago)
+        });
         })
 
     }
