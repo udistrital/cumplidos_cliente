@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, administrativaRequest, $routeParams, adminMidRequest, coreRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, $routeParams, documentoRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -477,17 +477,14 @@ angular.module('contractualClienteApp')
         var nombre_docs = fila.PagoMensual.VigenciaContrato + fila.PagoMensual.NumeroContrato + fila.PagoMensual.DocumentoPersonaId + fila.PagoMensual.Mes + fila.PagoMensual.Ano;
         // console.info(nombre_docs);
 
-        coreRequest.get('documento', $.param({
+        documentoRequest.get('documento', $.param({
           query: "Nombre:" + nombre_docs + ",Activo:true",
           limit: 0
         })).then(function (response) {
           self.documentos = response.data;
           angular.forEach(self.documentos, function (value) {
-            // self.descripcion_doc = value.Descripcion;
-            // console.info(value.Contenido)
-            value.Contenido = JSON.parse(value.Contenido);
-            // console.info(value.Contenido)
-            self.aprovacion_documentos_nuxeo(value.Contenido.IdNuxeo);
+            value.Metadatos = JSON.parse(value.Metadatos);
+            self.aprovacion_documentos_nuxeo(value.Enlace);
           });
         })
       }
@@ -508,14 +505,14 @@ angular.module('contractualClienteApp')
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
       var nombre_docs = self.fila_sol_pago.VigenciaContrato + self.fila_sol_pago.NumeroContrato + self.fila_sol_pago.DocumentoPersonaId + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-      coreRequest.get('documento', $.param({
+      documentoRequest.get('documento', $.param({
         query: "Nombre:" + nombre_docs + ",Activo:true",
         limit: 0
       })).then(function (response) {
         self.documentos = response.data;
         angular.forEach(self.documentos, function (value) {
           self.descripcion_doc = value.Descripcion;
-          value.Contenido = JSON.parse(value.Contenido);
+          value.Metadatos = JSON.parse(value.Metadatos);
         });
       })
     };
@@ -582,21 +579,9 @@ angular.module('contractualClienteApp')
         cancelButtonText: 'Cancelar',
         confirmButtonText: 'Aceptar'
       }).then(function () {
-        documento.Contenido = JSON.stringify(documento.Contenido);
-        coreRequest.put('documento', documento.Id, documento).
+        documento.Metadatos = JSON.stringify(documento.Metadatos);
+        documentoRequest.put('documento', documento.Id, documento).
           then(function (response) {
-            swal({
-              title: 'Error',
-              text: 'No se ha podido guardar el comentario',
-              type: 'error',
-              target: document.getElementById('modal_ver_soportes')
-            });
-
-          })
-
-          //Manejo de error
-          .catch(function (response) {
-
             swal({
               title: 'Comentario guardado',
               text: 'Se ha guardado el comentario del documento',
@@ -604,6 +589,19 @@ angular.module('contractualClienteApp')
               target: document.getElementById('modal_ver_soportes')
             });
             self.obtener_doc(self.fila_sol_pago);
+            
+
+          })
+
+          //Manejo de error
+          .catch(function (response) {
+
+            swal({
+              title: 'Error',
+              text: 'No se ha podido guardar el comentario',
+              type: 'error',
+              target: document.getElementById('modal_ver_soportes')
+            });
 
           });
 

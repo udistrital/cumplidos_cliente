@@ -31,6 +31,8 @@ angular.module("contractualClienteApp").constant("CONF", {
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/",
     CORE_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/core_api/v1/",
+    DOCUMENTO_CRUD_SERVICE:
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/",
     FINANCIERA_MID_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_mid_api/v1/",
     FINANCIERA_SERVICE:

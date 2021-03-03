@@ -47,6 +47,7 @@ angular
         // Servicios
         'financieraService',
         'coreService',
+        'documentoService',
         'administrativaService',
         'cumplidosCrudService',
         'cumplidosMidService',
