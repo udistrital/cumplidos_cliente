@@ -58,7 +58,7 @@ angular.module("contractualClienteApp").constant("CONF", {
       BUTTON_CLASS: "btn btn-warning btn-sm",
       SIGN_OUT_URL:
         "https://autenticacion.portaloas.udistrital.edu.co/oidc/logout",
-      SIGN_OUT_REDIRECT_URL: "https://cumplidos.portaloas.udistrital.edu.co",
+      SIGN_OUT_REDIRECT_URL: "https://contratistas.portaloas.udistrital.edu.co",
       SIGN_OUT_APPEND_TOKEN: "true"
     }
   }
