@@ -464,7 +464,7 @@ angular.module('contractualClienteApp')
                   Ano: solicitud.Ano,
                   NumeroContrato: self.contrato.NumeroContratoSuscrito,
                   DocumentoPersonaId: self.Documento,
-                  DocumentoResponsableId: self.responsable,
+                  DocumentoResponsableId: self.contrato.NumDocumentoSupervisor,
                   VigenciaContrato: parseInt(self.contrato.Vigencia)
                 },
                 CargoEjecutor: "CONTRATISTA",
