@@ -66,7 +66,8 @@ angular
         'gridApiService',
         'colombiaHolidaysService',
         'nuxeoClient',
-        'core'
+        'core',
+        'pdf'
     ])
     .run(function(amMoment) {
         amMoment.changeLocale('es');
@@ -117,6 +118,11 @@ angular
               controller: 'AprobacionOrdenadorCtrl',
               controllerAs: 'aprobacionOrdenador'
             })
+            .when('/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/:contrato/:anio/:mes', {
+                templateUrl: 'views/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.html',
+                controller: 'InformeGyCertificadoCCtrl',
+                controllerAs: 'InformeGyCertificadoC'
+              })
             .otherwise({
                 redirectTo: '/'
             });
