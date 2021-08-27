@@ -3,3 +3,18 @@
     display: inline-block;
     padding: 6px 6px;
   }
+
+.btn-custom {
+  background-color: #731514; 
+  Color: #fff;
+  margin:5px
+}
+
+.btn-custom:hover {
+  Color: #fff;
+}
+
+.margin-y {
+  margin-top: 3px;
+  margin-bottom: 10px;
+}
