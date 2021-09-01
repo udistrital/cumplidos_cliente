@@ -357,8 +357,27 @@ angular.module('contractualClienteApp')
         return data_modificada;
       }
 
+      self.limpiarFiltros=function () {
+        self.DocContratista=null;
+        self.NumContrato=null;
+        self.vigencia=null;
+        self.anio=null;
+        self.mes=null;
+        self.inicializarAños();
+        self.inicializarMeses();
+        self.cargarCumplidos();
+      }
 
-      self.inicializarAños()
-      self.inicializarMeses()
-      self.cargarCumplidos()
+      self.filtroUsado=function () {
+        if(self.DocContratista==null && self.NumContrato==null && self.vigencia==null && self.anio==null && self.mes==null){
+          return false;
+        }else{
+          return true;
+        }
+      }
+
+
+      self.inicializarAños();
+      self.inicializarMeses();
+      self.cargarCumplidos();
   })
