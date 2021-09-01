@@ -919,6 +919,7 @@ var text_es = {
     NUM_CONTRATO:"Numero contrato",
     AÑO:"Año",
     MES:"Mes",
+    LIMPIAR:"Limpiar",
 };
 
 var text_en = {
