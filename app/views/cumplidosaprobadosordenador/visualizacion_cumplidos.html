@@ -52,6 +52,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <button class="btn btn-custom btn-lg pull-right" ng-click="VisualizarCumplidos.buscarCumplidos()">{{'BUSCAR' | translate}}</button>
+                                <button class="btn btn-custom btn-lg pull-right" ng-if="VisualizarCumplidos.filtroUsado()===true" ng-click="VisualizarCumplidos.limpiarFiltros()">{{'LIMPIAR' | translate}}</button>
                             </div>
                         </div>
                     </form>
