@@ -905,6 +905,21 @@ var text_es = {
     SEG_BO: "¿Está seguro que desea borrar el soporte?",
     NO_ACT: "No podrá revertir esta acción",
     CANCEL: "Cancelar",
+
+    //Infome de gestion y certificado de cumplimiento
+    TITULO_INFORME_G_Y_CERTIFICADO_C: "INFORME DE GESTION Y CERTIFICADO DE CUMPLIMIENTO",
+
+    //Visualizacion cumplidos
+    ERROR_SIN_DOCUMENTOS:"No se encontraron documentos asociados",
+    TITULO_CUMPLIDOS_APROBADOS:"CUMPLIDOS APROBADOS",
+    SEL_ANO_VIGENCIA_CUMPLIDO:"Ingrese vigencia del contrato",
+    SEL_ANO_CUMPLIDO:"Ingrese año cumplido",
+    SEL_MES_CUMPLIDO:"Ingrese mes cumplido",
+    DOC_CONTRATISTA:"Documento contratista",
+    NUM_CONTRATO:"Numero contrato",
+    AÑO:"Año",
+    MES:"Mes",
+    LIMPIAR:"Limpiar",
 };
 
 var text_en = {

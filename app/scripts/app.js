@@ -117,6 +117,11 @@ angular
               controller: 'AprobacionOrdenadorCtrl',
               controllerAs: 'aprobacionOrdenador'
             })
+            .when('/cumplidos_aprobados_por_ordenador', {
+                templateUrl: 'views/cumplidosaprobadosordenador/visualizacion_cumplidos.html',
+                controller: 'VisualizarCumplidosCtrl',
+                controllerAs: 'VisualizarCumplidos'
+              })
             .otherwise({
                 redirectTo: '/'
             });

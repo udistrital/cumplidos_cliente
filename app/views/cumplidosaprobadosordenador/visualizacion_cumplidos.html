@@ -1,0 +1,122 @@
+<br>
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel panel-primary panel-body">
+            <h2 class="page-header text-center">{{'TITULO_CUMPLIDOS_APROBADOS'|translate}}</h2>
+        </div>
+
+        <div class="panel panel-primary panel-body">
+            <div class="panel-body">
+                <div class="row">
+                    <form class="form" role="form">
+                        <div class="row">
+                            <div class="form-group col-xs-3">
+                                <label for="inputDocContratista" class="control-label">{{'DOC_CONTRATISTA' | translate}}</label>
+                                <input type="text" class="form-control" id="inputDocContratista"
+                                    placeholder="Ingrese documento contratista"
+                                    ng-model="VisualizarCumplidos.DocContratista">
+                            </div>
+                            <div class="form-group col-xs-3">
+                                <label for="inputNumContrato" class="control-label">{{'NUM_CONTRATO' | translate}}</label>
+                                <input type="text" class="form-control" id="inputNumContrato"
+                                    placeholder="Ingrese numero del contrato"
+                                    ng-model="VisualizarCumplidos.NumContrato">
+                            </div>
+                            <div class="form-group col-xs-2">
+                                <label for="selectVigencia" class="control-label">{{'VIGENCIA' | translate}}</label>
+                                <select class="form-control" id="selectVigencia" 
+                                    placeholder="Ingrese vigencia del contrato"
+                                    ng-model="VisualizarCumplidos.vigencia"
+                                    ng-change="VisualizarCumplidos.getAniosCumplidos(VisualizarCumplidos.vigencia)">
+                                    <option value="" disabled selected>{{'SEL_ANO_VIGENCIA_CUMPLIDO' | translate}}</option>
+                                    <option ng-repeat="iAnio in VisualizarCumplidos.anios_vigencia" ng-value="iAnio">{{iAnio}} </option>
+                                </select>
+                            </div>
+                            <div class="form-group col-xs-2">
+                                <label for="selectAnio" class="control-label">{{'AÑO' | translate}}</label>
+                                <select class="form-control" id="selectAnio" placeholder="Ingrese año cumplido" ng-model="VisualizarCumplidos.anio"
+                                ng-change="VisualizarCumplidos.getMeses(VisualizarCumplidos.anio)">
+                                    <option value="" disabled selected>{{'SEL_ANO_CUMPLIDO' | translate}}</option>
+                                    <option ng-repeat="iAnio in VisualizarCumplidos.anios_cumplidos" ng-value="iAnio">{{iAnio}} </option>
+                                </select>
+                            </div>
+                            <div class="form-group col-xs-2">
+                                <label for="selectMes" class="control-label">{{'MES' | translate}}</label>
+                                <select class="form-control" id="selectMes" placeholder="Ingrese mes cumplido" ng-model="VisualizarCumplidos.mes">
+                                    <option value="" disabled selected>{{'SEL_MES_CUMPLIDO' | translate}}</option>
+                                    <option ng-repeat="iMes in VisualizarCumplidos.meses" ng-value="iMes.Id">{{iMes.Nombre}} </option>
+                                </select>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn btn-custom btn-lg pull-right" ng-click="VisualizarCumplidos.buscarCumplidos()">{{'BUSCAR' | translate}}</button>
+                                <button class="btn btn-custom btn-lg pull-right" ng-if="VisualizarCumplidos.filtroUsado()===true" ng-click="VisualizarCumplidos.limpiarFiltros()">{{'LIMPIAR' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row margin-y">
+                    <div class="mi-grid" ui-grid="VisualizarCumplidos.gridOptions"
+                        ui-grid-auto-resize ui-grid-pagination></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal de Visualizar los Soportes-->
+<div id="modal_ver_soportes" class="modal fade" role="dialog">
+    <div class="modal-content col-md-6 col-md-offset-3" style="margin-top: 5%" align="center">
+
+      <div class="modal-header">
+        <button type="button" class="btn btn-outline btn-danger btn-xs pull-right" data-dismiss="modal">&times</button>
+        <br>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{VisualizarCumplidos.tituloCumplidos}}</h3>
+          </div>
+          <div class="panel-body">
+
+            <div class="col-md-12" ng-if="VisualizarCumplidos.sinDocumentos===false">
+              <p>{{'PARRA_VER_SOP' | translate }}</p>
+            </div>
+
+            <div class="col-md-12" ng-if="VisualizarCumplidos.sinDocumentos===false"
+            ng-model="VisualizarCumplidos.documentos" ng-repeat="iDoc in VisualizarCumplidos.documentos">
+              <md-card >
+                <md-card-title>
+                  <md-card-title-text>
+                    <span class="md-headline"> {{iDoc.Metadatos.NombreArchivo}}</span>
+                    <span class="md-subhead">{{iDoc.Descripcion}}</span>
+
+                  </md-card-title-text>
+                  <md-card-title-media>
+                    <!-- <div class="md-media-sm card-media"><textarea ng-model="iDoc.Contenido.Observaciones"></textarea></div> -->
+                  </md-card-title-media>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="end center">
+                  <md-button ng-if="iDoc.Metadatos.Tipo === 'Archivo'" ng-click="VisualizarCumplidos.getDocumento(iDoc.Enlace)" class="btn btn-primary btn-outline">{{'VER_DOC_BTN' | translate }}</md-button>
+                  <a id="download" href=""></a>
+                </md-card-actions>
+              </md-card>
+            </div>
+            <div class="col-md-12" ng-if="VisualizarCumplidos.sinDocumentos===true">
+              <md-card >
+                <md-card-title>
+                  <md-card-title-text>
+                    <h2 class="warning">{{'ERROR_SIN_DOCUMENTOS' | translate }}</h2>
+                  </md-card-title-text>
+                </md-card-title>
+              </md-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
