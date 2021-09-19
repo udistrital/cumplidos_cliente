@@ -121,6 +121,14 @@ angular.module('contractualClienteApp')
       "Documentar todas las actividades en los repositorios y formatos definidos por la oficina."
     ]
 
+    self.procesos= [
+      "proceso 1",
+      "proceso 2",
+      "proceso 3",
+      "proceso 4",
+      "proceso 5"
+    ]
+
     self.metas_Usadas = []
 
     self.formatear_metas = function () {
@@ -145,7 +153,7 @@ angular.module('contractualClienteApp')
         "Contrato": "Numero del contrato",
         "mes": "mes del informe",
         "año": " año del informe",
-        "version": "version del informe",
+        "proceso": "proceso",
         "Metas": [
           {
             "Meta": "",

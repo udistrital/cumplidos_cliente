@@ -1,7 +1,7 @@
 <br>
 <div class="panel panel-default">
   <div class="panel panel-primary panel-body">
-    <h2 class="page-header text-center">{{'TITULO_INFORME_G_Y_CERTIFICADO_C' | translate}}</h2>
+    <h4 class="page-header ">{{'TITULO_INFORME_G_Y_CERTIFICADO_C' | translate}}</h4>
 
     <div class="panel-body">
       <div class="row">
@@ -9,9 +9,9 @@
           <div class="panel-body">
             <div class="row" align-item="center">
               <!--Inicio row-->
-              <h2 class="page-header text-center " style="color: black;">Informe de gestion y certificado de
+              <h1 class="page-header text-center " style="color: black;">Informe de gestion y certificado de
                 cumplimiento CPS {{InformeGyCertificadoC.contrato}} de {{InformeGyCertificadoC.mes}} de
-                {{InformeGyCertificadoC.anio}}</h2>
+                {{InformeGyCertificadoC.anio}}</h1>
             </div>
             <!--Fin row-->
 
@@ -30,16 +30,45 @@
               <!--Inicio row-->
               <div class="panel panel-default">
                 <div class="panel panel-body">
-                  <button type="button" class="btn pull-left btn-custom " data-toggle="modal"
-                    data-target="#modal_preliquidacion">Preliquidacion</button>
-                  <button type="button" class="btn pull-right btn-custom" data-toggle="modal"
-                    data-target="#modal_visualizar_documento"
-                    ng-click="InformeGyCertificadoC.formato_generacion_pdf()">Crear</button>
-                  <button type="button" class="btn pull-right btn-custom"
-                    ng-click="InformeGyCertificadoC.guardar()">Guardar</button>
-                  <button type="button" class="btn pull-right btn-custom"
-                    ng-click="InformeGyCertificadoC.agregarMeta()">Añadir Meta</button>
+                  <div class="row">
+                    <button type="button" class="btn pull-left btn-custom " data-toggle="modal"
+                      data-target="#modal_preliquidacion">Preliquidacion</button>
+                    <button type="button" class="btn pull-right btn-custom" data-toggle="modal"
+                      data-target="#modal_visualizar_documento"
+                      ng-click="InformeGyCertificadoC.formato_generacion_pdf()">Crear</button>
+                    <button type="button" class="btn pull-right btn-custom"
+                      ng-click="InformeGyCertificadoC.guardar()">Guardar</button>
+                    <button type="button" class="btn pull-right btn-custom"
+                      ng-click="InformeGyCertificadoC.agregarMeta()">Añadir Meta</button>
+                  </div>
+                  <div class="row">
+                    <form class="form-group">
+                      <div class="col-lg-7">
+                        <label for="">Proceso:</label>
+                        <select class="form-control" ng-model="InformeGyCertificadoC.Informe.proceso"
+                          ng-options="proceso for proceso in InformeGyCertificadoC.procesos">
+
+                        </select>
+                      </div>
+                      <div class="col-lg-5">
+                        <label for="">Periodo de actividades:</label>
+                        <form action="" class="form-inline">
+                          <div class="row form-group">
+                            <div class="form-group col-md-6">
+                              <label for="">Desde</label>
+                              <input type="date" class="form-control" name="" id="">
+                            </div>
+                            <div class="form-group col-md-6">
+                              <label for="">Hasta</label>
+                              <input type="date" class="form-control" name="" id="">
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </form>
+                  </div>
                 </div>
+
 
                 <div class="panel panel-default" ng-repeat="meta in InformeGyCertificadoC.Informe.Metas"
                   ng-init="index_meta=$index">
@@ -119,8 +148,9 @@
             -->
           <p>aqui deberia ir la previsualizacion del pdf</p>
           <div class="wrapper">
-            <object width="100%" height="100%" data="InformeGyCertificadoC.pdf_dataUrl" type="application/pdf" class="internal">
-                <embed src="InformeGyCertificadoC.pdf_dataUrl" type="application/pdf"  />
+            <object width="100%" height="100%" data="InformeGyCertificadoC.pdf_dataUrl" type="application/pdf"
+              class="internal">
+              <embed src="InformeGyCertificadoC.pdf_dataUrl" type="application/pdf" />
             </object>
           </div>
         </div>
