@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, adminMidRequest, $routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -568,7 +568,9 @@ angular.module('contractualClienteApp')
         //console.log(self.fileModel);
         self.mostrar_boton = false;
         var descripcion = self.item.ItemInformeId.Nombre;
-        var aux = self.cargarDocumento(nombre_doc, descripcion, self.fileModel, function (url) {
+
+        //----------Inicio flujo antiguo para subir un documento------
+        /*var aux = self.cargarDocumento(nombre_doc, descripcion, self.fileModel, function (url) {
           //Objeto documento
           var date = new Date();
           date = moment(date).format('DD_MMM_YYYY_HH:mm:ss');
@@ -636,8 +638,24 @@ angular.module('contractualClienteApp')
                   self.observaciones = "";
                 });
             });
-        });
+        }
+       
+        
+        
+        );*/
+         //----------Fin flujo antiguo para subir un documento------
+         console.log("prueba de optencion del base64 del archivo:", self.getBase64(self.fileModel));
+         var data=[{
+           IdDocumento:19, //id tipo documento de documentos_crud
+           nombre:nombre_doc,// nombre formado por vigencia+contrato+cedula+mes+año
+           file:self.getBase64(self.fileModel)
+           
+         }];
+         gestorDocumentalMidRequest.post('upload',data).then(function (response){
+          console.log(response);
+         })
 
+         //la Descripcion donde se enviaria? la que quedaria en el documentos_crud?
       } else {
 
         swal({
@@ -659,7 +677,8 @@ angular.module('contractualClienteApp')
       Función que permite obtener un documento de nuxeo por el Id
     */
     self.getDocumento = function (docid) {
-      nuxeo.header('X-NXDocumentProperties', '*');
+      //----------Inicio flujo antiguo para obtener un documento------
+      /*nuxeo.header('X-NXDocumentProperties', '*');
 
       self.obtenerDoc = function () {
         var defered = $q.defer();
@@ -700,7 +719,16 @@ angular.module('contractualClienteApp')
           self.content = $sce.trustAsResourceUrl(fileURL);
           $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
         });
-      });
+      });*/
+      //----------Fin flujo antiguo para obtener un documento------
+
+      gestorDocumentalMidRequest.get('uuid/'+docid).then(function (response) {
+        console.log(response)
+        var blob = r;
+        var fileURL = URL.createObjectURL(blob);
+        self.content = $sce.trustAsResourceUrl(fileURL);
+        $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
+      })
     };
 
     /*
@@ -797,6 +825,17 @@ angular.module('contractualClienteApp')
         })
 
       }
+    };
+
+    self.getBase64 = function (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        return reader.result
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
     };
 
   });
