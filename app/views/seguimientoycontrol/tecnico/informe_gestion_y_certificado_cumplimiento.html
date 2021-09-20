@@ -44,23 +44,27 @@
                   <div class="row">
                     <form class="form-group">
                       <div class="col-lg-7">
-                        <label for="">Proceso:</label>
-                        <select class="form-control" ng-model="InformeGyCertificadoC.Informe.proceso"
+                        <label for="id_proceso">Proceso:</label>
+                        <select class="form-control" id="id_proceso" ng-model="InformeGyCertificadoC.Informe.proceso"
                           ng-options="proceso for proceso in InformeGyCertificadoC.procesos">
 
                         </select>
                       </div>
                       <div class="col-lg-5">
-                        <label for="">Periodo de actividades:</label>
-                        <form action="" class="form-inline">
-                          <div class="row form-group">
-                            <div class="form-group col-md-6">
-                              <label for="">Desde</label>
-                              <input type="date" class="form-control" name="" id="">
+                        <label for="id_formulario_periodol">Periodo de actividades:</label>
+                        <form id="id_formulario_periodo" class="form-horizontal">
+                          <div class="form-group periodo_form">
+                            <label for="id_fecha_inicio_actividades"
+                              class="col-md-1 control-label label-no-padding">Desde</label>
+                            <div class="col-md-5">
+                              <input type="date" id="id_fecha_inicio_actividades" class="form-control"
+                                ng-model="InformeGyCertificadoC.Informe.fechaInicial">
                             </div>
-                            <div class="form-group col-md-6">
-                              <label for="">Hasta</label>
-                              <input type="date" class="form-control" name="" id="">
+                            <label for="id_fecha_fin_actividades"
+                              class="col-md-1 control-label label-no-padding">Hasta</label>
+                            <div class="col-md-5">
+                              <input type="date" class="form-control" id="id_fecha_fin_actividades"
+                                ng-model="InformeGyCertificadoC.Informe.fechaFinal">
                             </div>
                           </div>
                         </form>
@@ -80,34 +84,53 @@
 
                     <div class="panel panel-default col-lg-12 col-lg-offset-1">
 
-                      <label>Meta:</label>
-                      <select class="form-control" ng-model="meta.Meta"
-                        ng-options="meta for meta in InformeGyCertificadoC.metas|excludeUsed:InformeGyCertificadoC.Informe.Metas:index_meta">
-                        <!-- <option value=""
-                          ng-repeat="meta in InformeGyCertificadoC.metas_disponibles| filter:{activo:true}"
-                          ng-value="meta.meta">{{meta.meta}} </option> -->
-                      </select>
-                      <label>Avance:</label>
-                      <input type="number" name="" id="" max="100" min="0" ng-model="meta.Nivel_de_avance">
-                      <button type="button" class="btn pull-right btn-custom"
-                        ng-click="InformeGyCertificadoC.agregarActividad($index)">Añadir Actividad</button>
+                      <form class="form-horizontal">
+                        <div class="form-group">
+                          <label>Actividad especifica:</label>
+                          <select class="form-control" ng-model="meta.Meta"
+                          ng-options="meta for meta in InformeGyCertificadoC.metas|excludeUsed:InformeGyCertificadoC.Informe.Metas:index_meta">
+                          <!-- <option value=""
+                            ng-repeat="meta in InformeGyCertificadoC.metas_disponibles| filter:{activo:true}"
+                            ng-value="meta.meta">{{meta.meta}} </option> -->
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Avance:</label>
+                          <input type="number" class="form-control" id="" max="100" min="0" ng-model="meta.Nivel_de_avance">
+                        </div>
+                        <div class="form-group">
+                          <button type="button" class="btn pull-right btn-custom"
+                          ng-click="InformeGyCertificadoC.agregarActividad($index)">Añadir Actividad</button>
+                        </div>
+                      </form>
 
                       <div class="panel panel-body">
                         <div ng-repeat="actividad in meta.Actividades">
                           <div class="row">
-                            <form>
-                              <label>Actividad:</label>
-                              <input type="text" name="" id="" value="{{actividad.Actividad}}"
-                                ng-model="actividad.Actividad">
-                              <label>Indicador de cumplimiento:</label>
-                              <input type="text" name="" id="" value="{{actividad.Indicador_de_cumplimiento}}"
-                                ng-model="actividad.Indicador_de_cumplimiento">
-                              <label>Soporte:</label>
-                              <input type="text" name="" id="" value="{{actividad.Observaciones}}"
-                                ng-model="actividad.Observaciones">
-                              <button type="button" class="btn pull-right btn-sm btn-custom "
+                            <form class="form-horizontal" role="form">
+
+                              <div class="col-md-4">
+                                <label class="control-label" for="id_actividad">Actividad:</label>
+                                <input type="text" class="form-control" id="id_actividad"
+                                  value="{{actividad.Actividad}}" ng-model="actividad.Actividad">
+                              </div>
+                              <div class="col-md-3">
+                                <label class="control-label" for="id_indicador_cumplimiento">Indicador de
+                                  cumplimiento:</label>
+                                <input type="text" class="form-control" id="id_indicador_cumplimiento"
+                                  value="{{actividad.Indicador_de_cumplimiento}}"
+                                  ng-model="actividad.Indicador_de_cumplimiento">
+                              </div>
+                              <div class="col-md-4">
+                                <label class="control-label" for="id_evidencias">Evidencias:</label>
+                                <input type="text" class="form-control" id="id_evidencias"
+                                  value="{{actividad.Observaciones}}" ng-model="actividad.Observaciones">
+                              </div>
+                              <div class="col-md-1">
+                                <button type="button" class="btn pull-right btn-sm btn-custom  "
                                 ng-click="InformeGyCertificadoC.eliminarActividad(index_meta,$index)"
                                 ng-if="$index>0">-</button>
+                              </div>
                             </form>
                           </div>
                         </div>

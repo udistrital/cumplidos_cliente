@@ -9,3 +9,12 @@
   Color: #fff;
   margin:5px
 }
+
+.periodo_form {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.label-no-padding{
+  padding: 0px;
+}
