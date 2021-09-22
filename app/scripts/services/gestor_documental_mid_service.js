@@ -19,9 +19,9 @@ angular.module('gestorDocumentalMidService', [])
             get: function(tabla, params) {
                 cancelSearch = $q.defer(); //create new defer for new request
                 if(angular.isUndefined(params)){
-                    return $http.get(path + tabla, token_service.getHeader().Accept='application/pdf');
+                    return $http.get(path + tabla, token_service.getHeader());
                 }else{
-                    return $http.get(path + tabla + "?" + params,  token_service.getHeader().Accept='application/pdf');
+                    return $http.get(path + tabla + "?" + params,  token_service.getHeader());
                 }
             },
             post: function(tabla, elemento) {

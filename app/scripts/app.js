@@ -56,6 +56,7 @@ angular
         'financieraMidService',
         'adminMidService',
         'nuxeoMidService',
+        'gestorDocumentalMidService',
         'adminJbpmV2Service',
         'amazonAdministrativaService',
         'contratoService',
