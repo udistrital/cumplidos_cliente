@@ -204,7 +204,7 @@
               </md-card-title>
               <md-card-actions layout="row" layout-align="end center">
                 <md-button ng-if="iDoc.Metadatos.Tipo === 'Archivo'" ng-click="cargaDocumentosContratista.getDocumento(iDoc.Enlace)" class="md-primary">{{'SEE_DOC' | translate}}</md-button>
-                  <md-button  ng-click="cargaDocumentosContratista.getDocumento(iDoc.Enlace); cargaDocumentosContratista.visualizar_enlace(iDoc.Enlace)" class="md-primary">{{'SEE_DOC' | translate}}</md-button>
+                  <md-button  ng-if="iDoc.Metadatos.Tipo === 'Enlace'" ng-click="cargaDocumentosContratista.getDocumento(iDoc.Enlace); cargaDocumentosContratista.visualizar_enlace(iDoc.Enlace)" class="md-primary">{{'SEE_DOC' | translate}}</md-button>
                 <md-button class="md-warn" ng-if="cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'CD' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RS' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RO'" ng-click="cargaDocumentosContratista.set_doc(iDoc)" data-toggle="modal" data-target="#modal_borrar_soportes">{{'DEL_DOC' | translate}}</md-button>
               </md-card-actions>
             </md-card>
