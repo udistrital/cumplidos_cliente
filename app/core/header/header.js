@@ -21,7 +21,9 @@ angular.module('core')
             if (token_service.live_token()) {
                 $scope.isLogin = true;
                 $scope.notificacion = notificacion;
-                $scope.token = token_service.getPayload();
+                $scope.token = token_service.getAppPayload();
+                $scope.token.sub=$scope.token.email.split('@')[0];
+                console.log($scope.token);
             } else {
                 $scope.isLogin = false;
             }
