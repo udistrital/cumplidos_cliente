@@ -66,6 +66,7 @@ angular
         'gridApiService',
         'colombiaHolidaysService',
         'nuxeoClient',
+        'autenticacionMidService',
         'core'
     ])
     .run(function(amMoment) {
