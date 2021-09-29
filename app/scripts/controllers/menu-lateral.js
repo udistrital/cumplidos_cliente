@@ -6,7 +6,7 @@
  * # menuLateralCtrl
  * Controller of the core
  */
-angular.module('core')
+angular.module('contractualClienteApp')
     .controller('menuLateralCtrl',
         function ($location, CONF, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, behaviorTheme) {
 

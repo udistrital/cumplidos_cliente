@@ -1,16 +1,30 @@
 'use strict';
 
+
+/**
+ * @ngdoc overview
+ * @name notificacionService
+ * @description
+ * # notificacionService
+ * Service in the core.
+ */
+
+angular.module('notificacionService', [])
+
 /**
  * @ngdoc service
- * @name notificacionesApp.notificacion
+ * @name notificacionService.service:notificacionRequest
+ * @requires $http
+ * @param {injector} $http componente http de angular
+ * @requires $websocket
+ * @param {injector} $websocket componente websocket de angular-websocket
+ * @param {injector} $websocket componente websocket de angular-websocket
  * @description
  * # notificacion
- * Factory in the notificacionesApp.
+ * Permite gestionar workflow de notificaciones
  */
-//10.20.0.254/notificacion_api/register?id=1&profile=admin
 
-angular.module('contractualClienteApp')
-    .factory('notificacion', function ( CONF, configuracionRequest, token_service, $websocket, $interval) {
+.factory('notificacion', function( CONF, configuracionRequest, token_service, $websocket, $interval) {
         var TIME_PING = 50000;
 
         var log = [];
@@ -20,9 +34,10 @@ angular.module('contractualClienteApp')
         var addMessage = function (message) {
             methods.log = [message].concat(methods.log)
         };
+        var user = "";
 
         var queryNotification = function () {
-           /* configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
+            /*configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
                 .then(function (response) {
                     if (response !== null) {
                         notificacion_estado_usuario = response.data;
@@ -48,9 +63,11 @@ angular.module('contractualClienteApp')
                 });*/
         };
         if (token_service.live_token()) {
+
             payload = token_service.getPayload();
             if (!angular.isUndefined(payload.role)) {
                 var roles = "";
+                var user = payload.sub;
                 if (typeof payload.role === "object") {
                     var rl = [];
                     for (var index = 0; index < payload.role.length; index++) {
@@ -91,6 +108,7 @@ angular.module('contractualClienteApp')
             queryNotification: queryNotification,
             addMessage: addMessage,
             payload: payload,
+            user: user,
 
             get: function () {
                 dataStream.send(JSON.stringify({
@@ -98,9 +116,9 @@ angular.module('contractualClienteApp')
                 }));
             },
 
-            changeStateNoView: function (user) {
-                // console.info(user)
-                // console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
+            changeStateNoView: function () {
+                //console.info(user)
+                //console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
                 if (methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }).length >= 1) {
                     configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
                         .then(function (response) {
@@ -125,7 +143,6 @@ angular.module('contractualClienteApp')
                 if (estado === 'noleida') {
                     var noti = methods.getNotificacionEstadoUsuario(id);
                     var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
-                    // console.log(path)
                     configuracionRequest.get(path, '')
                         .then(function (response) {
                             methods.log = [];
