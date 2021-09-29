@@ -67,7 +67,8 @@ angular
         'colombiaHolidaysService',
         'nuxeoClient',
         'autenticacionMidService',
-        'core'
+        'themeService',
+        'notificacionService'
     ])
     .run(function(amMoment) {
         amMoment.changeLocale('es');

@@ -6,7 +6,7 @@
  * # menuaplicacionesCtrl
  * Controller of the core
  */
-angular.module('core')
+angular.module('contractualClienteApp')
     .controller('menuaplicacionesCtrl',
         function (configuracionRequest, $scope, behaviorTheme) {
             var categorias = [

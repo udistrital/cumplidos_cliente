@@ -14,7 +14,7 @@ angular.module('contractualClienteApp')
 
     //Se utiliza la variable self estandarizada
     var self = this;
-    self.Documento = token_service.getPayload().documento;
+    self.Documento = token_service.getAppPayload().appUserDocument;
     self.contratistas = [];
     self.dependencias_contratos = {};
     self.dependencia = {};
