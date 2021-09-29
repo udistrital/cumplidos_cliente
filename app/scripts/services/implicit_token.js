@@ -14,45 +14,97 @@ if (window.localStorage.getItem('access_token') === null ||
     queryString = location.hash.substring(1),
     regex = /([^&=]+)=([^&]*)/g;
   var m;
-  while (m = regex.exec(queryString)) {
+  while ((m = regex.exec(queryString)) !== null) {
     params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
   }
   // And send the token over to the server
   var req = new XMLHttpRequest();
   // consider using POST so query isn't logged
   var query = 'https://' + window.location.host + '?' + queryString;
-  // console.log(query);
+  // 
   req.open('GET', query, true);
-  if (params['id_token'] !== null && params['id_token'] !== undefined) {
-    window.localStorage.setItem('access_token', params['access_token']);
-    window.localStorage.setItem('id_token', params['id_token']);
-    window.localStorage.setItem('state', params['state']);
-    window.localStorage.setItem('expires_in', params['expires_in']);
+  if (params.id_token !== null && params.id_token !== undefined) {
+    console.log('id_token inicial: ',params.id_token)
+    window.localStorage.setItem('access_token', params.access_token);
+    window.localStorage.setItem('id_token', params.id_token);
+    window.localStorage.setItem('state', params.state);
+    window.localStorage.setItem('expires_in', params.expires_in);
   } else {
     window.localStorage.clear();
   }
-  req.onreadystatechange = function (e) {
+  req.onreadystatechange = function(e) {
     if (req.readyState === 4) {
       if (req.status === 200) {
-        // window.location = params.state;
+        //
       } else if (req.status === 400) {
-        window.alert('There was an error processing the token.');
+        
       } else {
-        // alert('something else other than 200 was returned');
-        // console.log(req);
+        
       }
     }
   };
 }
 
 angular.module('implicitToken', [])
-  .factory('token_service', function (CONF, md5, $interval) {
+  .factory('token_service', function ($q,CONF, md5, $interval,autenticacionMidRequest) {
 
     var service = {
       //session: $localStorage.default(params),
       header: null,
       token: null,
       logout_url: null,
+      loaded_data:false,
+      getLoginData: function() {
+        //Para  llamar el api de autenticacion
+        var deferred = $q.defer();
+        if (window.localStorage.getItem('access_token') !== null &&
+          window.localStorage.getItem('access_token') !== undefined) {
+          if (window.localStorage.getItem('access_code') === null ||
+            window.localStorage.getItem('access_code') === undefined) {
+            var appUserInfo = JSON.parse(atob(window.localStorage.getItem('id_token').split('.')[1]));
+            var appUserDocument;
+            var appUserRole;
+            /*var emailInfo = {
+              //Email: "karianov@correo.udistrital.edu.co"
+              //Email: appUserInfo.sub,
+              Email: appUserInfo.email,
+              Rol: appUserInfo.role,
+              Documento: appUserInfo.documento
+            };*/
+            var userRol= {
+              user: appUserInfo.email
+            };
+            autenticacionMidRequest.post("token/userRol", userRol, {
+                headers: {
+                  'Accept': 'application/json',
+                  "Authorization": "Bearer " + window.localStorage.getItem('access_token'),
+                }
+              })
+              .then(function(respuestaAutenticacion) {
+                
+                //appUserDocument = respuestaAutenticacion.data.documento;
+                
+          
+                appUserDocument = respuestaAutenticacion.data.documento;
+                
+                appUserRole = respuestaAutenticacion.data.role;            
+                window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
+                window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
+                //
+                deferred.resolve(true);
+              })
+              .catch(function(excepcionAutenticacion) {
+                console.log("fallo la autenticacion");
+                //service.logout();
+              });
+          } else {
+            deferred.resolve(true);
+          }
+        } else {
+          deferred.resolve(true);
+        }
+        return deferred.promise;
+      },
       generateState: function () {
         var text = ((Date.now() + Math.random()) * Math.random()).toString().replace('.', '');
         return md5.createHash(text);
@@ -65,6 +117,7 @@ angular.module('implicitToken', [])
           headers: {
             'Accept': 'application/json',
             "Authorization": "Bearer " + window.localStorage.getItem('access_token'),
+            "Content-Type": "application/json",
           }
         };
         return service.setting_bearer;
@@ -95,7 +148,7 @@ angular.module('implicitToken', [])
         } else {
           service.setting_bearer = {
             headers: {
-              'Accept': 'application/json',              
+              'Accept': 'application/json',
               "Authorization": "Bearer " + window.localStorage.getItem('access_token'),
             }
           };
@@ -110,6 +163,18 @@ angular.module('implicitToken', [])
         var id_token = window.localStorage.getItem('id_token').split('.');
         return JSON.parse(atob(id_token[1]));
       },
+      getAppPayload: function() {
+
+        var id_token = window.localStorage.getItem('id_token').split('.');
+        var access_code = window.localStorage.getItem('access_code');
+        var access_role = window.localStorage.getItem('access_role');
+        var data = angular.fromJson(atob(id_token[1]));
+        console.log('data:',data)
+        data.appUserDocument = angular.fromJson(atob(access_code));
+        data.appUserRole = angular.fromJson(atob(access_role));
+        //
+        return data;
+      },
       logout: function () {
         window.location.replace(service.logout_url);
       },
@@ -120,18 +185,21 @@ angular.module('implicitToken', [])
       setExpiresAt: function () {
         if (angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null) {
           var expires_at = new Date();
-          expires_at.setSeconds(expires_at.getSeconds() + parseInt(window.localStorage.getItem('expires_in')) - 60); // 60 seconds less to secure browser and response latency
+          expires_at.setSeconds(expires_at.getSeconds() + parseInt(window.localStorage.getItem('expires_in')) - 40); // 40 seconds less to secure browser and response latency
           window.localStorage.setItem('expires_at', expires_at);
         }
       },
 
       timer: function () {
-        if (!angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null) {
+        if (!angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null || window.localStorage.getItem('expires_at') === 'Invalid Date') {
           $interval(function () {
             if (service.expired()) {
-              window.localStorage.clear();
+              service.logout();
+              service.clearStorage();
             }
           }, 5000);
+        } else {
+          window.location.reload();
         }
       },
 
@@ -145,15 +213,23 @@ angular.module('implicitToken', [])
           state = decodeURIComponent(m[2]);
         }
         if (window.localStorage.getItem('state') === state) {
-          window.localStorage.clear();
+          service.clearStorage();
           valid = true;
         } else {
           valid = false;
         }
         return valid;
+      },
+      clearStorage: function () {
+        window.localStorage.removeItem('access_token');
+        window.localStorage.removeItem('id_token');
+        window.localStorage.removeItem('expires_in');
+        window.localStorage.removeItem('state');
+        window.localStorage.removeItem('expires_at');
       }
     };
     service.setExpiresAt();
     service.timer();
+    service.live_token();
     return service;
   });

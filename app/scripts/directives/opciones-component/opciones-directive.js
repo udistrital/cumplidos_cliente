@@ -6,7 +6,7 @@
  * @description
  * # listaAvances
  */
-angular.module('core')
+angular.module('contractualClienteApp')
     .directive('opciones', function (CONF, $window, $location,behaviorTheme) {
         return {
             restrict: 'E',
@@ -15,7 +15,7 @@ angular.module('core')
                 children: "=",
                 father: '='
             },
-            templateUrl: '/core/menu-lateral/opciones-component/opciones-directive.html',
+            templateUrl: 'views/directives/opciones-component/opciones-directive.html',
             controllerAs: 'd_opciones',
 
             controller: function ($scope) {
