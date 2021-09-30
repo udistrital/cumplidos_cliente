@@ -169,10 +169,10 @@ angular.module('implicitToken', [])
         var access_code = window.localStorage.getItem('access_code');
         var access_role = window.localStorage.getItem('access_role');
         var data = angular.fromJson(atob(id_token[1]));
-        console.log('data:',data)
+        console.log('access_code:',access_code,'access_role: ',access_role);
         data.appUserDocument = angular.fromJson(atob(access_code));
         data.appUserRole = angular.fromJson(atob(access_role));
-        //
+        console.log('data:',data)
         return data;
       },
       logout: function () {
@@ -230,6 +230,5 @@ angular.module('implicitToken', [])
     };
     service.setExpiresAt();
     service.timer();
-    service.live_token();
     return service;
   });
