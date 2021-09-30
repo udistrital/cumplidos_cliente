@@ -19,12 +19,13 @@ angular.module('contractualClienteApp')
             $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
 
             if (token_service.live_token()) {
-                token_service.getLoginData();
-                $scope.isLogin = true;
-                $scope.notificacion = notificacion;
-                $scope.token = token_service.getAppPayload();
-                $scope.token.sub=$scope.token.email.split('@')[0];
-                console.log($scope.token);
+                token_service.getLoginData().then(function () {
+                    $scope.isLogin = true;
+                    $scope.notificacion = notificacion;
+                    $scope.token = token_service.getAppPayload();
+                    $scope.token.sub=$scope.token.email.split('@')[0];
+                    console.log($scope.token);
+                });
             } else {
                 $scope.isLogin = false;
             }
