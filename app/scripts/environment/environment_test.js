@@ -47,6 +47,7 @@ angular.module("contractualClienteApp").constant("CONF", {
     NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
     NUXEO_MID:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/nuxeo_mid/v1/",
+    GESTION_DOCUMENTAL_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1",
     TOKEN: {
       AUTORIZATION_URL:
         "https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize",
@@ -57,6 +58,7 @@ angular.module("contractualClienteApp").constant("CONF", {
       RESPONSE_TYPE: "id_token token",
       SCOPE: "openid email documento",
       BUTTON_CLASS: "btn btn-warning btn-sm",
+      
       SIGN_OUT_URL:
         "https://autenticacion.portaloas.udistrital.edu.co/oidc/logout",
       SIGN_OUT_REDIRECT_URL:

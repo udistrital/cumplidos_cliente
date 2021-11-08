@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, adminMidRequest, $routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -183,8 +183,20 @@ angular.module('contractualClienteApp')
       //Petición para obtener la información de los contratos del contratista
       self.gridOptions1.data = [];
       //Petición para obtener las contratos relacionados al contratista
-      cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
+      /*cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
         .then(function (response) {
+          response.data.Data=[
+            {
+                "NumeroContratoSuscrito": "1265",
+                "Vigencia": "2021",
+                "NumeroCdp": "1668",
+                "VigenciaCdp": "2021",
+                "NumeroRp": "4553",
+                "VigenciaRp": "2021",
+                "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
+                "NumDocumentoSupervisor": "52204982"
+            }
+          ]
           if (response.data.Data) {
             //Contiene la respuesta de la petición
             self.informacion_contratos = response.data.Data;
@@ -199,7 +211,28 @@ angular.module('contractualClienteApp')
               'error'
             )
           };
-        });
+        });*/
+
+      //Simulacion peticion exitosa
+      var Data = [
+        {
+          "NumeroContratoSuscrito": "1265",
+          "Vigencia": "2021",
+          "NumeroCdp": "1668",
+          "VigenciaCdp": "2021",
+          "NumeroRp": "4553",
+          "VigenciaRp": "2021",
+          "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
+          "NumDocumentoSupervisor": "52204982"
+        }
+      ];
+
+      //Contiene la respuesta de la petición
+      self.informacion_contratos = Data;
+      //Se envia la data a la tabla
+      self.gridOptions1.data = self.informacion_contratos;
+      //Contiene el numero de documento del Responsable
+      self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
     };
 
     /*
@@ -307,7 +340,7 @@ angular.module('contractualClienteApp')
             DocumentoEjecutor: self.Documento
           }
 
-          
+
           ////console.log("Hizo el primero");
           cumplidosCrudRequest.get('pago_mensual', $.param({
             query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito +
@@ -317,7 +350,7 @@ angular.module('contractualClienteApp')
               ",DocumentoPersonaId:" + self.Documento,
             limit: 0
           })).then(function (responsePago) {
-            
+
             if (Object.keys(responsePago.data.Data[0]).length === 0) {
               //no existe pago para ese mes y se crea 
               cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
@@ -446,10 +479,10 @@ angular.module('contractualClienteApp')
         var nombre_docs = solicitud.VigenciaContrato + solicitud.NumeroContrato + solicitud.DocumentoPersonaId + solicitud.Mes + solicitud.Ano;
 
         contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia).then(function (response) {
-          
+
           self.obtener_doc(solicitud);
-          if (self.documentos) {          
-            
+          if (self.documentos) {
+
             cumplidosCrudRequest.get('estado_pago_mensual', $.param({
               limit: 0,
               query: 'CodigoAbreviacion:PRS'
@@ -458,7 +491,7 @@ angular.module('contractualClienteApp')
               var pago_mensual_auditoria = {
                 Pago: {
                   CargoResponsable: ("SUPERVISOR: " + response.data.contrato.supervisor.cargo).substring(0, 69),
-                  EstadoPagoMensualId: { "Id": sig_estado[0].Id},
+                  EstadoPagoMensualId: { "Id": sig_estado[0].Id },
                   FechaModificacion: new Date(),
                   Mes: solicitud.Mes,
                   Ano: solicitud.Ano,
@@ -470,7 +503,7 @@ angular.module('contractualClienteApp')
                 CargoEjecutor: "CONTRATISTA",
                 DocumentoEjecutor: self.Documento
               }
-              
+
               cumplidosCrudRequest.put('pago_mensual', solicitud.Id, pago_mensual_auditoria).
                 then(function (response) {
                   swal(
@@ -478,11 +511,11 @@ angular.module('contractualClienteApp')
                     'Su solicitud se encuentra a la espera de revisión',
                     'success'
                   )
-      
+
                   self.cargar_soportes(self.contrato);
                   //self.documentos = {};
                 })
-    
+
                 //Manejo de excepcion para el put
                 .catch(function (response) {
                   swal(
@@ -493,7 +526,7 @@ angular.module('contractualClienteApp')
                 });
             })
           } else {
-  
+
             swal(
               'Error',
               'No puede enviar a revisión sin cargar algún documento',
@@ -567,55 +600,48 @@ angular.module('contractualClienteApp')
       if (self.fileModel !== undefined && self.item !== undefined && self.fileModel.type === 'application/pdf' && self.fileModel.size <= 1000000) {
         //console.log(self.fileModel);
         self.mostrar_boton = false;
-        var descripcion = self.item.ItemInformeId.Nombre;
-        var aux = self.cargarDocumento(nombre_doc, descripcion, self.fileModel, function (url) {
-          //Objeto documento
-          var date = new Date();
-          date = moment(date).format('DD_MMM_YYYY_HH:mm:ss');
-          //var now = date
-          self.Id_doc_nuxeo = url;
-          self.objeto_documento = {
-            "Nombre": nombre_doc,
-            "Descripcion": descripcion,
-            "TipoDocumento": {
-              "Id": 19
-            },
-            "Enlace": url,
-            "Metadatos": JSON.stringify({
-              "NombreArchivo": self.fileModel.name,
-              "Tipo": "Archivo",
-              "Observaciones": self.observaciones
-            }),
-            "Activo": true
-          };
+        console.log(self.item)
+        var descripcion;
+        var fileBase64;
+        self.getBase64(self.fileModel).then(
+          function (base64) {
+            fileBase64 = base64;
+            descripcion = self.item.ItemInformeId.Nombre;
+            var data = [{
+              IdTipoDocumento: 19, //id tipo documento de documentos_crud
+              nombre: nombre_doc,// nombre formado por vigencia+contrato+cedula+mes+año
+              file: fileBase64,
+              metadatos: {
+                NombreArchivo: self.fileModel.name,
+                Tipo: "Archivo",
+                Observaciones: self.observaciones
+              }, 
+              descripcion:descripcion,
 
-          //Post a la tabla documento del   
-          documentoRequest.post('documento', self.objeto_documento)
-            .then(function (response) {
-              console.log(response)
-              self.id_documento = response.data.Id;
+            }];
+            //guarda el soporte por medio del gestor documental
+            gestorDocumentalMidRequest.post('/document/upload',data).then(function (response){
+             console.log(response.data);
+              nuxeoMidRequest.post('workflow?docID=' + response.data.res.Enlace, null)
+                 .then(function (response) {
+                  console.log('nuxeoMid response:',response)
+              }).catch(function (error) {
+                console.log('nuxeoMid error:',error)
+              });
 
-              //Objeto soporte_pago_mensual
-              self.objeto_soporte = {
-                "PagoMensualId": {
-                  "Id": self.fila_sol_pago.Id
-                },
-                "Documento": self.id_documento,
-                "ItemInformeTipoContratoId": {
-                  "Id": self.item.Id
-                },
-                "Aprobado": false
-              };
-
-              // console.info(self.Id_doc_nuxeo);
-              // inicio de flujo de documentos 
-              nuxeoMidRequest.post('workflow?docID=' + self.Id_doc_nuxeo, null)
-                .then(function (response) {
-                  //Bandera de validacion
-                });
-
-              //Post a la tabla soporte documento
-              cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
+              if(response.data.Status==200){
+                self.id_documento = response.data.res.Id;
+                self.objeto_soporte = {
+                  "PagoMensualId": {
+                    "Id": self.fila_sol_pago.Id
+                  },
+                  "Documento": self.id_documento,
+                  "ItemInformeTipoContratoId": {
+                    "Id": self.item.Id
+                  },
+                  "Aprobado": false
+                };
+                cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
                 .then(function (response) {
                   //Bandera de validacion
                   swal({
@@ -635,9 +661,20 @@ angular.module('contractualClienteApp')
                   //Limpieza Variable
                   self.observaciones = "";
                 });
+              }
+            }).catch(function (error) {
+              swal({
+                title: 'Error',
+                text: 'Ocurrio un error al guardar el documento',
+                type: 'error',
+                target: document.getElementById('modal_ver_soportes')
+              });
             });
-        });
+          }
+        );
 
+
+        //la Descripcion donde se enviaria? la que quedaria en el documentos_crud?
       } else {
 
         swal({
@@ -659,48 +696,14 @@ angular.module('contractualClienteApp')
       Función que permite obtener un documento de nuxeo por el Id
     */
     self.getDocumento = function (docid) {
-      nuxeo.header('X-NXDocumentProperties', '*');
+      gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
 
-      self.obtenerDoc = function () {
-        var defered = $q.defer();
-
-        nuxeo.request('/id/' + docid)
-          .get()
-          .then(function (response) {
-            self.doc = response;
-            var aux = response.get('file:content');
-            self.document = response;
-            defered.resolve(response);
-          })
-          .catch(function (error) {
-            defered.reject(error)
-          });
-        return defered.promise;
-      };
-
-      self.obtenerFetch = function (doc) {
-        var defered = $q.defer();
-
-        doc.fetchBlob()
-          .then(function (res) {
-            defered.resolve(res.blob());
-
-          })
-          .catch(function (error) {
-            defered.reject(error)
-          });
-        return defered.promise;
-      };
-
-      self.obtenerDoc().then(function () {
-
-        self.obtenerFetch(self.document).then(function (r) {
-          self.blob = r;
-          var fileURL = URL.createObjectURL(self.blob);
-          self.content = $sce.trustAsResourceUrl(fileURL);
-          $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
-        });
-      });
+        var file = new Blob([self.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
+        console.log('file ',file);
+        var fileURL = URL.createObjectURL(file);
+        console.log('fileURL ', fileURL);
+        $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
+      })
     };
 
     /*
@@ -709,7 +712,7 @@ angular.module('contractualClienteApp')
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
       var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-      documentoRequest.get('documento', $.param({
+      documentoRequest.get('/documento', $.param({
         query: "Nombre:" + nombre_docs + ",Activo:true",
         limit: 0
       })).then(function (response) {
@@ -720,10 +723,7 @@ angular.module('contractualClienteApp')
           self.descripcion_doc = value.Descripcion;
           value.Metadatos = JSON.parse(value.Metadatos);
         });
-      })
-
-        //Manejo de null en la tabla documento
-        .catch(function (response) {
+      }).catch(function (response) {//Manejo de null en la tabla documento
           //Se deja vacia la variable para que no quede pegada
           self.documentos = undefined;
         });
@@ -739,31 +739,57 @@ angular.module('contractualClienteApp')
       nuxeoMidRequest.delete('workflow', documento.Enlace)
         .then(function (response) {
           //Bandera de validacion
-        });
-      console.info(documento.Id)
-      documento.Metadatos = JSON.stringify(documento.Metadatos);
-      documento.Activo = false;
-      //documento.Descripcion = "PRUEBA DE CAMBIO"
-      documentoRequest.put('documento', documento.Id, documento).then(function (response) {
-          console.log(response)
-          //self.obtener_doc(self.fila_sol_pago)
-          swal({
-            title: 'Documento borrado',
-            text: 'Se ha borrado exitosamente el documento',
-            type: 'success',
-            target: self.obtener_doc(self.fila_sol_pago)
-          });
-        })
-
-        .catch(function (response) {
-         // self.obtener_doc(self.fila_sol_pago);
+        }).catch(
+          function (error) {
+            // self.obtener_doc(self.fila_sol_pago);
+            // swal({
+            //   title: 'Error',
+            //   text: 'Hubo un error al momento de borrar el documento',
+            //   type: 'error',
+            //   target: document.getElementById('modal_ver_soportes')
+            // });
+            console.log(error);
+          }
+        );
+      gestorDocumentalMidRequest.delete('/document',documento.Enlace).then(function (response) {
+        console.log(response)
+        swal({
+             title: 'Documento borrado',
+             text: 'Se ha borrado exitosamente el documento',
+             type: 'success',
+             target: self.obtener_doc(self.fila_sol_pago)
+           });
+      }).catch(function (error) {
          swal({
-          title: 'Error',
-          text: 'Hubo un error al momento de borrar el documento',
-          type: 'error',
-          target: self.obtener_doc(self.fila_sol_pago)
-        });
-        })
+           title: 'Error',
+           text: 'Hubo un error al momento de borrar el documento',
+           type: 'error',
+           target: document.getElementById('modal_ver_soportes')
+         });
+       })
+      // documento.Metadatos = JSON.stringify(documento.Metadatos);
+      // documento.Activo = false;
+      // //documento.Descripcion = "PRUEBA DE CAMBIO"
+      // documentoRequest.put('documento', documento.Id, documento).then(function (response) {
+      //   console.log(response)
+      //   //self.obtener_doc(self.fila_sol_pago)
+      //   swal({
+      //     title: 'Documento borrado',
+      //     text: 'Se ha borrado exitosamente el documento',
+      //     type: 'success',
+      //     target: self.obtener_doc(self.fila_sol_pago)
+      //   });
+      // })
+
+        // .catch(function (response) {
+        //   // self.obtener_doc(self.fila_sol_pago);
+        //   swal({
+        //     title: 'Error',
+        //     text: 'Hubo un error al momento de borrar el documento',
+        //     type: 'error',
+        //     target: self.obtener_doc(self.fila_sol_pago)
+        //   });
+        // })
 
     }
 
@@ -798,5 +824,41 @@ angular.module('contractualClienteApp')
 
       }
     };
+
+    self.fileToBase64 = function (file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+          if ((encoded.length % 4) > 0) {
+            encoded += '='.repeat(4 - (encoded.length % 4));
+          }
+          resolve(encoded);
+        };
+        reader.onerror = error => reject(error);
+      });
+    }
+
+
+    self.getBase64 = async (file) => {
+      var base64;
+      await self.fileToBase64(file).then(data => {
+        base64 = data;
+        return null;
+      });
+      return base64;
+    }
+
+    self.base64ToArrayBuffer=function (base64) {
+      var binary_string = $window.atob( base64.replace(/\s/g, '') );
+      console.log(binary_string);
+      var len = binary_string.length;
+      var bytes = new Uint8Array(len);
+      for (var i = 0; i < len; i++) {
+          bytes[i] = binary_string.charCodeAt(i);
+      }
+      return bytes.buffer;
+  }
 
   });
