@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, wso2GeneralService, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -183,56 +183,62 @@ angular.module('contractualClienteApp')
       //Petición para obtener la información de los contratos del contratista
       self.gridOptions1.data = [];
       //Petición para obtener las contratos relacionados al contratista
-      /*cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
-        .then(function (response) {
-          response.data.Data=[
-            {
-                "NumeroContratoSuscrito": "1265",
-                "Vigencia": "2021",
-                "NumeroCdp": "1668",
-                "VigenciaCdp": "2021",
-                "NumeroRp": "4553",
-                "VigenciaRp": "2021",
-                "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
-                "NumDocumentoSupervisor": "52204982"
-            }
-          ]
-          if (response.data.Data) {
-            //Contiene la respuesta de la petición
-            self.informacion_contratos = response.data.Data;
-            //Se envia la data a la tabla
-            self.gridOptions1.data = self.informacion_contratos;
-            //Contiene el numero de documento del Responsable
-            self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
-          } else {
-            swal(
-              'Error',
-              'No se encontraron contratos vigentes asociados a su número de documento',
-              'error'
-            )
-          };
-        });*/
+      // cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
+      //   .then(function (response) {
+      //     response.data.Data=[
+      //       {
+      //         "NumeroContratoSuscrito": "1265",
+      //         "Vigencia": "2021",
+      //         "NumeroCdp": "1668",
+      //         "VigenciaCdp": "2021",
+      //         "NumeroRp": "4553",
+      //         "VigenciaRp": "2021",
+      //         "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
+      //         "NumDocumentoSupervisor": "52204982"
+      //       }
+      //     ]
+      //     if (response.data.Data) {
+      //       //Contiene la respuesta de la petición
+      //       self.informacion_contratos = response.data.Data;
+      //       //Se envia la data a la tabla
+      //       self.gridOptions1.data = self.informacion_contratos;
+      //       //Contiene el numero de documento del Responsable
+      //       self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
+      //     } else {
+      //       swal(
+      //         'Error',
+      //         'No se encontraron contratos vigentes asociados a su número de documento',
+      //         'error'
+      //       )
+      //     };
+      //   });
 
-      //Simulacion peticion exitosa
-      var Data = [
-        {
-          "NumeroContratoSuscrito": "1265",
-          "Vigencia": "2021",
-          "NumeroCdp": "1668",
-          "VigenciaCdp": "2021",
-          "NumeroRp": "4553",
-          "VigenciaRp": "2021",
-          "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
-          "NumDocumentoSupervisor": "52204982"
-        }
-      ];
-
-      //Contiene la respuesta de la petición
-      self.informacion_contratos = Data;
-      //Se envia la data a la tabla
-      self.gridOptions1.data = self.informacion_contratos;
-      //Contiene el numero de documento del Responsable
-      self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
+        var Data=[
+          {
+            "NumeroContratoSuscrito": "1265",
+            "Vigencia": "2021",
+            "NumeroCdp": "1668",
+            "VigenciaCdp": "2021",
+            "NumeroRp": "4553",
+            "VigenciaRp": "2021",
+            "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
+            "NumDocumentoSupervisor": "52204982"
+          }
+        ]
+        if (Data) {
+          //Contiene la respuesta de la petición
+          self.informacion_contratos = Data;
+          //Se envia la data a la tabla
+          self.gridOptions1.data = self.informacion_contratos;
+          //Contiene el numero de documento del Responsable
+          self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
+        } else {
+          swal(
+            'Error',
+            'No se encontraron contratos vigentes asociados a su número de documento',
+            'error'
+          )
+        };
     };
 
     /*
@@ -305,6 +311,16 @@ angular.module('contractualClienteApp')
       }
       ]
     };
+
+    self.cambiar_form_doc = function(){
+      console.log("item seleccionado: ",self.item);
+      console.log(self.fila_sol_pago)
+      if(self.item.Id==29){
+        self.generar_documento=true;
+      }else{
+        self.generar_documento=false;
+      }
+    }
 
     /*
       Función para generar la solicitud de pago
@@ -603,7 +619,7 @@ angular.module('contractualClienteApp')
         console.log(self.item)
         var descripcion;
         var fileBase64;
-        self.getBase64(self.fileModel).then(
+        utils.getBase64(self.fileModel).then(
           function (base64) {
             fileBase64 = base64;
             descripcion = self.item.ItemInformeId.Nombre;
@@ -698,7 +714,7 @@ angular.module('contractualClienteApp')
     self.getDocumento = function (docid) {
       gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
 
-        var file = new Blob([self.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
+        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
         console.log('file ',file);
         var fileURL = URL.createObjectURL(file);
         console.log('fileURL ', fileURL);
@@ -712,7 +728,7 @@ angular.module('contractualClienteApp')
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
       var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-      documentoRequest.get('/documento', $.param({
+      documentoRequest.get('documento', $.param({
         query: "Nombre:" + nombre_docs + ",Activo:true",
         limit: 0
       })).then(function (response) {
@@ -824,41 +840,5 @@ angular.module('contractualClienteApp')
 
       }
     };
-
-    self.fileToBase64 = function (file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
-          if ((encoded.length % 4) > 0) {
-            encoded += '='.repeat(4 - (encoded.length % 4));
-          }
-          resolve(encoded);
-        };
-        reader.onerror = error => reject(error);
-      });
-    }
-
-
-    self.getBase64 = async (file) => {
-      var base64;
-      await self.fileToBase64(file).then(data => {
-        base64 = data;
-        return null;
-      });
-      return base64;
-    }
-
-    self.base64ToArrayBuffer=function (base64) {
-      var binary_string = $window.atob( base64.replace(/\s/g, '') );
-      console.log(binary_string);
-      var len = binary_string.length;
-      var bytes = new Uint8Array(len);
-      for (var i = 0; i < len; i++) {
-          bytes[i] = binary_string.charCodeAt(i);
-      }
-      return bytes.buffer;
-  }
 
   });

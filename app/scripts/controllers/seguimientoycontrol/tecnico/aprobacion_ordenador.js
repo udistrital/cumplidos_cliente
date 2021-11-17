@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, $routeParams, documentoRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, utils, $routeParams, documentoRequest, gestorDocumentalMidRequest, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -521,48 +521,14 @@ angular.module('contractualClienteApp')
       Función que permite obtener un documento de nuxeo por el Id
     */
     self.getDocumento = function (docid) {
-      nuxeo.header('X-NXDocumentProperties', '*');
+      gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
 
-      self.obtenerDoc = function () {
-        var defered = $q.defer();
-
-        nuxeo.request('/id/' + docid)
-          .get()
-          .then(function (response) {
-            self.doc = response;
-            var aux = response.get('file:content');
-            self.document = response;
-            defered.resolve(response);
-          })
-          .catch(function (error) {
-            defered.reject(error)
-          });
-        return defered.promise;
-      };
-
-      self.obtenerFetch = function (doc) {
-        var defered = $q.defer();
-
-        doc.fetchBlob()
-          .then(function (res) {
-            defered.resolve(res.blob());
-
-          })
-          .catch(function (error) {
-            defered.reject(error)
-          });
-        return defered.promise;
-      };
-
-      self.obtenerDoc().then(function () {
-
-        self.obtenerFetch(self.document).then(function (r) {
-          self.blob = r;
-          var fileURL = URL.createObjectURL(self.blob);
-          self.content = $sce.trustAsResourceUrl(fileURL);
-          $window.open(fileURL, 'Soporte', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900', true);
-        });
-      });
+        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
+        console.log('file ',file);
+        var fileURL = URL.createObjectURL(file);
+        console.log('fileURL ', fileURL);
+        $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
+      })
     };
 
 
