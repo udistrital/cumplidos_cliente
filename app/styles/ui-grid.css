@@ -613,14 +613,14 @@
   }
   @font-face {
     font-family: 'ui-grid';
-    src: url('./../fonts/ui-grid.eot');
-    src: url('./../fonts/ui-grid.eot#iefix') 
-    format('embedded-opentype'), 
-    url('./../fonts/ui-grid.woff') 
+    src: 'style/fonts/ui-grid.eot';
+    src: 'style/fonts/ui-grid.eot#iefix' 
+    format('embedded-opentype'),
+    'style/fonts/ui-grid.woff'
     format('woff'), 
-    url('./../fonts/ui-grid.ttf') 
+    'style/fonts/ui-grid.ttf'
     format('truetype'), 
-    url('./../fonts/ui-grid.svg?#ui-grid') 
+    'style/fonts/ui-grid.svg?#ui-grid'
     format('svg');
     font-weight: normal;
     font-style: normal;

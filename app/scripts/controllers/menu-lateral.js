@@ -6,7 +6,7 @@
  * # menuLateralCtrl
  * Controller of the core
  */
-angular.module('core')
+angular.module('contractualClienteApp')
     .controller('menuLateralCtrl',
         function ($location, CONF, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, behaviorTheme) {
 
@@ -23,38 +23,43 @@ angular.module('core')
             // optiene los menus segun el rol
 
             if (token_service.live_token()) {
-                $scope.token = token_service.getPayload();
-                if (!angular.isUndefined($scope.token.role)) {
-                    var roles = "";
-                    if (typeof $scope.token.role === "object") {
-                        var rl = [];
-                        for (var index = 0; index < $scope.token.role.length; index++) {
-                            if ($scope.token.role[index].indexOf("/") < 0) {
-                                rl.push($scope.token.role[index]);
-                            }
+                token_service.getLoginData()
+        .then(function() {
+            $scope.token = token_service.getAppPayload();
+            if (!angular.isUndefined($scope.token.appUserRole)) {
+                var roles = "";
+                if (typeof $scope.token.appUserRole === "object") {
+                    var rl = [];
+
+
+                    for (var index = 0; index < $scope.token.appUserRole.length; index++) {
+                        if ($scope.token.appUserRole[index].indexOf(",") < 0) {
+                            rl.push($scope.token.appUserRole[index]);
                         }
-                        roles = rl.toString();
-                    } else {
-                        roles = $scope.token.role;
                     }
-
-                    roles = roles.replace(/,/g, '%2C');
-                    configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/' + CONF.APP_MENU, '').then(function (response) {
-
-                        $rootScope.menu = response.data;
-                        behaviorTheme.initMenu(response.data);
-                        $scope.menu = behaviorTheme.menu;
-
-                    })
-                        .catch(
-                            function (response) {
-                                $rootScope.menu = response.data;
-                                behaviorTheme.initMenu(response.data);
-                                $scope.menu = behaviorTheme.menu;
-
-                            });
+                    roles = rl.toString();
+                    console.log(roles);
+                } else {
+                    roles = $scope.token.appUserRole;
                 }
+                roles = roles.replace('Internal/everyone,', '','g');
+                configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas', '').then(function(response) {
+                    $rootScope.menu = response.data;
+                    behaviorTheme.initMenu(response.data);
+                    $scope.menu = behaviorTheme.menu;
+                    })
+                    .catch(
+                        function(response) {
+                            $rootScope.menu = response.data;
+                            behaviorTheme.initMenu(response.data);
+                            $scope.menu = behaviorTheme.menu;
+
+                        });
             }
+        });
+            }
+
+            
 
             $scope.redirect_url = function (path) {
                 var path_sub = path.substring(0, 4);

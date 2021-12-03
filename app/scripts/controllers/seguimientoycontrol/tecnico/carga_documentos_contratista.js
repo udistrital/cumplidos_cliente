@@ -28,7 +28,8 @@ angular.module('contractualClienteApp')
     self.mostrar_boton = true;
 
     //Número de documento que viene en el token
-    self.Documento = token_service.getPayload().documento;
+    //Documento = token_service.getPayload().documento;
+    self.Documento = token_service.getAppPayload().appUserDocument;
 
     //Variable que contiene los años de los cuales puede hacer la solicitud
     self.anios = [];

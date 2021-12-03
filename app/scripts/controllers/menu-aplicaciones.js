@@ -6,7 +6,7 @@
  * # menuaplicacionesCtrl
  * Controller of the core
  */
-angular.module('core')
+angular.module('contractualClienteApp')
     .controller('menuaplicacionesCtrl',
         function (configuracionRequest, $scope, behaviorTheme) {
             var categorias = [
@@ -159,12 +159,13 @@ angular.module('core')
             var getRoles = function () {
 
                 var data = [];
-                if (window.localStorage.getItem('id_token') !== null) {
+                if (window.localStorage.getItem('access_role') !== null) {
                     //isLogin = true;
                     // tslint:disable-next-line: variable-name
-                    var id_token = window.localStorage.getItem('id_token').split('.');
-                    var payload = JSON.parse(atob(id_token[1]));
-                    return payload.role.map(function (element) {
+                    var id_token = window.localStorage.getItem('access_role').split('.');
+                    var payload = JSON.parse(atob(id_token));
+                    console.log(payload);
+                    return payload.map(function (element) {
                         return { Nombre: element }
                     });
                 } else {

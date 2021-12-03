@@ -10,6 +10,7 @@
   margin:5px
 }
 
+
 .periodo_form {
   display: table-cell;
   vertical-align: middle;
@@ -17,4 +18,12 @@
 
 .label-no-padding{
   padding: 0px;
+.btn-custom:hover {
+  Color: #fff;
+}
+
+.margin-y {
+  margin-top: 3px;
+  margin-bottom: 10px;
+
 }

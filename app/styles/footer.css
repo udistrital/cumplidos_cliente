@@ -1,7 +1,7 @@
 /* footer styles */
 @font-face {
   font-family: opensans;
-  src: url(../fonts/OpenSans-Regular.ttf) format("opentype");
+  src: "style/fonts/OpenSans-Regular.ttf" format("opentype");
 }
 
 #footer {
