@@ -56,6 +56,7 @@ angular
         'financieraMidService',
         'adminMidService',
         'nuxeoMidService',
+        'gestorDocumentalMidService',
         'adminJbpmV2Service',
         'amazonAdministrativaService',
         'contratoService',
@@ -119,6 +120,10 @@ angular
               controller: 'AprobacionOrdenadorCtrl',
               controllerAs: 'aprobacionOrdenador'
             })
+            .when('/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/:contrato/:anio/:mes', {
+                templateUrl: 'views/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.html',
+                controller: 'InformeGyCertificadoCCtrl',
+                controllerAs: 'InformeGyCertificadoC'
             .when('/cumplidos_aprobados_por_ordenador', {
                 templateUrl: 'views/cumplidosaprobadosordenador/visualizacion_cumplidos.html',
                 controller: 'VisualizarCumplidosCtrl',
