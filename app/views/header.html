@@ -9,8 +9,8 @@
         </div>
         <div class="header-button-notification" ng-click="togglenotify()">
             <i class="fa fa-bell-o"></i>
-            <div class="header-badge" *ngIf="notificacion">
-                {{ notificacion.no_vistos }}
+            <div class="header-badge" ng-if="notificacion.existeNotificaciones">
+                !
             </div>
         </div>
         <div class="header-button-user-container" ng-click="toogleCerrarSesion()" ng-show="token_service.live_token()">

@@ -38,8 +38,8 @@ angular.module("contractualClienteApp").constant("CONF", {
     FINANCIERA_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_crud_api/v1/",
     MODELS_SERVICE: "scripts/models/",
-    NOTIFICACION_WS:
-      "wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws/join",
+    NOTIFICACION_MID_SERVICE: "http://pruebasapi.intranetoas.udistrital.edu.co:8527/v1/",
+    ARM_AWS_NOTIFICACIONES:"arn:aws:sns:us-east-1:699001025740:CumplidosTest",
     OIKOS_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
     CONTRATO_SERVICE:
@@ -48,6 +48,7 @@ angular.module("contractualClienteApp").constant("CONF", {
     NUXEO_MID:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/nuxeo_mid/v1/",
     GESTION_DOCUMENTAL_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1",
+    TITAN_MID_SERVICE:'https://autenticacion.portaloas.udistrital.edu.co/apioas/titan_api_mid/v2/',
     AUTENTICATION_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/autenticacion_mid/v1/",
     TOKEN: {
       AUTORIZATION_URL:

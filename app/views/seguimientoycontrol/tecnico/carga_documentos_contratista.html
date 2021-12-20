@@ -82,7 +82,8 @@
             </select>
           </div>
 
-          <button class="col-md-2 btn btn-success" ng-click="cargaDocumentosContratista.enviar_solicitud()" ng-show="cargaDocumentosContratista.mostrar_boton">
+          <button class="col-md-2 btn btn-success" ng-click="cargaDocumentosContratista.enviar_solicitud()"
+            ng-show="cargaDocumentosContratista.mostrar_boton">
             {{'ENVIAR' | translate }}
           </button>
 
@@ -156,13 +157,12 @@
             <label for="select_item" class="form-control">{{'ITEM' | translate}}</label>
           </div>
           <div class="col-md-9">
-            <select ng-model="cargaDocumentosContratista.item" class="form-control">
+            <select ng-model="cargaDocumentosContratista.item" class="form-control" ng-change="cargaDocumentosContratista.cambiar_form_doc()">
               <option value="">--{{'SEL_ITEM' | translate}}--</option>
               <option ng-repeat="iItem in cargaDocumentosContratista.items" ng-value="iItem">
                 {{iItem.ItemInformeId.Nombre}} </option>
             </select>
           </div>
-
           <br><br><br>
           <div class="form-group">
             <div class="col-md-3">
@@ -172,28 +172,34 @@
               <textarea class="form-control" rows="3" ng-model="cargaDocumentosContratista.observaciones"></textarea>
             </div>
           </div>
+          <div ng-show="!cargaDocumentosContratista.generar_documento">
+            <br><br><br><br>
+            <div class="form-group">
+              <div class="file-loading">
+                <input class="form-control" id="input-id" type="file"
+                  angular-bfi="{showPreview:false, showUpload:false, showRemove:false ,allowedFileExtensions:['pdf'], language:'es', maxFileSize: 1000, elErrorContainer: '#errorBlock'}"
+                  file-model="cargaDocumentosContratista.fileModel" required title=''> </input>
+              </div>
+              <button class="btn btn-danger" ng-click="cargaDocumentosContratista.prueba()">Remover</button>
 
-          <br><br><br><br>
-          <div class="form-group">
-            <div class="file-loading">
-              <input class="form-control" id="input-id" type="file"
-                angular-bfi="{showPreview:false, showUpload:false, showRemove:false ,allowedFileExtensions:['pdf'], language:'es', maxFileSize: 1000, elErrorContainer: '#errorBlock'}"
-                file-model="cargaDocumentosContratista.fileModel" required title=''> </input>
+              <div id="errorBlock" class="help-block"></div>
+
             </div>
-            <button class="btn btn-danger" ng-click="cargaDocumentosContratista.prueba()">Remover</button>
 
-            <div id="errorBlock" class="help-block"></div>
-
+            <br><br><br>
+            <button ng-if="cargaDocumentosContratista.mostrar_boton" class="btn btn-success"
+              ng-click="cargaDocumentosContratista.subir_documento()"
+              ng-show="cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'CD' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RS' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RO'">
+              {{'CAR_SOP' | translate }}
+            </button>
           </div>
 
-          <br><br><br>
-          <button ng-if="cargaDocumentosContratista.mostrar_boton" class="btn btn-success"
-            ng-click="cargaDocumentosContratista.subir_documento()"
-            ng-show="cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'CD' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RS' || cargaDocumentosContratista.fila_sol_pago.EstadoPagoMensualId.CodigoAbreviacion === 'RO'">
-            {{'CAR_SOP' | translate }}
-          </button>
-
+          <div ng-show="cargaDocumentosContratista.generar_documento">
+            <br><br><br><br>
+            <a class="btn btn-success" href="/#/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/{{cargaDocumentosContratista.fila_sol_pago.NumeroContrato}}/{{cargaDocumentosContratista.fila_sol_pago.VigenciaContrato}}/{{cargaDocumentosContratista.contrato.NumeroCdp}}/{{cargaDocumentosContratista.contrato.VigenciaCdp}}/{{cargaDocumentosContratista.fila_sol_pago.Ano}}/{{cargaDocumentosContratista.fila_sol_pago.Mes}}">GENERAR DOCUMENTO</a>
+          </div>
         </div>
+       
         <!--Cierra panel Body-->
 
 
@@ -230,13 +236,13 @@
           </div>
 
 
-          </div>
-
-
         </div>
+
+
       </div>
     </div>
   </div>
+</div>
 </div>
 
 
@@ -262,8 +268,9 @@
             <p></p>
 
             <br>
-            <button class="btn btn-danger" ng-click="cargaDocumentosContratista.borrar_doc()" data-dismiss="modal">Aceptar</button>
-            <button class="btn btn-info"  data-dismiss="modal">{{'CANCEL' | translate}}</button>
+            <button class="btn btn-danger" ng-click="cargaDocumentosContratista.borrar_doc()"
+              data-dismiss="modal">Aceptar</button>
+            <button class="btn btn-info" data-dismiss="modal">{{'CANCEL' | translate}}</button>
           </div>
         </div>
 

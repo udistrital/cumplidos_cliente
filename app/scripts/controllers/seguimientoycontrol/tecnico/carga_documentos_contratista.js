@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, notificacionRequest, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -29,7 +29,7 @@ angular.module('contractualClienteApp')
 
     //Número de documento que viene en el token
     //Documento = token_service.getPayload().documento;
-    self.Documento = token_service.getAppPayload().appUserDocument;
+    self.Documento = token_service.getAppPayload().documento;
 
     //Variable que contiene los años de los cuales puede hacer la solicitud
     self.anios = [];
@@ -184,62 +184,23 @@ angular.module('contractualClienteApp')
       //Petición para obtener la información de los contratos del contratista
       self.gridOptions1.data = [];
       //Petición para obtener las contratos relacionados al contratista
-      // cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
-      //   .then(function (response) {
-      //     response.data.Data=[
-      //       {
-      //         "NumeroContratoSuscrito": "1265",
-      //         "Vigencia": "2021",
-      //         "NumeroCdp": "1668",
-      //         "VigenciaCdp": "2021",
-      //         "NumeroRp": "4553",
-      //         "VigenciaRp": "2021",
-      //         "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
-      //         "NumDocumentoSupervisor": "52204982"
-      //       }
-      //     ]
-      //     if (response.data.Data) {
-      //       //Contiene la respuesta de la petición
-      //       self.informacion_contratos = response.data.Data;
-      //       //Se envia la data a la tabla
-      //       self.gridOptions1.data = self.informacion_contratos;
-      //       //Contiene el numero de documento del Responsable
-      //       self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
-      //     } else {
-      //       swal(
-      //         'Error',
-      //         'No se encontraron contratos vigentes asociados a su número de documento',
-      //         'error'
-      //       )
-      //     };
-      //   });
-
-        var Data=[
-          {
-            "NumeroContratoSuscrito": "1265",
-            "Vigencia": "2021",
-            "NumeroCdp": "1668",
-            "VigenciaCdp": "2021",
-            "NumeroRp": "4553",
-            "VigenciaRp": "2021",
-            "NombreDependencia": "OFICINA ASESORA DE SISTEMAS",
-            "NumDocumentoSupervisor": "52204982"
-          }
-        ]
-        if (Data) {
-          //Contiene la respuesta de la petición
-          self.informacion_contratos = Data;
-          //Se envia la data a la tabla
-          self.gridOptions1.data = self.informacion_contratos;
-          //Contiene el numero de documento del Responsable
-          self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
-        } else {
-          swal(
-            'Error',
-            'No se encontraron contratos vigentes asociados a su número de documento',
-            'error'
-          )
-        };
+      cumplidosMidRequest.get('contratos_contratista/' + self.Documento)
+        .then(function (response) {
+          if (response.data.Data) {
+            //Contiene la respuesta de la petición
+            self.informacion_contratos = response.data.Data;
+            //Se envia la data a la tabla
+            self.gridOptions1.data = self.informacion_contratos;
+            //Contiene el numero de documento del Responsable
+            self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
+          } else {
+            swal(
+              'Error',
+              'No se encontraron contratos vigentes asociados a su número de documento',
+              'error'
+            )
+          };
+        });
     };
 
     /*
@@ -326,6 +287,33 @@ angular.module('contractualClienteApp')
     /*
       Función para generar la solicitud de pago
     */
+    self.suscribirse= function(){
+      console.log('entro a suscribirse')
+      notificacionRequest.verificarSuscripcion().then(
+        function (response) {
+          if(!response.data.Data){
+            notificacionRequest.suscripcion().then(
+              function (response) {
+                console.log('Resultado de la suscripcion',response)
+              }
+            ).catch(
+              function (error) {
+                console.log('error suscripcion',error)
+              }
+            )
+          }
+        }
+      ).catch(
+        function (error) {
+          console.log('error verificar suscripcion',error)
+        }
+      )
+    }
+
+
+    /*
+      Función para generar la solicitud de pago
+    */
     self.enviar_solicitud = function () {
 
       if (self.mes !== undefined && self.anio !== undefined) {
@@ -381,6 +369,7 @@ angular.module('contractualClienteApp')
                   )
 
                   self.cargar_soportes(self.contrato);
+                  
                   //self.gridApi2.core.refresh();
                   //   self.contrato = {};
                   self.mes = undefined;
@@ -443,7 +432,7 @@ angular.module('contractualClienteApp')
 
 
             cumplidosCrudRequest.get("item_informe_tipo_contrato", $.param({
-              query: "TipoContratoId:" + self.tipo_contrato,
+              query: "TipoContratoId:" + self.tipo_contrato+",Activo:true",
               limit: 0
             })).then(function (response_iitc) {
 
@@ -528,7 +517,7 @@ angular.module('contractualClienteApp')
                     'Su solicitud se encuentra a la espera de revisión',
                     'success'
                   )
-
+                  
                   self.cargar_soportes(self.contrato);
                   //self.documentos = {};
                 })
@@ -541,7 +530,10 @@ angular.module('contractualClienteApp')
                     'error'
                   );
                 });
+
             })
+            self.suscribirse();
+            notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion','cola','Soportes Cumplido para aprobacion');
           } else {
 
             swal(

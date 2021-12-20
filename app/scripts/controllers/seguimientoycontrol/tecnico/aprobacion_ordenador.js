@@ -14,7 +14,7 @@ angular.module('contractualClienteApp')
 
     //Se utiliza la variable self estandarizada
     var self = this;
-    self.Documento = token_service.getAppPayload().appUserDocument;
+    self.Documento = token_service.getAppPayload().documento;
     self.contratistas = [];
     self.dependencias_contratos = {};
     self.dependencia = {};
@@ -292,13 +292,24 @@ angular.module('contractualClienteApp')
 
     }, true);
 
-
+    self.enviar_notificacion=function (asunto,destinatario,mensaje,remitenteId) {
+      notificacionRequest.enviarCorreo(asunto,{},[destinatario],'','',mensaje,remitenteId).then(function (response) {
+        console.log(response)
+      }).catch(
+        function (error) {
+          console.log(error)
+        }
+      )
+    }
 
     self.aprobarPago = function (pago_mensual) {
+      console.log(pago_mensual);
+      
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
 
+          self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por ordenador ',self.Documento);
 
           cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
