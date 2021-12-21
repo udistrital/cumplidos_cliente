@@ -1,20 +1,49 @@
 .btn-small {
-    text-align: center; 
-    display: inline-block;
-    padding: 6px 6px;
-  }
+  text-align: center; 
+  display: inline-block;
+  padding: 6px 6px;
+}
 
 .btn-custom {
-  background-color: #731514; 
-  Color: #fff;
-  margin:5px
+background-color: #731514; 
+Color: #fff;
+margin:5px
 }
 
 .btn-custom:hover {
-  Color: #fff;
+Color: #fff;
 }
 
 .margin-y {
-  margin-top: 3px;
-  margin-bottom: 10px;
+margin-top: 3px;
+margin-bottom: 10px;
+}
+
+.periodo_form {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.label-no-padding{
+  padding: 0p;
+}
+
+.btn:hover{
+  Color: #fff;
+}
+
+.alineacion_derecha {
+  text-align: right;
+}
+
+.devengo {
+  background: #8BB9CD !important;
+}
+
+.descuento {
+  background: #FFB2B2 !important;
+}
+
+.seguridad_social {
+  background: #A9F5D0 !important;
 }

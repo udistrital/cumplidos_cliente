@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * @author mrdoob / http://mrdoob.com/
  */

@@ -11,7 +11,7 @@
 
 angular.module('contractualClienteApp')
     .controller('headerCtrl',
-        function (token_service, CONF, behaviorTheme, $scope, notificacion) {
+        function (token_service, CONF, behaviorTheme, $scope,notificacionRequest) {
 
             $scope.token_service = token_service;
 
@@ -21,9 +21,13 @@ angular.module('contractualClienteApp')
             if (token_service.live_token()) {
                 token_service.getLoginData().then(function () {
                     $scope.isLogin = true;
-                    $scope.notificacion = notificacion;
+                    $scope.notificacion=notificacionRequest;
+                    console.log($scope.notificacion)
+                    console.log("existe Notificaciones",$scope.notificacion.existeNotificaciones)
                     $scope.token = token_service.getAppPayload();
-                    $scope.token.sub=$scope.token.email.split('@')[0];
+                    if($scope.token.email){
+                        $scope.token.sub=$scope.token.email.split('@')[0];
+                    }
                     console.log($scope.token);
                 });
             } else {
@@ -47,8 +51,9 @@ angular.module('contractualClienteApp')
             }
 
             $scope.togglenotify = function () {
+                console.log("click")
                 if (!behaviorTheme.notificacion.open) {
-                    notificacion.changeStateNoView();
+                    //notificacion.changeStateNoView();
                 }
                 behaviorTheme.toogleNotificacion();
             }

@@ -56,6 +56,7 @@ angular
         'financieraMidService',
         'adminMidService',
         'nuxeoMidService',
+        'gestorDocumentalMidService',
         'adminJbpmV2Service',
         'amazonAdministrativaService',
         'contratoService',
@@ -68,7 +69,9 @@ angular
         'nuxeoClient',
         'autenticacionMidService',
         'themeService',
-        'notificacionService'
+        'notificacionService',
+        'utilsService',
+        'titanMidService'
     ])
     .run(function(amMoment) {
         amMoment.changeLocale('es');
@@ -118,6 +121,11 @@ angular
               templateUrl: 'views/seguimientoycontrol/tecnico/aprobacion_ordenador.html',
               controller: 'AprobacionOrdenadorCtrl',
               controllerAs: 'aprobacionOrdenador'
+            })
+            .when('/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/:contrato/:vigencia/:cdp/:vigencia_cdp/:anio/:mes', {
+                templateUrl: 'views/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.html',
+                controller: 'InformeGyCertificadoCCtrl',
+                controllerAs: 'InformeGyCertificadoC'
             })
             .when('/cumplidos_aprobados_por_ordenador', {
                 templateUrl: 'views/cumplidosaprobadosordenador/visualizacion_cumplidos.html',

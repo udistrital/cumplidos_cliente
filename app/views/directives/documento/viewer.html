@@ -1,0 +1,18 @@
+<div >
+    <div class="row">
+        <div>
+            <a href="" ng-click="goPrevious()"><span class="glyphicon glyphicon-chevron-left"></span></a>&nbsp;
+            <a href="" ng-click="goNext()"><span class="glyphicon glyphicon-chevron-right"></span></a>&nbsp;
+            <a href="" ng-click="zoomIn()"><span class="glyphicon glyphicon-zoom-in"></span></a>&nbsp;
+            <a href="" ng-click="fit()">100%</a>&nbsp;
+            <a href="" ng-click="zoomOut()"><span class="glyphicon glyphicon-zoom-out"></span></a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="text-info">Página:
+            <input ui-number-mask="0" maxlength="4" size="2" ng-model="pageNum">
+             de {{pageCount}}</span>
+        </div>
+    </div>
+</div>
+
+<hr>
+<!-- <loading tam=4 load="loadDocumento" message="msgCargandoDocumento"></loading> -->
+<canvas id="pdf-canvas"></canvas>

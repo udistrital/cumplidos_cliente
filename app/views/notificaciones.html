@@ -6,15 +6,11 @@
     </div>
     <br>
     <div class="notifications-container">
-        <div class="notification-item" ng-repeat="m in notificacion.log | filter:{ $: buscador}"
-         id="{{m.Estado}}" ng-click="redirect_url(m)">
-            <div class="notifications-image-container">
-                <div class="menu-app" id="{{m.EstiloIcono}}"></div>
-            </div>
+        <div class="notification-item" ng-if="existenNotificaciones" ng-click="redirect_url('/seguimientoycontrol/tecnico/aprobacion_supervisor')">
             <div class="notifications-text-container">
-                <p> {{m.Alias}} </p>
-                <p> {{m.Content.Message.Message}} </p>
-                <p am-time-ago="m.FechaCreacion"> </p>
+                <p> Cumplidos por revisar</p>
+                <p> Tienes cumplidos por revisar </p>
+                <!-- <p am-time-ago="m.FechaCreacion"> </p> -->
             </div>
         </div>
     </div>

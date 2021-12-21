@@ -8,13 +8,13 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, wso2GeneralService, $routeParams, documentoRequest, nuxeo, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, utils, $routeParams, documentoRequest, gestorDocumentalMidRequest, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
     //Se utiliza la variable self estandarizada
     var self = this;
-    self.Documento = token_service.getAppPayload().appUserDocument;
+    self.Documento = token_service.getAppPayload().documento;
     self.contratistas = [];
     self.dependencias_contratos = {};
     self.dependencia = {};
@@ -292,13 +292,24 @@ angular.module('contractualClienteApp')
 
     }, true);
 
-
+    self.enviar_notificacion=function (asunto,destinatario,mensaje,remitenteId) {
+      notificacionRequest.enviarCorreo(asunto,{},[destinatario],'','',mensaje,remitenteId).then(function (response) {
+        console.log(response)
+      }).catch(
+        function (error) {
+          console.log(error)
+        }
+      )
+    }
 
     self.aprobarPago = function (pago_mensual) {
+      console.log(pago_mensual);
+      
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
 
+          self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por ordenador ',self.Documento);
 
           cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
@@ -521,48 +532,14 @@ angular.module('contractualClienteApp')
       Función que permite obtener un documento de nuxeo por el Id
     */
     self.getDocumento = function (docid) {
-      nuxeo.header('X-NXDocumentProperties', '*');
+      gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
 
-      self.obtenerDoc = function () {
-        var defered = $q.defer();
-
-        nuxeo.request('/id/' + docid)
-          .get()
-          .then(function (response) {
-            self.doc = response;
-            var aux = response.get('file:content');
-            self.document = response;
-            defered.resolve(response);
-          })
-          .catch(function (error) {
-            defered.reject(error)
-          });
-        return defered.promise;
-      };
-
-      self.obtenerFetch = function (doc) {
-        var defered = $q.defer();
-
-        doc.fetchBlob()
-          .then(function (res) {
-            defered.resolve(res.blob());
-
-          })
-          .catch(function (error) {
-            defered.reject(error)
-          });
-        return defered.promise;
-      };
-
-      self.obtenerDoc().then(function () {
-
-        self.obtenerFetch(self.document).then(function (r) {
-          self.blob = r;
-          var fileURL = URL.createObjectURL(self.blob);
-          self.content = $sce.trustAsResourceUrl(fileURL);
-          $window.open(fileURL, 'Soporte', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900', true);
-        });
-      });
+        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
+        console.log('file ',file);
+        var fileURL = URL.createObjectURL(file);
+        console.log('fileURL ', fileURL);
+        $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
+      })
     };
 
 

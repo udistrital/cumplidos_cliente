@@ -3,6 +3,7 @@
 /.tmp
 /.sass-cache
 /bower_components
+.vscode
 .DS_Store
 .sonar/report-task.txt
 .sonar/.sonar_lock

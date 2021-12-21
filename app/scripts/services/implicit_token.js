@@ -59,35 +59,29 @@ angular.module('implicitToken', [])
         var deferred = $q.defer();
         if (window.localStorage.getItem('access_token') !== null &&
           window.localStorage.getItem('access_token') !== undefined) {
+            console.log('access_code existe',window.localStorage.getItem('access_code'))
           if (window.localStorage.getItem('access_code') === null ||
             window.localStorage.getItem('access_code') === undefined) {
             var appUserInfo = JSON.parse(atob(window.localStorage.getItem('id_token').split('.')[1]));
             var appUserDocument;
             var appUserRole;
-            /*var emailInfo = {
-              //Email: "karianov@correo.udistrital.edu.co"
-              //Email: appUserInfo.sub,
-              Email: appUserInfo.email,
-              Rol: appUserInfo.role,
-              Documento: appUserInfo.documento
-            };*/
             var userRol= {
               user: appUserInfo.email
             };
-            autenticacionMidRequest.post("token/userRol", userRol, {
+            console.log('entro ',appUserInfo)
+            console.log((appUserInfo.role===null ||appUserInfo.role===undefined) &&(appUserInfo.documento===null ||appUserInfo.documento===undefined) && (appUserInfo.email!=null && appUserInfo.email!=undefined))
+            if((appUserInfo.role===null ||appUserInfo.role===undefined) &&(appUserInfo.documento===null ||appUserInfo.documento===undefined) && (appUserInfo.email!=null && appUserInfo.email!=undefined)){
+              autenticacionMidRequest.post("token/userRol", userRol, {
                 headers: {
                   'Accept': 'application/json',
                   "Authorization": "Bearer " + window.localStorage.getItem('access_token'),
                 }
               })
               .then(function(respuestaAutenticacion) {
-                
-                //appUserDocument = respuestaAutenticacion.data.documento;
-                
-          
                 appUserDocument = respuestaAutenticacion.data.documento;
                 
-                appUserRole = respuestaAutenticacion.data.role;            
+                appUserRole = respuestaAutenticacion.data.role;        
+                console.log('respuesta autenticacion',appUserDocument,appUserRole)    
                 window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
                 window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
                 //
@@ -97,6 +91,9 @@ angular.module('implicitToken', [])
                 console.log("fallo la autenticacion");
                 //service.logout();
               });
+            }else{
+              deferred.resolve(true);
+            }
           } else {
             deferred.resolve(true);
           }
@@ -170,8 +167,12 @@ angular.module('implicitToken', [])
         var access_role = window.localStorage.getItem('access_role');
         var data = angular.fromJson(atob(id_token[1]));
         console.log('access_code:',access_code,'access_role: ',access_role);
-        data.appUserDocument = angular.fromJson(atob(access_code));
-        data.appUserRole = angular.fromJson(atob(access_role));
+        if(!data.documento){
+          data.documento = angular.fromJson(atob(access_code));
+        }
+        if(!data.role){
+          data.role = angular.fromJson(atob(access_role));
+        }
         console.log('data:',data)
         return data;
       },

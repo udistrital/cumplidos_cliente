@@ -8,14 +8,12 @@
  */
 angular.module('contractualClienteApp')
     .controller('menuLateralCtrl',
-        function ($location, CONF, $window, $scope, $rootScope, token_service, configuracionRequest, notificacion, $translate, $route, behaviorTheme) {
+        function ($location, CONF, $window, $scope, $rootScope, token_service, configuracionRequest,$translate, $route, behaviorTheme) {
 
             $scope.language = {
                 es: "btn btn-primary btn-circle btn-outline active",
                 en: "btn btn-primary btn-circle btn-outline"
             };
-
-            $scope.notificacion = notificacion;
             $scope.actual = "";
             $scope.token_service = token_service;
             $scope.sidebarClases = behaviorTheme.sidebar;
@@ -26,23 +24,27 @@ angular.module('contractualClienteApp')
                 token_service.getLoginData()
         .then(function() {
             $scope.token = token_service.getAppPayload();
-            if (!angular.isUndefined($scope.token.appUserRole)) {
+            if (!angular.isUndefined($scope.token.role)) {
                 var roles = "";
-                if (typeof $scope.token.appUserRole === "object") {
+                if (typeof $scope.token.role === "object") {
                     var rl = [];
 
 
-                    for (var index = 0; index < $scope.token.appUserRole.length; index++) {
-                        if ($scope.token.appUserRole[index].indexOf(",") < 0) {
-                            rl.push($scope.token.appUserRole[index]);
+                    for (var index = 0; index < $scope.token.role.length; index++) {
+                        if ($scope.token.role[index].indexOf(",") < 0) {
+                            if($scope.token.role[index]!='Internal/everyone' && $scope.token.role[index]!='Internal/selfsignup'){
+                                rl.push($scope.token.role[index]);
+                            }   
                         }
                     }
                     roles = rl.toString();
                     console.log(roles);
                 } else {
-                    roles = $scope.token.appUserRole;
+                    roles = $scope.token.role;
                 }
                 roles = roles.replace('Internal/everyone,', '','g');
+                roles = roles.replace('Internal/selfsignup,', '','g');
+                console.log('roles',roles)
                 configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas', '').then(function(response) {
                     $rootScope.menu = response.data;
                     behaviorTheme.initMenu(response.data);
@@ -54,7 +56,7 @@ angular.module('contractualClienteApp')
                             behaviorTheme.initMenu(response.data);
                             $scope.menu = behaviorTheme.menu;
 
-                        });
+                    });
             }
         });
             }
