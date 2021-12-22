@@ -680,7 +680,14 @@ angular.module('contractualClienteApp')
               });
             });
           }
-        );
+        ).catch(function(){
+          swal({
+            title: 'Error',
+            text: 'Ocurrio un error al guardar el documento',
+            type: 'error',
+            target: document.getElementById('modal_ver_soportes')
+          });
+        });
 
 
         //la Descripcion donde se enviaria? la que quedaria en el documentos_crud?

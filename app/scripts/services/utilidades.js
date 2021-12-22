@@ -180,30 +180,21 @@ angular.module('utilsService', [])
             return strMillones + " " + strMiles;
         };
 
-        var fileToBase64 = function (file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
-                    if ((encoded.length % 4) > 0) {
-                        encoded += '='.repeat(4 - (encoded.length % 4));
-                    }
-                    resolve(encoded);
-                };
-                reader.onerror = error => reject(error);
-            });
-        };
-
         // Public API here
         return {
-            getBase64: async (file) => {
-                var base64;
-                await fileToBase64(file).then(data => {
-                    base64 = data;
-                    return null;
+            getBase64: function (file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+                        if ((encoded.length % 4) > 0) {
+                            encoded += '='.repeat(4 - (encoded.length % 4));
+                        }
+                        resolve(encoded);
+                    };
+                    reader.onerror = error => reject(error);
                 });
-                return base64;
             },
             base64ToArrayBuffer: function (base64) {
                 var binary_string = $window.atob(base64.replace(/\s/g, ''));
