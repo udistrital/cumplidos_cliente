@@ -112,7 +112,18 @@ angular.module('notificacionService', [])
                 return $http.post(path + 'notificaciones/enviar', elemento, token_service.getHeader());
             },
             traerNotificacion: function(nombreCola) {
-                return $http.get(path + '/colas/mensajes?nombre='+nombreCola+'&numMax=1', token_service.getHeader());
+                return $http.get(path + 'colas/mensajes?nombre='+nombreCola+'&numMax=1', token_service.getHeader());
+            },
+            borrarNotificaciones: function(nombreCola,contratistaId) {
+                var elemento={
+                    data:{
+                        NombreCola:nombreCola,
+                        Filtro:{
+                            Remitente:contratistaId,
+                        }
+                    }
+                }
+                return $http.delete(path + 'colas/mensaje/',elemento, token_service.getHeader());
             },
             post: function(tabla, elemento) {
                 return $http.post(path + tabla, elemento, token_service.getHeader());

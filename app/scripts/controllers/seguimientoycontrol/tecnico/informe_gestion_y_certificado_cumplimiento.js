@@ -29,7 +29,7 @@ angular.module('contractualClienteApp')
     self.vigencia_cdp = $routeParams.vigencia_cdp
     console.log(self.contrato)
 
-    self.documento_contratista =token_service.getAppPayload().documento;
+    self.documento_contratista = token_service.getAppPayload().documento;
 
     self.pdf_dataUrl = '';
 
@@ -498,8 +498,8 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'EL JEFE DE ' + self.informacion_informe.Dependencia + ' DE LA UNIVERSIDAD DISTRITAL “FRANCISCO JOSÉ DE CALDAS” CERTIFICA QUE EL/LA CONTRATISTA:', alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'NOMBRE DEL CONTRATISTA:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.Nombre, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'TIPO DE IDENTIFICACIÓN:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.TipoIdentificacion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'No.', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.documento_contratista, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'De', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.CiudadExpedicion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{
-                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. '+self.contrato+' del '+utils.formatoFecha(self.informacion_informe.FechaCPS)+', que el valor causado por este concepto, es la suma de: ('+utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase()+') ('+utils.formatoNumero(self.Preliquidacion.TotalDevengado)+' M/CTE.), equivalente al período de tiempo comprendido entre: el día '+self.Informe.PeriodoInformeInicio.toLocaleDateString()
-                    +' y el día '+self.Informe.PeriodoInformeFin.toLocaleDateString()+'; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de '+utils.mesAnterior(self.mes, self.anio)+'.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
+                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' del ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), equivalente al período de tiempo comprendido entre: el día ' + self.Informe.PeriodoInformeInicio.toLocaleDateString()
+                    + ' y el día ' + self.Informe.PeriodoInformeFin.toLocaleDateString() + '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio) + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
                 }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'VALOR DEL CONTRATO', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Ejecutado, alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Faltante, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{ text: utils.formatoNumero(parseInt(self.informacion_informe.ValorContrato)), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: '$', alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: '$', alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
@@ -622,8 +622,77 @@ angular.module('contractualClienteApp')
             ",DocumentoPersonaId:" + self.documento_contratista,
           limit: 0
         })).then(function (response_pago_mensual) {
-          if (Object.keys(responsePago.data.Data[0]).length !== 0) {
+          if (Object.keys(response_pago_mensual.data.Data[0]).length !== 0) {
             pago_mensual_id = response_pago_mensual.data.Data[0].Id
+            //Condicional del item y del file model
+            if (self.pdf_base64 !== undefined && !error && pago_mensual_id !== undefined) {
+              var nombre_Archivo = 'Informe Gestion y Certificado de Cumplimiento_' + self.contrato + '_' + self.mes + '_' + self.anio;
+
+              var data = [{
+                IdTipoDocumento: 19, //id tipo documento de documentos_crud
+                nombre: nombre_doc,// nombre formado por vigencia+contrato+cedula+mes+año
+                file: self.pdf_base64,
+                metadatos: {
+                  NombreArchivo: nombre_Archivo,
+                  Tipo: "Archivo",
+                  Observaciones: ''
+                },
+                descripcion: 'INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO',
+
+              }];
+              //guarda el soporte por medio del gestor documental
+              gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
+                console.log(response.data);
+                nuxeoMidRequest.post('workflow?docID=' + response.data.res.Enlace, null)
+                  .then(function (response) {
+                    console.log('nuxeoMid response:', response)
+                  }).catch(function (error) {
+                    console.log('nuxeoMid error:', error)
+                  });
+
+                if (response.data.Status == 200) {
+                  self.id_documento = response.data.res.Id;
+                  self.objeto_soporte = {
+                    "PagoMensualId": {
+                      "Id": pago_mensual_id
+                    },
+                    "Documento": self.id_documento,
+                    "ItemInformeTipoContratoId": {
+                      "Id": 29
+                    },
+                    "Aprobado": false
+                  };
+                  cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
+                    .then(function (response) {
+                      //Bandera de validacion
+                      swal({
+                        title: 'Documento guardado',
+                        text: 'Se ha guardado el documento con exito',
+                        type: 'success',
+                        target: document.getElementById('modal_visualizar_documento')
+                      });
+                      $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+                    });
+                }
+              }).catch(function (error) {
+                swal({
+                  title: 'Error',
+                  text: 'Ocurrio un error al guardar el documento',
+                  type: 'error',
+                  target: document.getElementById('modal_visualizar_documento')
+                });
+              });
+
+            } else {
+
+              swal({
+                title: 'Error',
+                text: 'Ocurrio un error al guardar el documento',
+                type: 'error',
+                target: document.getElementById('modal_visualizar_documento')
+              });
+
+            }
           } else {
             error = true;
             swal({
@@ -634,76 +703,6 @@ angular.module('contractualClienteApp')
             });
           }
         })
-
-        //Condicional del item y del file model
-        if (self.pdf_base64 !== undefined && !error && pago_mensual_id !== undefined) {
-          var nombre_Archivo = 'Informe Gestion y Certificado de Cumplimiento_' + self.contrato + '_' + self.mes + '_' + self.anio;
-
-          var data = [{
-            IdTipoDocumento: 19, //id tipo documento de documentos_crud
-            nombre: nombre_doc,// nombre formado por vigencia+contrato+cedula+mes+año
-            file: self.pdf_base64,
-            metadatos: {
-              NombreArchivo: nombre_Archivo,
-              Tipo: "Archivo",
-              Observaciones: ''
-            },
-            descripcion: 'INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO',
-
-          }];
-          //guarda el soporte por medio del gestor documental
-          gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
-            console.log(response.data);
-            nuxeoMidRequest.post('workflow?docID=' + response.data.res.Enlace, null)
-              .then(function (response) {
-                console.log('nuxeoMid response:', response)
-              }).catch(function (error) {
-                console.log('nuxeoMid error:', error)
-              });
-
-            if (response.data.Status == 200) {
-              self.id_documento = response.data.res.Id;
-              self.objeto_soporte = {
-                "PagoMensualId": {
-                  "Id": pago_mensual_id
-                },
-                "Documento": self.id_documento,
-                "ItemInformeTipoContratoId": {
-                  "Id": 29
-                },
-                "Aprobado": false
-              };
-              cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
-                .then(function (response) {
-                  //Bandera de validacion
-                  swal({
-                    title: 'Documento guardado',
-                    text: 'Se ha guardado el documento en el repositorio',
-                    type: 'success',
-                    target: document.getElementById('modal_visualizar_documento')
-                  });
-                  $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-                });
-            }
-          }).catch(function (error) {
-            swal({
-              title: 'Error',
-              text: 'Ocurrio un error al guardar el documento',
-              type: 'error',
-              target: document.getElementById('modal_visualizar_documento')
-            });
-          });
-
-        } else {
-
-          swal({
-            title: 'Error',
-            text: 'Ocurrio un error al guardar el documento',
-            type: 'error',
-            target: document.getElementById('modal_visualizar_documento')
-          });
-
-        }
 
       });
     }

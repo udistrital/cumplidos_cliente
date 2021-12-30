@@ -533,7 +533,7 @@ angular.module('contractualClienteApp')
 
             })
             self.suscribirse();
-            notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion','cola','Soportes Cumplido para aprobacion');
+            notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion','cola','/seguimientoycontrol/tecnico/aprobacion_supervisor');
           } else {
 
             swal(

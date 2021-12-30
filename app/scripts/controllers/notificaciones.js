@@ -8,7 +8,7 @@
  */
 angular.module('contractualClienteApp')
     .controller('notificacionesCtrl',
-        function (notificacionRequest, $scope, behaviorTheme,token_service) {
+        function (notificacionRequest, $scope, behaviorTheme,token_service,$location) {
             var self = this;
             $scope.roles= token_service.getAppPayload().role
 
@@ -16,35 +16,55 @@ angular.module('contractualClienteApp')
             $scope.notificacion = notificacionRequest;
             $scope.notificacion.existeNotificaciones=false;
 
-            if($scope.roles!=null && $scope.roles.includes('SUPERVISOR')){
-                notificacionRequest.traerNotificacion().then(function (response) {
-                    console.log(response)
-                    if(response.data.Data!=null){
-                        $scope.existenNotificaciones=true;
-                        $scope.notificacion.existeNotificaciones=true;
-                    }else{
-                        $scope.existenNotificaciones=false;
-                    }
-                }).catch(
-                    function (error) {
-                        console.log(error)
-                    }
-                );
-            }else{
-                console.log("no tiene el rol")
+            function traerNoticicaciones() {
+                if($scope.roles!=null && $scope.roles.includes('SUPERVISOR')){
+                    notificacionRequest.traerNotificacion('CumplidosTest').then(function (response) {
+                        console.log(response)
+                        if(response.data.Data!=null){
+                            $scope.existenNotificaciones=true;
+                            $scope.notificacion.existeNotificaciones=true;
+                            $scope.url_redirect=response.data.Data[0].Body.Message;
+                        }else{
+                            $scope.existenNotificaciones=false;
+                        }
+                    }).catch(
+                        function (error) {
+                            console.log(error)
+                        }
+                    );
+                }else{
+                    console.log("no tiene el rol")
+                }
+    
+    
+                if($scope.roles!=null && $scope.roles.includes('ORDENADOR_DEL_GASTO')){
+                    notificacionRequest.traerNotificacion('colaOrdenador').then(function (response) {
+                        console.log(response)
+                        if(response.data.Data!=null){
+                            $scope.existenNotificaciones=true;
+                            $scope.notificacion.existeNotificaciones=true;
+                            $scope.url_redirect=response.data.Data[0].Body.Message;
+                        }else{
+                            $scope.existenNotificaciones=false;
+                        }
+                    }).catch(
+                        function (error) {
+                            console.log(error)
+                        }
+                    );
+                }else{
+                    console.log("no tiene el rol")
+                }
             }
             
 
             $scope.claseContainer = behaviorTheme.notificacion;
-            $scope.redirect_url = function (notify) {
-                // console.log(notify);
-                var path_sub = window.location.origin;
-                notificacion.changeStateToView(notify.Id, notify.Estado);
-                if (notify.Content.Message.Link.indexOf(path_sub)) {
-                    window.open(notify.Content.Message.Link, "_blank");
-                } else {
-                    $location.path(notify.Content.Message.Link);
-                }
+            $scope.redirect_url = function () {
+                $location.path($scope.url_redirect);
+                behaviorTheme.toogleNotificacion();
+                traerNoticicaciones()
             };
+
+            traerNoticicaciones()
 
         });
