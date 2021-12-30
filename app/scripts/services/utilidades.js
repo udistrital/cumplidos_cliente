@@ -313,7 +313,7 @@ angular.module('utilsService', [])
             formatoFecha(fecha){
                 var sf=fecha.toLocaleDateString();
                 var partes=sf.split('/');
-                var ff='del '+partes[2]+' de '+this.nombreMes(parseInt(partes[1])).Nombre+ ' de '+partes[0]
+                var ff='del '+partes[0]+' de '+this.nombreMes(parseInt(partes[1])).Nombre+ ' de '+partes[2]
                 return ff
             },
             ajustarFecha(stringFecha){

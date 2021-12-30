@@ -310,7 +310,7 @@ angular.module('contractualClienteApp')
           self.aux_pago_mensual = pago_mensual;
 
           self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por ordenador ',self.Documento);
-
+          notificacionRequest.borrarNotificaciones('colaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
           cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
             query: 'CodigoAbreviacion:AP'
@@ -364,6 +364,9 @@ angular.module('contractualClienteApp')
 
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato).then(function (response) {
         self.aux_pago_mensual = pago_mensual;
+
+        self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por ordenador del gasto',self.Documento)
+        notificacionRequest.borrarNotificaciones('colaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
 
         cumplidosCrudRequest.get('estado_pago_mensual', $.param({
           limit: 0,
@@ -430,8 +433,8 @@ angular.module('contractualClienteApp')
         
 
         self.solicitudes_seleccionadas = self.gridApi.selection.getSelectedRows();
-        // console.info(self.solicitudes_seleccionadas)
-        self.busqueda_aprovar_documentos_nuxeo(self.solicitudes_seleccionadas);
+        //console.info(self.solicitudes_seleccionadas)
+        self.busqueda_aprobar_documentos_nuxeo(self.solicitudes_seleccionadas);
         contratoRequest.get('contrato', self.solicitudes_seleccionadas[0].PagoMensual.NumeroContrato + '/' + self.solicitudes_seleccionadas[0].PagoMensual.VigenciaContrato).then(function (response) {
           var arreglo_aux = [];
           for (let i = 0; i < self.solicitudes_seleccionadas.length; i++) {
@@ -479,7 +482,7 @@ angular.module('contractualClienteApp')
       });
     };
 
-    self.busqueda_aprovar_documentos_nuxeo = function (filas) {
+    self.busqueda_aprobar_documentos_nuxeo = function (filas) {
       // console.info(filas)
       // console.info(filas.length)
       for (var i = 0; i < filas.length; i++) {

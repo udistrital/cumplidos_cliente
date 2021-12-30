@@ -29,6 +29,9 @@
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  border-radius: 2px;
+  border-color: #000;
+  border-width: 1px;
 }
 
 .notifications-image-container {
