@@ -310,7 +310,7 @@ angular.module('contractualClienteApp')
           self.aux_pago_mensual = pago_mensual;
 
           self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por ordenador ',self.Documento);
-          notificacionRequest.borrarNotificaciones('colaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
+          notificacionRequest.borrarNotificaciones('ColaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
           cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
             query: 'CodigoAbreviacion:AP'
@@ -366,7 +366,7 @@ angular.module('contractualClienteApp')
         self.aux_pago_mensual = pago_mensual;
 
         self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por ordenador del gasto',self.Documento)
-        notificacionRequest.borrarNotificaciones('colaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
+        notificacionRequest.borrarNotificaciones('ColaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
 
         cumplidosCrudRequest.get('estado_pago_mensual', $.param({
           limit: 0,
@@ -454,6 +454,7 @@ angular.module('contractualClienteApp')
               )
               self.obtener_informacion_ordenador(self.offset);
               self.gridApi.core.refresh();
+              notificacionRequest.borrarNotificaciones('ColaOrdenador',["All"])
             }else {
 
               swal(
