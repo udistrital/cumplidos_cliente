@@ -18,7 +18,7 @@ angular.module('contractualClienteApp')
 
             function traerNoticicaciones() {
                 if($scope.roles!=null && $scope.roles.includes('SUPERVISOR')){
-                    notificacionRequest.traerNotificacion('CumplidosTest').then(function (response) {
+                    notificacionRequest.traerNotificacion('ColaSupervisor').then(function (response) {
                         console.log(response)
                         if(response.data.Data!=null){
                             $scope.existenNotificaciones=true;
@@ -38,7 +38,7 @@ angular.module('contractualClienteApp')
     
     
                 if($scope.roles!=null && $scope.roles.includes('ORDENADOR_DEL_GASTO')){
-                    notificacionRequest.traerNotificacion('colaOrdenador').then(function (response) {
+                    notificacionRequest.traerNotificacion('ColaOrdenador').then(function (response) {
                         console.log(response)
                         if(response.data.Data!=null){
                             $scope.existenNotificaciones=true;

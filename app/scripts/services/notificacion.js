@@ -67,7 +67,7 @@ angular.module('notificacionService', [])
             verificarSuscripcion: function() {
                 var elemento={
                     Endpoint:self.token.email,
-                    TopicArn:arm
+                    ArnTopic:arm
                 }
                 return $http.post(path + 'notificaciones/suscripcion', elemento, token_service.getHeader());
             },
@@ -86,7 +86,7 @@ angular.module('notificacionService', [])
             },
             enviarCorreo: function(asunto,atributos,destinatarios,idDuplicacion,idGrupoMensaje,mensaje,remitenteId) {
                 var elemento={
-                    Arn: arm,
+                    ArnTopic: arm,
                     Asunto:asunto,
                     Atributos:atributos,//objeto
                     DestinatarioId: destinatarios,//arreglo de strings
@@ -99,7 +99,7 @@ angular.module('notificacionService', [])
             },
             enviarNotificacion: function(asunto,destinatarioId,mensaje) {
                 var elemento={
-                    Arn: arm,
+                    ArnTopic: arm,
                     Asunto:asunto,
                     Atributos:{
                     },//objeto
@@ -123,10 +123,7 @@ angular.module('notificacionService', [])
                         }
                     }
                 }
-                return $http.delete(path + 'colas/mensaje/',elemento, token_service.getHeader());
-            },
-            post: function(tabla, elemento) {
-                return $http.post(path + tabla, elemento, token_service.getHeader());
+                return $http.delete(path + 'colas/mensajes/',elemento, token_service.getHeader());
             },
             changeStateNoView: function () {
                 console.log('changeStateNoView')
