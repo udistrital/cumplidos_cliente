@@ -198,7 +198,7 @@ angular.module('utilsService', [])
             },
             base64ToArrayBuffer: function (base64) {
                 var binary_string = $window.atob(base64.replace(/\s/g, ''));
-                console.log(binary_string);
+                //console.log(binary_string);
                 var len = binary_string.length;
                 var bytes = new Uint8Array(len);
                 for (var i = 0; i < len; i++) {

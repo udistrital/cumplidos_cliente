@@ -113,7 +113,7 @@ angular.module('contractualClienteApp')
     self.gridOptions1 = {
       enableSorting: true,
       enableFiltering: false,
-      resizable: true,
+      resizable: false,
       columnDefs: [{
         field: 'NumeroContratoSuscrito',
         cellTemplate: tmpl,
@@ -275,8 +275,8 @@ angular.module('contractualClienteApp')
     };
 
     self.cambiar_form_doc = function(){
-      console.log("item seleccionado: ",self.item);
-      console.log(self.fila_sol_pago)
+      //console.log("item seleccionado: ",self.item);
+      //console.log(self.fila_sol_pago)
       if(self.item.Id==29){
         self.generar_documento=true;
       }else{
@@ -288,7 +288,7 @@ angular.module('contractualClienteApp')
       Función para generar la solicitud de pago
     */
     self.suscribirse= function(){
-      console.log('entro a suscribirse')
+      //console.log('entro a suscribirse')
       notificacionRequest.verificarSuscripcion().then(
         function (response) {
           if(!response.data.Data){
@@ -298,14 +298,14 @@ angular.module('contractualClienteApp')
               }
             ).catch(
               function (error) {
-                console.log('error suscripcion',error)
+                //console.log('error suscripcion',error)
               }
             )
           }
         }
       ).catch(
         function (error) {
-          console.log('error verificar suscripcion',error)
+          //console.log('error verificar suscripcion',error)
         }
       )
     }
@@ -609,7 +609,7 @@ angular.module('contractualClienteApp')
       if (self.fileModel !== undefined && self.item !== undefined && self.fileModel.type === 'application/pdf' && self.fileModel.size <= 1000000) {
         //console.log(self.fileModel);
         self.mostrar_boton = false;
-        console.log(self.item)
+        //console.log(self.item)
         var descripcion;
         var fileBase64;
         utils.getBase64(self.fileModel).then(
@@ -630,12 +630,12 @@ angular.module('contractualClienteApp')
             }];
             //guarda el soporte por medio del gestor documental
             gestorDocumentalMidRequest.post('/document/upload',data).then(function (response){
-             console.log(response.data);
+             //console.log(response.data);
               nuxeoMidRequest.post('workflow?docID=' + response.data.res.Enlace, null)
                  .then(function (response) {
-                  console.log('nuxeoMid response:',response)
+                  //console.log('nuxeoMid response:',response)
               }).catch(function (error) {
-                console.log('nuxeoMid error:',error)
+                //console.log('nuxeoMid error:',error)
               });
 
               if(response.data.Status==200){
@@ -715,9 +715,9 @@ angular.module('contractualClienteApp')
       gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
 
         var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
-        console.log('file ',file);
+        //console.log('file ',file);
         var fileURL = URL.createObjectURL(file);
-        console.log('fileURL ', fileURL);
+        //console.log('fileURL ', fileURL);
         $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
       })
     };
@@ -732,8 +732,8 @@ angular.module('contractualClienteApp')
         query: "Nombre:" + nombre_docs + ",Activo:true",
         limit: 0
       })).then(function (response) {
-        console.log("obtener documento")
-        console.log(response)
+        //console.log("obtener documento")
+        //console.log(response)
         self.documentos = response.data;
         angular.forEach(self.documentos, function (value) {
           self.descripcion_doc = value.Descripcion;
@@ -751,9 +751,9 @@ angular.module('contractualClienteApp')
     self.borrar_doc = function () {
 
       var documento = self.doc;
-      console.log(documento)  
+      //console.log(documento)  
       gestorDocumentalMidRequest.delete('/document',documento.Enlace).then(function (response) {
-        console.log(response)
+        //console.log(response)
         swal({
              title: 'Documento borrado',
              text: 'Se ha borrado exitosamente el documento',

@@ -9,7 +9,7 @@
  */
 angular.module('contractualClienteApp')
   .controller('InformeGyCertificadoCCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, cumplidosCrudRequest, $route, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, titanMidRequest) {
-    console.log($routeParams);
+    //console.log($routeParams);
     //Pasos a seguir
     //1. traer la informacion del mid del informe 
     //2. Verificar en el crud si hay un informe bajo este contrato/mes/año
@@ -27,7 +27,7 @@ angular.module('contractualClienteApp')
     self.vigencia = $routeParams.vigencia
     self.cdp = $routeParams.cdp
     self.vigencia_cdp = $routeParams.vigencia_cdp
-    console.log(self.contrato)
+    //console.log(self.contrato)
 
     self.documento_contratista = token_service.getAppPayload().documento;
 
@@ -60,7 +60,7 @@ angular.module('contractualClienteApp')
 
     self.actividades_especificas_Usadas = []
 
-    console.log(self.actividades_especificas_disponibles);
+    //console.log(self.actividades_especificas_disponibles);
 
     self.actividades_especificas_usadas = []
 
@@ -73,7 +73,7 @@ angular.module('contractualClienteApp')
       for (let index = 0; index < Preliquidacion.Detalle.length; index++) {
         Preliquidacion.Detalle[index].ValorCalculadoConFormato = utils.formatoNumero(Preliquidacion.Detalle[index].ValorCalculado, 0, ',', '.');
       }
-      console.log(Preliquidacion)
+      //console.log(Preliquidacion)
     }
 
     self.escogerUltimaNovedad = function (novedades) {
@@ -93,7 +93,7 @@ angular.module('contractualClienteApp')
     }
 
     self.validarNovedades = function () {
-      console.log('novedades: ', self.informacion_informe.Novedades)
+      //console.log('novedades: ', self.informacion_informe.Novedades)
       self.informacion_informe.Novedades.UltimoOtrosi = {}
       self.informacion_informe.Novedades.UltimaCesion = {}
       if (self.informacion_informe.Novedades.Otrosi == null) {
@@ -116,7 +116,7 @@ angular.module('contractualClienteApp')
     }
 
     self.calcularPorcentajeTiempo = function (fechaInicio, fechaFin, fechaFinActividades) {
-      console.log('fechas: ', fechaInicio, fechaFin, fechaFinActividades)
+      //console.log('fechas: ', fechaInicio, fechaFin, fechaFinActividades)
       var diasContrato = utils.diferenciaFechasDias(fechaInicio, fechaFin)
       var diasContratoEjecutado = utils.diferenciaFechasDias(fechaInicio, fechaFinActividades)
       var porcentajeEjecutado = ((diasContratoEjecutado * 100) / diasContrato)
@@ -126,7 +126,7 @@ angular.module('contractualClienteApp')
 
     self.obtenerInforme = function () {
       cumplidosMidRequest.get('informe/' + self.contrato + '/' + self.vigencia + '/' + self.mes + '/' + self.anio).then(function (response) {
-        console.log(response)
+        //console.log(response)
         if (response.status == 200) {
           if (response.data.Data == null) {
             //Nuevo Informe
@@ -150,7 +150,7 @@ angular.module('contractualClienteApp')
           } else {
             //Informe ya creado
 
-            console.log("Informe obtenido del mid:", response);
+            //console.log("Informe obtenido del mid:", response);
             if (response.data.Data.length != 0) {
               var inf_aux = response.data.Data[0];
               inf_aux.PeriodoInformeInicio = new Date(inf_aux.PeriodoInformeInicio.split('T')[0]);
@@ -176,10 +176,10 @@ angular.module('contractualClienteApp')
             $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
           })
         }
-        console.log("Informe inicial", self.Informe)
+        //console.log("Informe inicial", self.Informe)
       }).catch(
         function (error) {
-          console.log(error)
+          //console.log(error)
           swal({
             title: 'Ocurrio un error al traer el informe, intente nuevamente mas tarde',
             type: 'error',
@@ -195,7 +195,7 @@ angular.module('contractualClienteApp')
 
     self.obtenerInformacionInforme = function () {
       cumplidosMidRequest.get('informacion_informe/' + self.documento_contratista + '/' + self.contrato + '/' + self.vigencia + '/' + self.cdp + '/' + self.vigencia_cdp).then(function (response) {
-        console.log(response)
+        //console.log(response)
         if (response.status == 200) {
           if (response.data.Data != null) {
             self.informacion_informe = response.data.Data
@@ -221,7 +221,7 @@ angular.module('contractualClienteApp')
         }
       }).catch(
         function (error) {
-          console.log(error)
+          //console.log(error)
           swal({
             title: 'Ocurrio un error al traer la informacion, intente nuevamente mas tarde',
             type: 'error',
@@ -238,17 +238,17 @@ angular.module('contractualClienteApp')
     self.obtenerPreliqidacion = function () {
       titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' +self.vigencia+ '/' + self.documento_contratista).then(
         function (response) {
-          console.log(response)
+          //console.log(response)
           self.Preliquidacion = response.data.Data
           self.darFormato(self.Preliquidacion);
-          console.log('Fecha inicio', new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio)))
-          console.log('Fecha fin', new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaFin)))
+          //console.log('Fecha inicio', new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio)))
+          //console.log('Fecha fin', new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaFin)))
           self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio))
           self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaFin))
         }
       ).catch(
         function (error) {
-          console.log('Error preliquidacion', error)
+          //console.log('Error preliquidacion', error)
           swal({
             title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
             type: 'error',
@@ -268,11 +268,11 @@ angular.module('contractualClienteApp')
 
 
     self.agregarActividadEspecifica = function () {
-      console.log("entro a agregarMeta")
-      if (self.Informe.ActividadesEspecificas.length === self.actividades_especificas.length) {
-        console.log("Maximo numero de actividades especificas")
-        return
-      }
+      //console.log("entro a agregarMeta")
+      // if (self.Informe.ActividadesEspecificas.length === self.actividades_especificas.length) {
+      //   //console.log("Maximo numero de actividades especificas")
+      //   return
+      // }
       //self.Informe.Metas.push(Object.create(Meta))
       self.Informe.ActividadesEspecificas.push({
         "ActividadEspecifica": "",
@@ -286,11 +286,11 @@ angular.module('contractualClienteApp')
     }
 
     self.agregarActividad = function (index_actividadEspecifica) {
-      console.log("entro a agregar Actvidad", index_actividadEspecifica)
-      if (self.Informe.ActividadesEspecificas.length === self.actividades_especificas.length) {
-        console.log("Maximo numero de actividades_especificas")
-        return
-      }
+      //console.log("entro a agregar Actvidad", index_actividadEspecifica)
+      // if (self.Informe.ActividadesEspecificas.length === self.actividades_especificas.length) {
+      //   //console.log("Maximo numero de actividades_especificas")
+      //   return
+      // }
       //self.Informe.Metas[index_Meta].Actividades.push(Object.create(Actividad))
       self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.push({
         "Actividad": '',
@@ -300,31 +300,31 @@ angular.module('contractualClienteApp')
     }
 
     self.eliminarActividadEspecifica = function (index_actividadEspecifica) {
-      console.log("entro a eliminar Actividad Especifica", index_actividadEspecifica)
+      //console.log("entro a eliminar Actividad Especifica", index_actividadEspecifica)
       if (self.Informe.ActividadesEspecificas.length === 1) {
-        console.log("minimo numero de metas")
+        //console.log("minimo numero de metas")
         return
       }
       self.Informe.ActividadesEspecificas.splice(index_actividadEspecifica, 1);
     }
 
     self.eliminarActividad = function (index_actividadEspecifica, index_Actividad) {
-      console.log("entro a eliminaractividad")
-      console.log("index_actividadEspecifica", index_actividadEspecifica)
-      console.log("index_actividad", index_Actividad)
+      //console.log("entro a eliminaractividad")
+      //console.log("index_actividadEspecifica", index_actividadEspecifica)
+      //console.log("index_actividad", index_Actividad)
       if (self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.length === 1) {
-        console.log("minimo numero de actividades")
+        //console.log("minimo numero de actividades")
         return
       }
       self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.splice(index_Actividad, 1);
     }
 
     self.guardar = function () {
-      console.log(angular.toJson(self.Informe));
+      //console.log(angular.toJson(self.Informe));
       if (self.nuevoInforme) {
         //endpoint para crear
         cumplidosMidRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
-          console.log("resultado post informe", response)
+          //console.log("resultado post informe", response)
           if (response.status == 201) {
             self.nuevoInforme = false;
             swal(
@@ -343,7 +343,7 @@ angular.module('contractualClienteApp')
       } else {
         //endpoint para actualizar
         cumplidosMidRequest.put('informe', angular.toJson(self.Informe)).then(function (response) {
-          console.log("resultado put informe", response)
+          //console.log("resultado put informe", response)
           if (response.status == 201) {
             self.nuevoInforme = false;
             swal(
@@ -363,11 +363,11 @@ angular.module('contractualClienteApp')
     }
 
     self.actualizar_index_actividadEspecifica = function (Meta) {
-      console.log(Meta);
+      //console.log(Meta);
       //Meta.activo = !Meta.activo;
-      /*console.log(index_Meta);
+      /*//console.log(index_Meta);
       self.metas_disponibles[index_Meta].activo=!self.metas_disponibles[index_Meta].activo;
-      console.log(self.metas_disponibles);*/
+      //console.log(self.metas_disponibles);*/
     }
 
     self.crear_lista_evidencias = function (Evidencia) {
@@ -384,7 +384,7 @@ angular.module('contractualClienteApp')
       var indexPrimera = 1;
       body.push([{ text: 'No.', style: 'tableActividadesHeader' }, { text: 'ACTIVIDADES ESPECIFICAS DEL VÍNCULO CONTRACTUAL ', style: 'tableActividadesHeader' }, { text: 'PORCENTAJE DE AVANCE', style: 'tableActividadesHeader' }, { text: 'ACTIVIDADES REALIZADAS EN EL PERIODO', style: 'tableActividadesHeader' }, { text: 'PRODUCTO ASOCIADO', style: 'tableActividadesHeader' }, { text: 'EVIDENCIAS', style: 'tableActividadesHeader' }])
       for (var i = 0; i < informe.ActividadesEspecificas.length; i++) {
-        console.log(i);
+        //console.log(i);
         var numActividades = informe.ActividadesEspecificas[i].ActividadesRealizadas.length;
         var actividadEsp = informe.ActividadesEspecificas[i];
         for (var j = 0; j < informe.ActividadesEspecificas[i].ActividadesRealizadas.length; j++) {
@@ -587,10 +587,10 @@ angular.module('contractualClienteApp')
     self.formato_generacion_pdf = function () {
       self.informacion_informe.porcentajeTiempo = self.calcularPorcentajeTiempo(self.informacion_informe.FechaInicio, self.informacion_informe.FechaFin, self.Informe.PeriodoInformeFin)
       var docDefinition = self.formato_InformeGyCertificadoC();
-      console.log(docDefinition);
+      //console.log(docDefinition);
       // pdfMake.createPdf(docDefinition).download();
       pdfMake.createPdf(docDefinition).getDataUrl(function (data) {
-        console.log(data);
+        //console.log(data);
         self.pdf_dataUrl = $sce.trustAsResourceUrl(data);
         self.pdf_base64 = data.split(',')[1]
         $('#modal_visualizar_documento').modal('show');
@@ -598,7 +598,7 @@ angular.module('contractualClienteApp')
     }
 
     self.subirInforme = function () {
-      console.log('hola?')
+      //console.log('hola?')
       swal({
         title: '¿Está seguro(a) de subir el Informe de gestion y certificado de cumplimiento?',
         type: 'warning',
@@ -609,7 +609,7 @@ angular.module('contractualClienteApp')
         cancelButtonText: 'Cancelar',
         confirmButtonText: 'Aceptar'
       }).then(function () {
-        console.log(self.pdf_dataUrl)
+        //console.log(self.pdf_dataUrl)
         var nombre_doc = self.vigencia + self.contrato + self.documento_contratista + self.mes + self.anio;
         var pago_mensual_id;
         var error = false;
@@ -642,12 +642,12 @@ angular.module('contractualClienteApp')
               }];
               //guarda el soporte por medio del gestor documental
               gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
-                console.log(response.data);
+                //console.log(response.data);
                 nuxeoMidRequest.post('workflow?docID=' + response.data.res.Enlace, null)
                   .then(function (response) {
-                    console.log('nuxeoMid response:', response)
+                    //console.log('nuxeoMid response:', response)
                   }).catch(function (error) {
-                    console.log('nuxeoMid error:', error)
+                    //console.log('nuxeoMid error:', error)
                   });
 
                 if (response.data.Status == 200) {

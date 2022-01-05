@@ -24,9 +24,9 @@ angular.module('notificacionService', [])
      * Permite gestionar workflow de notificaciones
      */
 
-    .factory('notificacionRequest', function (CONF,token_service, $http,$interval) {
+    .factory('notificacionRequest', function (CONF, token_service, $http, $interval) {
         var TIME_PING = 50000;
-        var self=this
+        var self = this
         var path = CONF.GENERAL.NOTIFICACION_MID_SERVICE;
         var arm = CONF.GENERAL.ARM_AWS_NOTIFICACIONES;
         var log = [];
@@ -42,7 +42,7 @@ angular.module('notificacionService', [])
             token_service.getLoginData()
                 .then(function () {
                     self.token = token_service.getAppPayload();
-                    console.log('token',self.token)
+                    //console.log('token', self.token)
                     // if(self.token.role!=null && $scope.role.includes('SUPERVISOR')){
                     //     notificacionRequest.traerNotificacion().then(function (response) {
                     //         console.log(response)
@@ -63,72 +63,68 @@ angular.module('notificacionService', [])
         }
 
         return {
-            existeNotificaciones:false,
-            verificarSuscripcion: function() {
-                var elemento={
-                    Endpoint:self.token.email,
-                    ArnTopic:arm
+            existeNotificaciones: false,
+            verificarSuscripcion: function () {
+                var elemento = {
+                    Endpoint: self.token.email,
+                    ArnTopic: arm
                 }
                 return $http.post(path + 'notificaciones/suscripcion', elemento, token_service.getHeader());
             },
-            suscripcion: function() {
-                var elemento={
+            suscripcion: function () {
+                var elemento = {
                     ArnTopic: arm,
                     Suscritos: [
-                      {
-                        Endpoint: self.token.email,
-                        Id: self.token.documento,
-                        Protocolo: 'email'
-                      }
+                        {
+                            Endpoint: self.token.email,
+                            Id: self.token.documento,
+                            Protocolo: 'email'
+                        }
                     ]
-                  }
+                }
                 return $http.post(path + 'notificaciones/suscribir', elemento, token_service.getHeader());
             },
-            enviarCorreo: function(asunto,atributos,destinatarios,idDuplicacion,idGrupoMensaje,mensaje,remitenteId) {
-                var elemento={
+            enviarCorreo: function (asunto, atributos, destinatarios, idDuplicacion, idGrupoMensaje, mensaje, remitenteId) {
+                var elemento = {
                     ArnTopic: arm,
-                    Asunto:asunto,
-                    Atributos:atributos,//objeto
+                    Asunto: asunto,
+                    Atributos: atributos,//objeto
                     DestinatarioId: destinatarios,//arreglo de strings
-                    IdDeduplicacion:idDuplicacion,
-                    IdGrupoMensaje:idGrupoMensaje,
-                    Mensaje:mensaje,
-                    RemitenteId:remitenteId,
-                  }
+                    IdDeduplicacion: idDuplicacion,
+                    IdGrupoMensaje: idGrupoMensaje,
+                    Mensaje: mensaje,
+                    RemitenteId: remitenteId,
+                }
                 return $http.post(path + 'notificaciones/enviar', elemento, token_service.getHeader());
             },
-            enviarNotificacion: function(asunto,destinatarioId,mensaje) {
-                var elemento={
+            enviarNotificacion: function (asunto, destinatarioId, mensaje) {
+                var elemento = {
                     ArnTopic: arm,
-                    Asunto:asunto,
-                    Atributos:{
+                    Asunto: asunto,
+                    Atributos: {
                     },//objeto
                     DestinatarioId: [destinatarioId],//arreglo de strings
-                    IdDeduplicacion:'',
-                    IdGrupoMensaje:'',
-                    Mensaje:mensaje,
-                    RemitenteId:self.token.documento,
-                  }
+                    IdDeduplicacion: '',
+                    IdGrupoMensaje: '',
+                    Mensaje: mensaje,
+                    RemitenteId: self.token.documento,
+                }
                 return $http.post(path + 'notificaciones/enviar', elemento, token_service.getHeader());
             },
-            traerNotificacion: function(nombreCola) {
-                return $http.get(path + 'colas/mensajes?nombre='+nombreCola+'&numMax=1', token_service.getHeader());
+            traerNotificacion: function (nombreCola) {
+                return $http.get(path + 'colas/mensajes?nombre=' + nombreCola + '&numMax=1', token_service.getHeader());
             },
-            borrarNotificaciones: function(nombreCola,contratistaId) {
-                console.log(token_service.getHeader())
-                var elemento={
-                    data:{
-                        NombreCola:nombreCola,
-                        Filtro:{
-                            Remitente:contratistaId,
-                        }
-                    },
-                    headers:token_service.getHeader().headers
+            borrarNotificaciones: function (nombreCola, contratistaId) {
+                var elemento = {
+                    NombreCola: nombreCola,
+                    Filtro: {
+                        Remitente: contratistaId,
+                    }
                 }
-                return $http.delete(path + 'colas/mensajes/',elemento);
+                return $http.post(path + 'colas/mensajes/', elemento, token_service.getHeader());
             },
             changeStateNoView: function () {
-                console.log('changeStateNoView')
+                //console.log('changeStateNoView')
             }
         };
-        });
+    });

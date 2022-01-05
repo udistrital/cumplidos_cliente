@@ -24,7 +24,7 @@ if (window.localStorage.getItem('access_token') === null ||
   // 
   req.open('GET', query, true);
   if (params.id_token !== null && params.id_token !== undefined) {
-    console.log('id_token inicial: ',params.id_token)
+    //console.log('id_token inicial: ',params.id_token)
     window.localStorage.setItem('access_token', params.access_token);
     window.localStorage.setItem('id_token', params.id_token);
     window.localStorage.setItem('state', params.state);
@@ -59,7 +59,7 @@ angular.module('implicitToken', [])
         var deferred = $q.defer();
         if (window.localStorage.getItem('access_token') !== null &&
           window.localStorage.getItem('access_token') !== undefined) {
-            console.log('access_code existe',window.localStorage.getItem('access_code'))
+            //console.log('access_code existe',window.localStorage.getItem('access_code'))
           if (window.localStorage.getItem('access_code') === null ||
             window.localStorage.getItem('access_code') === undefined) {
             var appUserInfo = JSON.parse(atob(window.localStorage.getItem('id_token').split('.')[1]));
@@ -68,8 +68,8 @@ angular.module('implicitToken', [])
             var userRol= {
               user: appUserInfo.email
             };
-            console.log('entro ',appUserInfo)
-            console.log((appUserInfo.role===null ||appUserInfo.role===undefined) &&(appUserInfo.documento===null ||appUserInfo.documento===undefined) && (appUserInfo.email!=null && appUserInfo.email!=undefined))
+            //console.log('entro ',appUserInfo)
+            //console.log((appUserInfo.role===null ||appUserInfo.role===undefined) &&(appUserInfo.documento===null ||appUserInfo.documento===undefined) && (appUserInfo.email!=null && appUserInfo.email!=undefined))
             if((appUserInfo.role===null ||appUserInfo.role===undefined) &&(appUserInfo.documento===null ||appUserInfo.documento===undefined) && (appUserInfo.email!=null && appUserInfo.email!=undefined)){
               autenticacionMidRequest.post("token/userRol", userRol, {
                 headers: {
@@ -81,14 +81,14 @@ angular.module('implicitToken', [])
                 appUserDocument = respuestaAutenticacion.data.documento;
                 
                 appUserRole = respuestaAutenticacion.data.role;        
-                console.log('respuesta autenticacion',appUserDocument,appUserRole)    
+                //console.log('respuesta autenticacion',appUserDocument,appUserRole)    
                 window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
                 window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
                 //
                 deferred.resolve(true);
               })
               .catch(function(excepcionAutenticacion) {
-                console.log("fallo la autenticacion");
+                //console.log("fallo la autenticacion");
                 //service.logout();
               });
             }else{
@@ -166,14 +166,14 @@ angular.module('implicitToken', [])
         var access_code = window.localStorage.getItem('access_code');
         var access_role = window.localStorage.getItem('access_role');
         var data = angular.fromJson(atob(id_token[1]));
-        console.log('access_code:',access_code,'access_role: ',access_role);
+        //console.log('access_code:',access_code,'access_role: ',access_role);
         if(!data.documento){
           data.documento = angular.fromJson(atob(access_code));
         }
         if(!data.role){
           data.role = angular.fromJson(atob(access_role));
         }
-        console.log('data:',data)
+        //console.log('data:',data)
         return data;
       },
       logout: function () {

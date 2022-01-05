@@ -164,7 +164,7 @@ angular.module('contractualClienteApp')
                     // tslint:disable-next-line: variable-name
                     var id_token = window.localStorage.getItem('access_role').split('.');
                     var payload = JSON.parse(atob(id_token));
-                    console.log(payload);
+                    //console.log(payload);
                     return payload.map(function (element) {
                         return { Nombre: element }
                     });

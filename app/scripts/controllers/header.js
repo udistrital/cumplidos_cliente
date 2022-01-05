@@ -22,13 +22,13 @@ angular.module('contractualClienteApp')
                 token_service.getLoginData().then(function () {
                     $scope.isLogin = true;
                     $scope.notificacion=notificacionRequest;
-                    console.log($scope.notificacion)
-                    console.log("existe Notificaciones",$scope.notificacion.existeNotificaciones)
+                    //console.log($scope.notificacion)
+                    //console.log("existe Notificaciones",$scope.notificacion.existeNotificaciones)
                     $scope.token = token_service.getAppPayload();
                     if($scope.token.email){
                         $scope.token.sub=$scope.token.email.split('@')[0];
                     }
-                    console.log($scope.token);
+                    //console.log($scope.token);
                 });
             } else {
                 $scope.isLogin = false;
@@ -51,7 +51,7 @@ angular.module('contractualClienteApp')
             }
 
             $scope.togglenotify = function () {
-                console.log("click")
+                //console.log("click")
                 if (!behaviorTheme.notificacion.open) {
                     //notificacion.changeStateNoView();
                 }

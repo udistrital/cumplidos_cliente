@@ -131,14 +131,15 @@
                               </div>
                               <div class="col-md-6">
                                 <label class="control-label" for="id_evidencias">Evidencias:</label>
+                                <button type="button" class="btn pull-right btn-sm btn-custom btn-delete-ae"
+                                  ng-click="InformeGyCertificadoC.eliminarActividad(index_actividadEspecifica,$index)"
+                                  ng-if="$index>0">x</button>
                                 <textarea class="form-control" id="id_evidencias"
                                   value="{{actividadRealizada.Evidencia}}"
                                   ng-model="actividadRealizada.Evidencia"></textarea>
                               </div>
                               <div>
-                                <button type="button" class="btn pull-right btn-sm btn-custom"
-                                  ng-click="InformeGyCertificadoC.eliminarActividad(index_actividadEspecifica,$index)"
-                                  ng-if="$index>0">-</button>
+                                
                               </div>
                             </form>
                           </div>
