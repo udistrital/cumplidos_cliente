@@ -115,15 +115,17 @@ angular.module('notificacionService', [])
                 return $http.get(path + 'colas/mensajes?nombre='+nombreCola+'&numMax=1', token_service.getHeader());
             },
             borrarNotificaciones: function(nombreCola,contratistaId) {
+                console.log(token_service.getHeader())
                 var elemento={
                     data:{
                         NombreCola:nombreCola,
                         Filtro:{
                             Remitente:contratistaId,
                         }
-                    }
+                    },
+                    headers:token_service.getHeader().headers
                 }
-                return $http.delete(path + 'colas/mensajes/',elemento, token_service.getHeader());
+                return $http.delete(path + 'colas/mensajes/',elemento);
             },
             changeStateNoView: function () {
                 console.log('changeStateNoView')

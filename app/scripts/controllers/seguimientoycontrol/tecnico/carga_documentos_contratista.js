@@ -751,22 +751,7 @@ angular.module('contractualClienteApp')
     self.borrar_doc = function () {
 
       var documento = self.doc;
-      console.log(documento)
-      nuxeoMidRequest.delete('workflow', documento.Enlace)
-        .then(function (response) {
-          //Bandera de validacion
-        }).catch(
-          function (error) {
-            // self.obtener_doc(self.fila_sol_pago);
-            // swal({
-            //   title: 'Error',
-            //   text: 'Hubo un error al momento de borrar el documento',
-            //   type: 'error',
-            //   target: document.getElementById('modal_ver_soportes')
-            // });
-            console.log(error);
-          }
-        );
+      console.log(documento)  
       gestorDocumentalMidRequest.delete('/document',documento.Enlace).then(function (response) {
         console.log(response)
         swal({
@@ -783,29 +768,6 @@ angular.module('contractualClienteApp')
            target: document.getElementById('modal_ver_soportes')
          });
        })
-      // documento.Metadatos = JSON.stringify(documento.Metadatos);
-      // documento.Activo = false;
-      // //documento.Descripcion = "PRUEBA DE CAMBIO"
-      // documentoRequest.put('documento', documento.Id, documento).then(function (response) {
-      //   console.log(response)
-      //   //self.obtener_doc(self.fila_sol_pago)
-      //   swal({
-      //     title: 'Documento borrado',
-      //     text: 'Se ha borrado exitosamente el documento',
-      //     type: 'success',
-      //     target: self.obtener_doc(self.fila_sol_pago)
-      //   });
-      // })
-
-        // .catch(function (response) {
-        //   // self.obtener_doc(self.fila_sol_pago);
-        //   swal({
-        //     title: 'Error',
-        //     text: 'Hubo un error al momento de borrar el documento',
-        //     type: 'error',
-        //     target: self.obtener_doc(self.fila_sol_pago)
-        //   });
-        // })
 
     }
 
@@ -815,7 +777,7 @@ angular.module('contractualClienteApp')
     };
 
 
-    self.prueba = function () {
+    self.remover_doc = function () {
 
       if (self.fileModel === undefined) {
 
