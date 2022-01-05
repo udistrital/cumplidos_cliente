@@ -236,7 +236,7 @@ angular.module('contractualClienteApp')
     }
 
     self.obtenerPreliqidacion = function () {
-      titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.documento_contratista).then(
+      titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' +self.vigencia+ '/' + self.documento_contratista).then(
         function (response) {
           console.log(response)
           self.Preliquidacion = response.data.Data
