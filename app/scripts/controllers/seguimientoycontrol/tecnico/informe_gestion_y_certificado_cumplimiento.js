@@ -154,7 +154,9 @@ angular.module('contractualClienteApp')
             if (response.data.Data.length != 0) {
               var inf_aux = response.data.Data[0];
               inf_aux.PeriodoInformeInicio = new Date(inf_aux.PeriodoInformeInicio.split('T')[0]);
+              inf_aux.PeriodoInformeInicio.setHours(inf_aux.PeriodoInformeInicio.getHours()+5)
               inf_aux.PeriodoInformeFin = new Date(inf_aux.PeriodoInformeFin.split('T')[0]);
+              inf_aux.PeriodoInformeFin.setHours(inf_aux.PeriodoInformeFin.getHours()+5)
               self.Informe = inf_aux;
               self.nuevoInforme = false;
             } else {
