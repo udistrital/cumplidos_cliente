@@ -806,6 +806,9 @@ var text_es = {
     ACC: "ACCIONES",
     EDITAR: "EDITAR",
     ELIMINAR: "ELIMINAR REGISTRO",
+    TOTAL_DEV:"Total devengado",
+    TOTAL_DESC:"Total descuento",
+    TOTAL_PAGAR:"Total a pagar",
 
     //Módulo aprobación documentos
     TITULO_APRO_DOC: "APROBACIÓN CUMPLIDOS",

@@ -221,10 +221,10 @@ angular.module('contractualClienteApp')
 
     self.enviar_notificacion=function (asunto,destinatario,mensaje,remitenteId) {
       notificacionRequest.enviarCorreo(asunto,{},[destinatario],'','',mensaje,remitenteId).then(function (response) {
-        console.log(response)
+        //console.log(response)
       }).catch(
         function (error) {
-          console.log(error)
+          //console.log(error)
         }
       )
     }
@@ -385,9 +385,9 @@ angular.module('contractualClienteApp')
       gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
 
         var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
-        console.log('file ',file);
+        //console.log('file ',file);
         var fileURL = URL.createObjectURL(file);
-        console.log('fileURL ', fileURL);
+        //console.log('fileURL ', fileURL);
         $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
       })
     };

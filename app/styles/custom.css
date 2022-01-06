@@ -47,3 +47,15 @@ margin-bottom: 10px;
 .seguridad_social {
   background: #A9F5D0 !important;
 }
+
+.panel-body{
+  padding: 5px;
+}
+
+.btn-delete-ae{
+  padding: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}

@@ -19,7 +19,7 @@ angular.module('contractualClienteApp')
             function traerNoticicaciones() {
                 if($scope.roles!=null && $scope.roles.includes('SUPERVISOR')){
                     notificacionRequest.traerNotificacion('ColaSupervisor').then(function (response) {
-                        console.log(response)
+                        //console.log(response)
                         if(response.data.Data!=null){
                             $scope.existenNotificaciones=true;
                             $scope.notificacion.existeNotificaciones=true;
@@ -29,17 +29,17 @@ angular.module('contractualClienteApp')
                         }
                     }).catch(
                         function (error) {
-                            console.log(error)
+                            //console.log(error)
                         }
                     );
                 }else{
-                    console.log("no tiene el rol")
+                    //console.log("no tiene el rol")
                 }
     
     
                 if($scope.roles!=null && $scope.roles.includes('ORDENADOR_DEL_GASTO')){
                     notificacionRequest.traerNotificacion('ColaOrdenador').then(function (response) {
-                        console.log(response)
+                        //console.log(response)
                         if(response.data.Data!=null){
                             $scope.existenNotificaciones=true;
                             $scope.notificacion.existeNotificaciones=true;
@@ -49,11 +49,11 @@ angular.module('contractualClienteApp')
                         }
                     }).catch(
                         function (error) {
-                            console.log(error)
+                            //console.log(error)
                         }
                     );
                 }else{
-                    console.log("no tiene el rol")
+                    //console.log("no tiene el rol")
                 }
             }
             

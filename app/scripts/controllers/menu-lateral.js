@@ -38,13 +38,13 @@ angular.module('contractualClienteApp')
                         }
                     }
                     roles = rl.toString();
-                    console.log(roles);
+                    //console.log(roles);
                 } else {
                     roles = $scope.token.role;
                 }
                 roles = roles.replace('Internal/everyone,', '','g');
                 roles = roles.replace('Internal/selfsignup,', '','g');
-                console.log('roles',roles)
+                ////console.log('roles',roles)
                 configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas', '').then(function(response) {
                     $rootScope.menu = response.data;
                     behaviorTheme.initMenu(response.data);
