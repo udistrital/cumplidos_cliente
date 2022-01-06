@@ -261,6 +261,8 @@ angular.module('utilsService', [])
                 return meses[mesNum-1]
             },
             mesAnterior: function (mes, anio) {
+                mes= parseInt(mes)
+                anio=parseInt(anio)
                 var mes_anterior;
                 var anio_anterior;
                 if(mes===1){
