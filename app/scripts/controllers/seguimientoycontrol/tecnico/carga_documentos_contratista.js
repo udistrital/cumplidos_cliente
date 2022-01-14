@@ -758,9 +758,14 @@ angular.module('contractualClienteApp')
              title: 'Documento borrado',
              text: 'Se ha borrado exitosamente el documento',
              type: 'success',
-             target: self.obtener_doc(self.fila_sol_pago)
-           });
+             target:  document.getElementById('modal_ver_soportes')
+           }).then(
+             function (){
+              self.obtener_doc(self.fila_sol_pago)
+             }
+           );
       }).catch(function (error) {
+        console.log(error)
          swal({
            title: 'Error',
            text: 'Hubo un error al momento de borrar el documento',
