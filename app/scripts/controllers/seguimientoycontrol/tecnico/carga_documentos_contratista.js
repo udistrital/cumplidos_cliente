@@ -765,7 +765,6 @@ angular.module('contractualClienteApp')
              }
            );
       }).catch(function (error) {
-        console.log(error)
          swal({
            title: 'Error',
            text: 'Hubo un error al momento de borrar el documento',
