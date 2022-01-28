@@ -309,7 +309,7 @@ angular.module('contractualClienteApp')
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
 
-          self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por ordenador ',self.Documento);
+          self.enviar_notificacion('[APROBADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por ordenador ',self.Documento);
           notificacionRequest.borrarNotificaciones('ColaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
           cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
@@ -365,7 +365,7 @@ angular.module('contractualClienteApp')
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato).then(function (response) {
         self.aux_pago_mensual = pago_mensual;
 
-        self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por ordenador del gasto',self.Documento)
+        self.enviar_notificacion('[RECHAZADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por ordenador del gasto',self.Documento)
         notificacionRequest.borrarNotificaciones('ColaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
 
         cumplidosCrudRequest.get('estado_pago_mensual', $.param({

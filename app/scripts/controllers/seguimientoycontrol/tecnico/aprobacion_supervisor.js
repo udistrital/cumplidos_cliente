@@ -236,7 +236,7 @@ angular.module('contractualClienteApp')
 
           self.contrato = response.data.contrato;
 
-          self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por supervisor',self.Documento);
+          self.enviar_notificacion('[APROBADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por supervisor',self.Documento);
           notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion','ColaOrdenador','/seguimientoycontrol/tecnico/aprobacion_ordenador');
           notificacionRequest.borrarNotificaciones('ColaSupervisor',[self.aux_pago_mensual.DocumentoPersonaId]);
           //Obtiene la información correspondiente del ordenador
@@ -297,7 +297,7 @@ angular.module('contractualClienteApp')
 
     self.rechazar = function (pago_mensual) {
       self.aux_pago_mensual = pago_mensual;
-      self.enviar_notificacion('Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por supervisor',self.Documento)
+      self.enviar_notificacion('[RECHAZADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por supervisor',self.Documento)
       notificacionRequest.borrarNotificaciones('ColaSupervisor',[self.aux_pago_mensual.DocumentoPersonaId])
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
