@@ -97,7 +97,7 @@
                           ng-options="actividadEspecifica for actividadEspecifica in InformeGyCertificadoC.actividades_especificas|excludeUsed:InformeGyCertificadoC.Informe.ActividadesEspecificas:index_actividadEspecifica">
                           </select> -->
                           <input type="text" class="form-control" name="actividad_especifica" id=""
-                            ng-model="actividadEspecifica.ActividadEspecifica">
+                            ng-model="actividadEspecifica.ActividadEspecifica" maxlength="1000">
                         </div>
                         <div class="form-group row">
                           <div class="col-md-2">
@@ -121,13 +121,13 @@
                                 <label class="control-label" for="id_actividad">Actividad realizada:</label>
                                 <textarea class="form-control" id="id_actividad"
                                   value="{{actividadRealizada.Actividad}}"
-                                  ng-model="actividadRealizada.Actividad"></textarea>
+                                  ng-model="actividadRealizada.Actividad"  maxlength="1000"></textarea>
                               </div>
                               <div class="col-md-2">
                                 <label class="control-label" for="id_producto_asociado">Producto asociado:</label>
                                 <textarea class="form-control" id="id_producto_asociado"
                                   value="{{actividadRealizada.ProductoAsociado}}"
-                                  ng-model="actividadRealizada.ProductoAsociado"></textarea>
+                                  ng-model="actividadRealizada.ProductoAsociado"  maxlength="250"></textarea>
                               </div>
                               <div class="col-md-6">
                                 <label class="control-label" for="id_evidencias">Evidencias:</label>
@@ -136,7 +136,7 @@
                                   ng-if="$index>0">x</button>
                                 <textarea class="form-control" id="id_evidencias"
                                   value="{{actividadRealizada.Evidencia}}"
-                                  ng-model="actividadRealizada.Evidencia"></textarea>
+                                  ng-model="actividadRealizada.Evidencia"  maxlength="1000"></textarea>
                               </div>
                               <div>
                                 
