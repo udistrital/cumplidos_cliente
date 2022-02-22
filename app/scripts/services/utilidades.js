@@ -320,6 +320,9 @@ angular.module('utilsService', [])
             },
             ajustarFecha(stringFecha){
                 return stringFecha.slice(0,10)+'T12:00:00Z'
+            },
+            getMeses(){
+                return meses
             }
         };
     });

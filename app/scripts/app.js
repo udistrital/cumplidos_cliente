@@ -131,7 +131,12 @@ angular
                 templateUrl: 'views/cumplidosaprobadosordenador/visualizacion_cumplidos.html',
                 controller: 'VisualizarCumplidosCtrl',
                 controllerAs: 'VisualizarCumplidos'
-              })
+            })
+            .when('/seguimientoycontrol/supervisor/parametrizacion_fechas',{
+                templateUrl: 'views/parametrizacionfechas/parametrizacion_fechas.html',
+                controller: 'ParametrizacionFechasCtrl',
+                controllerAs: 'ParametrizacionFechas'
+            })
             .otherwise({
                 redirectTo: '/'
             });

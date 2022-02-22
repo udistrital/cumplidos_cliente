@@ -159,6 +159,7 @@ angular.module('contractualClienteApp')
               inf_aux.PeriodoInformeFin.setHours(inf_aux.PeriodoInformeFin.getHours()+5)
               self.Informe = inf_aux;
               self.nuevoInforme = false;
+              console.log(self.Informe)
             } else {
               swal(
                 'ERROR AL OBTENER EL INFORME',
@@ -193,6 +194,7 @@ angular.module('contractualClienteApp')
           })
         }
       );
+      
     }
 
     self.obtenerInformacionInforme = function () {
