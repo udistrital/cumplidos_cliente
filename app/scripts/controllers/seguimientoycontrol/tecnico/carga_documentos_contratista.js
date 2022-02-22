@@ -193,6 +193,7 @@ angular.module('contractualClienteApp')
             self.gridOptions1.data = self.informacion_contratos;
             //Contiene el numero de documento del Responsable
             self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
+            self.obtenerDependenciasSupervisor();
           } else {
             swal(
               'Error',
@@ -472,6 +473,69 @@ angular.module('contractualClienteApp')
       Enviar solicitud de revisión de soportes a Supervisor
     */
     self.enviar_revision = function (solicitud) {
+      cumplidosCrudRequest.get('fechas_carga_cumplidos', $.param({
+        limit: 0,
+        query: 'Dependencia:' + self.dependencia_supervisor.codigo+',Mes.in:'+solicitud.Mes+'|0,Anio.in:'+solicitud.Ano+'|0',
+        sortby: 'FechaModificacion',
+        order: 'desc',
+      })).then(function (response) {
+        console.log('Fechas Parametrizadas', response)
+        self.fecha_carga=response.data.Data[0];
+        if (Object.entries(self.fecha_carga).length != 0) {
+          if (self.fecha_carga.FechaInicio != "0001-01-01T00:00:00Z") {
+            // periodo definido
+            var ff = new Date(self.fecha_carga.FechaFin.split('T')[0]);
+            ff.setHours(47,59,59);
+            self.fecha_carga.FechaFin = ff
+            var fi = new Date(self.fecha_carga.FechaInicio.split('T')[0]);
+            fi.setHours(24);
+            self.fecha_carga.FechaInicio = fi;
+            var fecha_Actual=new Date();
+            console.log('fecha inicial',fi);
+            console.log("fecha_actual",fecha_Actual);
+            console.log('fecha final',ff);
+            if(fi<=fecha_Actual && fecha_Actual<=ff){
+              console.log("dentro del periodo");
+              self.enviar_cumplido(solicitud);
+            }else{
+              console.log("fuera del periodo");
+              swal({
+                title: 'Fuera de tiempo',
+                text:'Las fechas de carga del cumplidos son del '+self.fecha_carga.FechaInicio.toLocaleString()+' al '+self.fecha_carga.FechaFin.toLocaleString(),
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+              })
+            }
+          }else{
+            //sin limites
+            self.enviar_cumplido(solicitud);
+          }
+        }else{
+          //no se definio para este mes y año
+          self.enviar_cumplido(solicitud);
+        }
+      }, function (error) {
+        swal({
+          title: 'Ocurrio un error al traer los registros',
+          type: 'error',
+          showCancelButton: false,
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Aceptar'
+        }).then(function () {
+          //$window.location.href = '/#/';
+        })
+      })
+     
+    };
+
+
+    //
+    /*
+      Función para enviar el cumplido
+    */
+    self.enviar_cumplido=function (solicitud){
       swal({
         title: '¿Está seguro(a) de enviar a revisar los soportes por el supervisor?',
         type: 'warning',
@@ -544,9 +608,10 @@ angular.module('contractualClienteApp')
           }
 
         });
+      }).catch(function (){
+        
       });
     };
-
 
     //
     /*
@@ -806,5 +871,42 @@ angular.module('contractualClienteApp')
 
       }
     };
+
+    self.obtenerDependenciasSupervisor = function () {
+      contratoRequest.get('dependencias_supervisor', self.responsable)
+        .then(function (response) {
+          if (response.data.dependencias.dependencia != undefined) {
+            if (response.data.dependencias.dependencia.length != 0) {
+              self.dependencia_supervisor = response.data.dependencias.dependencia[0];
+              console.log('Dependencia supervisor', self.dependencia_supervisor);
+            } else {
+              swal({
+                title: 'No se encontro dependencia asociada',
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+              }).then(function () {
+                $window.location.href = '/#/';
+              })
+            }
+          } else {
+            swal({
+              title: 'No se encontro dependencia asociada',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar'
+            }).then(function () {
+              $window.location.href = '/#/';
+            })
+          }
+
+        });
+
+
+    };
+    
+
 
   });
