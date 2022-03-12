@@ -55,7 +55,7 @@ angular.module("contractualClienteApp").constant("CONF", {
         "https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize",
       URL_USER_INFO:
         "https://autenticacion.portaloas.udistrital.edu.co/oauth2/userinfo",
-      CLIENTE_ID: "koYpTQXQiIk6htyONexGI2m7sYsa",
+      CLIENTE_ID: "YM3WYl4Q0EujfkNkqeBlH7KvIpsa",
       REDIRECT_URL: "https://contratistas.portaloas.udistrital.edu.co",
       RESPONSE_TYPE: "id_token token",
       SCOPE: "openid email documento",
