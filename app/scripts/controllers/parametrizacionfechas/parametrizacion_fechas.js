@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('ParametrizacionFechasCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, cumplidosCrudRequest, $route, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, contratoRequest) {
+  .controller('ParametrizacionFechasCtrl', function (token_service,cumplidosCrudRequest, $window, utils, amazonAdministrativaRequest, contratoRequest) {
 
     self = this;
 

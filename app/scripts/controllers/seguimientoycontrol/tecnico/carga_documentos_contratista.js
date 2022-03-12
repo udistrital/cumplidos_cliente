@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, notificacionRequest, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, notificacionRequest, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -696,12 +696,6 @@ angular.module('contractualClienteApp')
             //guarda el soporte por medio del gestor documental
             gestorDocumentalMidRequest.post('/document/upload',data).then(function (response){
              //console.log(response.data);
-              nuxeoMidRequest.post('workflow?docID=' + response.data.res.Enlace, null)
-                 .then(function (response) {
-                  //console.log('nuxeoMid response:',response)
-              }).catch(function (error) {
-                //console.log('nuxeoMid error:',error)
-              });
 
               if(response.data.Status==200){
                 self.id_documento = response.data.res.Id;

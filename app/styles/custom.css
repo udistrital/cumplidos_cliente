@@ -10,6 +10,11 @@ Color: #fff;
 margin:5px
 }
 
+.btn-custom:focus {
+  Color: #fff;
+  border-color: #731514;
+}  
+
 .btn-custom:hover {
 Color: #fff;
 }
