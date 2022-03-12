@@ -1,0 +1,252 @@
+<br>
+<div class="panel panel-default">
+  <div class="panel panel-primary panel-body">
+    <h4 class="page-header ">{{'TITULO_INFORME_G_Y_CERTIFICADO_C' | translate}}</h4>
+
+    <div class="panel-body">
+      <div class="row">
+        <div class="panel panel-default col-lg-12 col-lg-offset-1">
+          <div class="panel-body">
+            <div class="row" align-item="center">
+              <!--Inicio row-->
+              <h1 class="page-header text-center " style="color: black;">Informe de gestion y certificado de
+                cumplimiento CPS {{InformeGyCertificadoC.contrato}} de {{InformeGyCertificadoC.mes_nombre}} de
+                {{InformeGyCertificadoC.anio}}</h1>
+            </div>
+            <!--Fin row-->
+
+            <div class="row">
+              <!--Inicio row-->
+              <div class="panel panel-default">
+                <h3 class="page-header" style="color: black;">Objeto contratual </h3>
+                <div class="panel">
+                  <p>{{InformeGyCertificadoC.informacion_informe.Objeto}}</p>
+                </div>
+                <h3 class="page-header" style="color: black;">Actividades especificas </h3>
+                <div class="panel">
+                  <p>{{InformeGyCertificadoC.informacion_informe.ActividadesEspecificas}}</p>
+                </div>
+              </div>
+
+            </div>
+            <!--Fin row-->
+            <div class="row">
+              <!--Inicio row-->
+              <div class="panel panel-default">
+                <div class="panel panel-body">
+                  <div class="row">
+                    <button type="button" class="btn pull-left btn-custom " data-toggle="modal"
+                      data-target="#modal_preliquidacion">Preliquidacion</button>
+                    <button type="button" class="btn pull-right btn-custom"
+                      ng-click="InformeGyCertificadoC.formato_generacion_pdf()">Crear</button>
+                    <button type="button" class="btn pull-right btn-custom"
+                      ng-click="InformeGyCertificadoC.guardar()">Guardar</button>
+                    <button type="button" class="btn pull-right btn-custom"
+                      ng-click="InformeGyCertificadoC.agregarActividadEspecifica()">Añadir actividad especifica</button>
+                  </div>
+                  <div class="row">
+                    <form class="form-group">
+                      <div class="col-lg-7">
+                        <label for="id_proceso">Proceso:</label>
+                        <select class="form-control" id="id_proceso" ng-model="InformeGyCertificadoC.Informe.Proceso"
+                          ng-options="proceso for proceso in InformeGyCertificadoC.procesos">
+
+                        </select>
+                      </div>
+                      <div class="col-lg-5">
+                        <label for="id_formulario_periodol">Periodo de actividades:</label>
+                        <form id="id_formulario_periodo" class="form-horizontal">
+                          <div class="form-group periodo_form">
+                            <label for="id_fecha_inicio_actividades" class="col-md-1 control-label label-no-padding"
+                              style="padding-left: 0px;">Desde</label>
+                            <div class="col-md-5">
+                              <input type="date" id="id_fecha_inicio_actividades" class="form-control"
+                                ng-model="InformeGyCertificadoC.Informe.PeriodoInformeInicio">
+                            </div>
+                            <label for="id_fecha_fin_actividades" class="col-md-1 control-label label-no-padding"
+                              style="padding-left: 0px;">Hasta</label>
+                            <div class="col-md-5">
+                              <input type="date" class="form-control" id="id_fecha_fin_actividades"
+                                ng-model="InformeGyCertificadoC.Informe.PeriodoInformeFin">
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+
+                <div class="panel panel-default"
+                  ng-repeat="actividadEspecifica in InformeGyCertificadoC.Informe.ActividadesEspecificas"
+                  ng-init="index_actividadEspecifica=$index">
+                  <div class="row" ng-if="$index>0">
+                    <button type="button" class="btn pull-right btn-custom"
+                      ng-click="InformeGyCertificadoC.eliminarActividadEspecifica($index)">Eliminar Activida
+                      Especifica</button>
+                  </div>
+                  <div class="row">
+
+                    <div class="panel panel-default col-lg-12 col-lg-offset-1">
+
+                      <form class="form">
+                        <div class="form-group row">
+                          <label>Actividad especifica:</label>
+                          <!--Select para cuando este activo las actividades especificas desde necesidades-->
+                          <!-- <select class="form-control" ng-model="actividadEspecifica.ActividadEspecifica"
+                          ng-options="actividadEspecifica for actividadEspecifica in InformeGyCertificadoC.actividades_especificas|excludeUsed:InformeGyCertificadoC.Informe.ActividadesEspecificas:index_actividadEspecifica">
+                          </select> -->
+                          <input type="text" class="form-control" name="actividad_especifica" id=""
+                            ng-model="actividadEspecifica.ActividadEspecifica" maxlength="1000">
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-md-2">
+                            <label>Avance:</label>
+                            <input type="number" class="form-control" id="" max="100" min="0"
+                              ng-model="actividadEspecifica.Avance">
+                          </div>
+                          <div class="col-md-10">
+                            <button type="button" class="btn pull-right btn-custom"
+                              ng-click="InformeGyCertificadoC.agregarActividad($index)">Añadir Actividad</button>
+                          </div>
+                        </div>
+                      </form>
+
+                      <div class="panel panel-body">
+                        <div ng-repeat="actividadRealizada in actividadEspecifica.ActividadesRealizadas">
+                          <div class="row">
+                            <form class="form-horizontal" role="form">
+
+                              <div class="col-md-4">
+                                <label class="control-label" for="id_actividad">Actividad realizada:</label>
+                                <textarea class="form-control" id="id_actividad"
+                                  value="{{actividadRealizada.Actividad}}"
+                                  ng-model="actividadRealizada.Actividad"  maxlength="1000"></textarea>
+                              </div>
+                              <div class="col-md-2">
+                                <label class="control-label" for="id_producto_asociado">Producto asociado:</label>
+                                <textarea class="form-control" id="id_producto_asociado"
+                                  value="{{actividadRealizada.ProductoAsociado}}"
+                                  ng-model="actividadRealizada.ProductoAsociado"  maxlength="250"></textarea>
+                              </div>
+                              <div class="col-md-6">
+                                <label class="control-label" for="id_evidencias">Evidencias:</label>
+                                <button type="button" class="btn pull-right btn-sm btn-custom btn-delete-ae"
+                                  ng-click="InformeGyCertificadoC.eliminarActividad(index_actividadEspecifica,$index)"
+                                  ng-if="$index>0">x</button>
+                                <textarea class="form-control" id="id_evidencias"
+                                  value="{{actividadRealizada.Evidencia}}"
+                                  ng-model="actividadRealizada.Evidencia"  maxlength="1000"></textarea>
+                              </div>
+                              <div>
+                                
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="mi-grid" style="height: {{gridHeight}}px;" ui-grid="cargaDocumentosContratista.gridOptions1" align='center' ui-grid-auto-resize></div> -->
+              </div>
+            </div>
+            <!--Fin row-->
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Modal Visualizar Documento-->
+<div id="modal_visualizar_documento" class="modal fade" role="dialog" tabindex="-2">
+  <div class="modal-content col-md-10 col-md-offset-1" style="margin-top: 5%; height: 90%;">
+
+    <div class="modal-header">
+
+      <button type="button" class="btn btn-outline btn-danger btn-xs pull-right" data-dismiss="modal">&times</button>
+      <h2>Informe de gestion y certificado de cumplimiento</h2>
+      <br>
+    </div>
+
+    <div class="modal-body" style="height: 70%;">
+      <div class="panel panel-default" style="height: 100%;">
+
+        <!-- Revisar el pdf pdf viewer -->
+        <!--<pdf-viewer url="informe_terminacion.pdf" scale="1" show-toolbar="true" headers="{ 'x-you-know-whats-awesome': 'EVERYTHING' }">
+          </pdf-viewer>
+            -->
+        <div class="wrapper" style="height: 100%;">
+          <iframe ng-src="{{InformeGyCertificadoC.pdf_dataUrl}}" height="100%" width="100%"></iframe>
+        </div>
+
+        <div class="row text-center">
+          <button type="button" class="btn btn-sm btn-custom "
+            ng-click="InformeGyCertificadoC.subirInforme()">Subir</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal preliquidacion -->
+<div id="modal_preliquidacion" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content col-md-6 col-md-offset-3" style="margin-top: 5%">
+
+      <div class="modal-header">
+
+        <button type="button" class="btn btn-outline btn-danger btn-xs pull-right" data-dismiss="modal">&times</button>
+        <h2 class="page-header text-center">{{'PRELIQUIDACION' |translate}} : </h2>
+        <h3 class="page-header text-center">{{InformeGyCertificadoC.documento_contratista}} -
+          {{InformeGyCertificadoC.informacion_informe.InformacionContratista.Nombre}}</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="col-md-12">
+          <table class="table  table-scrollable">
+            <tr>
+              <th>{{'CONCEPTO' | translate}}</th>
+              <th>{{'VALOR'|translate}}</th>
+            </tr>
+            <tr ng-repeat="concepto in InformeGyCertificadoC.Preliquidacion.Detalle"
+              ng-show="concepto.ConceptoNominaId.NaturalezaConceptoNominaId === 423" class="devengo">
+              <td class="texto">{{concepto.ConceptoNominaId.AliasConcepto}}</td>
+              <td class="alineacion_derecha">{{concepto.ValorCalculadoConFormato}}</td>
+            </tr>
+            <tr ng-repeat="concepto in InformeGyCertificadoC.Preliquidacion.Detalle"
+              ng-show="concepto.ConceptoNominaId.NaturalezaConceptoNominaId === 424" class="descuento">
+              <td class="texto">{{concepto.ConceptoNominaId.AliasConcepto}}</td>
+              <td class="alineacion_derecha">{{concepto.ValorCalculadoConFormato}}</td>
+            </tr>
+            <tr ng-repeat="concepto in InformeGyCertificadoC.Preliquidacion.Detalle"
+              ng-show="concepto.ConceptoNominaId.NaturalezaConceptoNominaId === 425" class="seguridad_social">
+              <td class="texto">{{concepto.ConceptoNominaId.AliasConcepto}}</td>
+              <td class="alineacion_derecha">{{concepto.ValorCalculadoConFormato}}</td>
+            </tr>
+          </table>
+          <br>
+          <table class="table">
+            <tr>
+              <th>{{'TOTAL_DEV' | translate}}</th>
+              <td class="alineacion_derecha">{{InformeGyCertificadoC.Preliquidacion.TotalDevengadoConFormato}}</td>
+            </tr>
+            <tr>
+
+              <th>{{'TOTAL_DESC'| translate}}</th>
+              <td class="alineacion_derecha">{{InformeGyCertificadoC.Preliquidacion.TotalDescuentosConFormato}}</td>
+            </tr>
+            <tr>
+              <th>{{'TOTAL_PAGAR' | translate}}</th>
+              <td class="alineacion_derecha">{{InformeGyCertificadoC.Preliquidacion.TotalPagoConFormato}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

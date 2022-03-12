@@ -55,7 +55,7 @@ angular
         'oikosService',
         'financieraMidService',
         'adminMidService',
-        'nuxeoMidService',
+        'gestorDocumentalMidService',
         'adminJbpmV2Service',
         'amazonAdministrativaService',
         'contratoService',
@@ -66,7 +66,11 @@ angular
         'gridApiService',
         'colombiaHolidaysService',
         'nuxeoClient',
-        'core'
+        'autenticacionMidService',
+        'themeService',
+        'notificacionService',
+        'utilsService',
+        'titanMidService'
     ])
     .run(function(amMoment) {
         amMoment.changeLocale('es');
@@ -117,11 +121,21 @@ angular
               controller: 'AprobacionOrdenadorCtrl',
               controllerAs: 'aprobacionOrdenador'
             })
+            .when('/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/:contrato/:vigencia/:cdp/:vigencia_cdp/:anio/:mes', {
+                templateUrl: 'views/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.html',
+                controller: 'InformeGyCertificadoCCtrl',
+                controllerAs: 'InformeGyCertificadoC'
+            })
             .when('/cumplidos_aprobados_por_ordenador', {
                 templateUrl: 'views/cumplidosaprobadosordenador/visualizacion_cumplidos.html',
                 controller: 'VisualizarCumplidosCtrl',
                 controllerAs: 'VisualizarCumplidos'
-              })
+            })
+            .when('/seguimientoycontrol/supervisor/parametrizacion_fechas',{
+                templateUrl: 'views/parametrizacionfechas/parametrizacion_fechas.html',
+                controller: 'ParametrizacionFechasCtrl',
+                controllerAs: 'ParametrizacionFechas'
+            })
             .otherwise({
                 redirectTo: '/'
             });

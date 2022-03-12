@@ -1,0 +1,81 @@
+<div class="panel panel-default"style="padding-bottom: 10px;">
+    <h4 class="page-header">Parametrizacion de fechas cumplidos</h4>
+    <div class="panel panel-primary panel-body"> 
+        <div class="panel panel-default" style="margin-bottom: 10px;">
+            <h3 class="page-header" style="color: black;">Informacion: </h3>
+            <div style="padding: 10px;">
+              <p >En este modulo se pueden parametrizar las fechas de cargaa de cumplidos por mes y año, estas configuraciones son por dependencia y se pueden definir dos de las siguientes opciones de parametrizacion:</p>
+              <ul>
+                <li>Sin limite</li>
+                <li>Periodo</li>
+              </ul>
+              <p>Nota: si varias parametrizacion afectan sobre un mismo mes y año, se tomara la ultima en ser modificada.</p>
+            </div>          
+          </div>
+
+        <div class="row" style="margin: 20px;">
+            <form class="form-inline">
+               <div class="col-md-4 form-group text-center">
+                <label class="col-sm-5 control-label" for="anios">Añio:</label>
+                <select class="form-control col-sm-7" placeholder="Añio" id="anios" ng-model="ParametrizacionFechas.anio_sel">
+                          <option value="0" selected>Todos</option>
+                          <option ng-repeat="anio in ParametrizacionFechas.anios" ng-value="anio">{{anio}}</option>
+                </select>
+               </div>
+                <div class="col-md-4 form-group text-center">
+                  <label class="col-sm-5 control-label" for="meses">Mes:</label>
+                <select class="form-control col-sm-7" placeholder="Mes" id="meses" ng-model="ParametrizacionFechas.mes_sel">
+                          <option value="0" selected>Todos</option>
+                          <option ng-repeat="mes in ParametrizacionFechas.meses" ng-value="mes.Id">{{mes.Nombre}}</option>
+                </select>
+                </div>
+                <div class="col-md-4  form-group text-center">
+                  <button type="button" class="btn pull-center btn-custom "
+                      ng-click="ParametrizacionFechas.CargarFechas()">Cargar</button>
+                </div>
+            </form>
+        </div>
+        <div class="panel panel-default" style="margin-bottom: 10px;">
+            <div class="row" ng-if="ParametrizacionFechas.Mostrar">
+                  <div class="col-md-6 text-center">
+                    <div class="radio">
+                      <label>
+                        <input type="radio" ng-model="ParametrizacionFechas.opcion" ng-change="ParametrizacionFechas.cambiarFormulario(value)" name="check_periodo" id="sin_limite" value="no_periodo">
+                          Sin Limite:    
+                      </label>
+                    </div>
+                   </div>
+                    <div class="col-md-6 text-center">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" ng-model="ParametrizacionFechas.opcion" ng-change="ParametrizacionFechas.cambiarFormulario(value)" name="check_periodo" id="periodo" value="periodo">
+                            Periodo:    
+                        </label>
+                      </div>
+                    </div>
+            </div>
+            <div class="row" style="height: 300px; margin: 5px;">
+                <div class="row" style="margin: 15px;">
+                  <form class="form-inline" ng-if="ParametrizacionFechas.periodo">
+                    <div class="col-md-6 form-group text-center">
+                      <label class="col-sm-5 control-label" for="fecha_inicio">Fecha Inicio:</label>
+                      <input class="form-control" type="date" ng-model="ParametrizacionFechas.fechaAParametrizar.FechaInicio" name="fecha_inicio" id="fecha_inicio">
+                     </div>
+                      <div class="col-md-6 form-group text-center">
+                        <label class="col-sm-5 control-label" for="fecha_final">Fecha Fin:</label>
+                        <input class="form-control" type="date" ng-model="ParametrizacionFechas.fechaAParametrizar.FechaFin" name="fecha_final" id="fecha_final">
+                      </div>
+                  </form>
+                  
+                </div>
+                <div style="margin-top: 60px;" ng-if="ParametrizacionFechas.sin_limite || ParametrizacionFechas.periodo" class="row text-center" style="padding-top: 20px;">
+                  <p style="text-align:center;" ng-if="ParametrizacionFechas.periodo">Periodo: la carga del cumplido queda restringida desde las 00:00 horas de la fecha inicio hasta las 23:59 horas de la fecha fin.</p>
+                  <p style="text-align:center;" ng-if="ParametrizacionFechas.sin_limite">Sin limite: se puede realizar la carga del cumplidos sin restriccion</p>
+                  <button type="button" class="btn pull-center btn-custom "
+                      ng-click="ParametrizacionFechas.GuardarFechas()">Guardar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

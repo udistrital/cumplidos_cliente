@@ -1,18 +1,34 @@
 'use strict';
 
+
 /**
- * @ngdoc service
- * @name notificacionesApp.notificacion
+ * @ngdoc overview
+ * @name notificacionService
  * @description
- * # notificacion
- * Factory in the notificacionesApp.
+ * # notificacionService
+ * Service in the core.
  */
-//10.20.0.254/notificacion_api/register?id=1&profile=admin
 
-angular.module('contractualClienteApp')
-    .factory('notificacion', function ( CONF, configuracionRequest, token_service, $websocket, $interval) {
+angular.module('notificacionService', [])
+
+    /**
+     * @ngdoc service
+     * @name notificacionService.service:notificacionRequest
+     * @requires $http
+     * @param {injector} $http componente http de angular
+     * @requires $websocket
+     * @param {injector} $websocket componente websocket de angular-websocket
+     * @param {injector} $websocket componente websocket de angular-websocket
+     * @description
+     * # notificacion
+     * Permite gestionar workflow de notificaciones
+     */
+
+    .factory('notificacionRequest', function (CONF, token_service, $http, $interval) {
         var TIME_PING = 50000;
-
+        var self = this
+        var path = CONF.GENERAL.NOTIFICACION_MID_SERVICE;
+        var arm = CONF.GENERAL.ARM_AWS_NOTIFICACIONES;
         var log = [];
         var payload = {};
         var notificacion_estado_usuario = [];
@@ -20,120 +36,95 @@ angular.module('contractualClienteApp')
         var addMessage = function (message) {
             methods.log = [message].concat(methods.log)
         };
+        var user = "";
 
-        var queryNotification = function () {
-           /* configuracionRequest.get('notificacion_estado_usuario?query=Usuario:' + payload.sub + ',Activo:true&sortby=notificacion&order=asc&limit=-1', '')
-                .then(function (response) {
-                    if (response !== null) {
-                        notificacion_estado_usuario = response.data;
-                        notificacion_estado_usuario.map(function (notify) {
-                            if (typeof notify.Notificacion !== 'undefined') {
-                                var message = {
-                                    Id: notify.Id,
-                                    Type: notify.Notificacion.NotificacionConfiguracion.Tipo.Id,
-                                    Content: JSON.parse(notify.Notificacion.CuerpoNotificacion),
-                                    User: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Nombre,
-                                    Alias: notify.Notificacion.NotificacionConfiguracion.Aplicacion.Alias,
-                                    EstiloIcono: notify.Notificacion.NotificacionConfiguracion.Aplicacion.EstiloIcono,
-                                    FechaCreacion: new Date(notify.Notificacion.FechaCreacion),
-                                    FechaEdicion: new Date(notify.Fecha),
-                                    Estado: notify.NotificacionEstado.CodigoAbreviacion,
-                                };
-
-                                methods.addMessage(message);
-                            }
-                        });
-                        methods.update_novistos();
-                    }
-                });*/
-        };
         if (token_service.live_token()) {
-            payload = token_service.getPayload();
-            if (!angular.isUndefined(payload.role)) {
-                var roles = "";
-                if (typeof payload.role === "object") {
-                    var rl = [];
-                    for (var index = 0; index < payload.role.length; index++) {
-                        if (payload.role[index].indexOf("/") < 0) {
-                            rl.push(payload.role[index]);
-                        }
-                    }
-                    roles = rl.toString();
-                } else {
-                    roles = payload.role;
-                }
+            token_service.getLoginData()
+                .then(function () {
+                    self.token = token_service.getAppPayload();
+                    //console.log('token', self.token)
+                    // if(self.token.role!=null && $scope.role.includes('SUPERVISOR')){
+                    //     notificacionRequest.traerNotificacion().then(function (response) {
+                    //         console.log(response)
+                    //         if(response.data.Data!=null){
+                    //             $scope.existenNotificaciones=true;
+                    //         }else{
+                    //             $scope.existenNotificaciones=false;
+                    //         }
+                    //     }).catch(
+                    //         function (error) {
+                    //             console.log(error)
+                    //         }
+                    //     );
+                    // }
+                }).catch(
 
-                roles = roles.replace(/,/g, '%2C');
-                // conexión websocket.
-                var dataStream = $websocket(CONF.GENERAL.NOTIFICACION_WS + "?id=" + localStorage.getItem('access_token'));
-                dataStream.onMessage(function (message) {
-                    var mensage = JSON.parse(message.data);
-                    // console.log(mensage);
-                    methods.addMessage(mensage);
-                    methods.update_novistos();
-                });
-
-                dataStream.onOpen(function() {
-                    // console.log("open websocket with " + localStorage.getItem('access_token'))
-                    $interval(function(){dataStream.send('ping')}, TIME_PING)
-                });
-                queryNotification();
-            }
+                )
         }
 
-
-
-        var methods = {
-            id: -1,
-            log: log,
-            notificacion_estado_usuario: notificacion_estado_usuario,
-            no_vistos: no_vistos,
-            queryNotification: queryNotification,
-            addMessage: addMessage,
-            payload: payload,
-
-            get: function () {
-                dataStream.send(JSON.stringify({
-                    action: 'get'
-                }));
-            },
-
-            changeStateNoView: function (user) {
-                // console.info(user)
-                // console.log(methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }))
-                if (methods.log.filter(function (data) { return (data.Estado).toLowerCase() === 'enviada' }).length >= 1) {
-                    configuracionRequest.post('notificacion_estado_usuario/changeStateNoView/' + user, {})
-                        .then(function (response) {
-                            // console.log(response);
-                            methods.log = [];
-                            methods.queryNotification();
-                        })
+        return {
+            existeNotificaciones: false,
+            verificarSuscripcion: function () {
+                var elemento = {
+                    Endpoint: self.token.email,
+                    ArnTopic: arm
                 }
+                return $http.post(path + 'notificaciones/suscripcion', elemento, token_service.getHeader());
             },
-
-            getNotificacionEstadoUsuario: function (id) {
-                return notificacion_estado_usuario.filter(function (data) { return (data.Id === id) })[0]
-            },
-
-            update_novistos: function () {
-                // console.info((methods.log.filter(function (data) { return ((data.Estado).toLowerCase() == 'enviada') })).length);
-                methods.no_vistos = (methods.log.filter(function (data) { return (data.Estado.toLowerCase() === 'enviada') })).length;
-            },
-
-            changeStateToView: function (id, estado) {
-                // console.log(estado);
-                if (estado === 'noleida') {
-                    var noti = methods.getNotificacionEstadoUsuario(id);
-                    var path = 'notificacion_estado_usuario/changeStateToView/' + noti.Id;
-                    // console.log(path)
-                    configuracionRequest.get(path, '')
-                        .then(function (response) {
-                            methods.log = [];
-                            methods.queryNotification();
-                        });
+            suscripcion: function () {
+                var elemento = {
+                    ArnTopic: arm,
+                    Suscritos: [
+                        {
+                            Endpoint: self.token.email,
+                            Id: self.token.documento,
+                            Protocolo: 'email'
+                        }
+                    ]
                 }
+                return $http.post(path + 'notificaciones/suscribir', elemento, token_service.getHeader());
             },
-
+            enviarCorreo: function (asunto, atributos, destinatarios, idDuplicacion, idGrupoMensaje, mensaje, remitenteId) {
+                var elemento = {
+                    ArnTopic: arm,
+                    Asunto: asunto,
+                    Atributos: atributos,//objeto
+                    DestinatarioId: destinatarios,//arreglo de strings
+                    IdDeduplicacion: idDuplicacion,
+                    IdGrupoMensaje: idGrupoMensaje,
+                    Mensaje: mensaje,
+                    RemitenteId: remitenteId,
+                }
+                return $http.post(path + 'notificaciones/enviar', elemento, token_service.getHeader());
+            },
+            enviarNotificacion: function (asunto, destinatarioId, mensaje) {
+                var elemento = {
+                    ArnTopic: arm,
+                    Asunto: asunto,
+                    Atributos: {
+                    },//objeto
+                    DestinatarioId: [destinatarioId],//arreglo de strings
+                    IdDeduplicacion: '',
+                    IdGrupoMensaje: '',
+                    Mensaje: mensaje,
+                    RemitenteId: self.token.documento,
+                }
+                return $http.post(path + 'notificaciones/enviar', elemento, token_service.getHeader());
+            },
+            traerNotificacion: function (nombreCola) {
+                return $http.get(path + 'colas/mensajes?nombre=' + nombreCola + '&numMax=1', token_service.getHeader());
+            },
+            borrarNotificaciones: function (nombreCola, contratistaId) {
+                var elemento = {
+                    NombreCola: nombreCola,
+                    Filtro: {
+                        Remitente: contratistaId,
+                    }
+                }
+                return $http.post(path + 'colas/mensajes/', elemento, token_service.getHeader());
+            },
+            changeStateNoView: function () {
+                //console.log('changeStateNoView')
+            }
         };
-        return methods;
-});
+    });
