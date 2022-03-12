@@ -276,9 +276,9 @@ angular.module('contractualClienteApp')
     };
 
     self.cambiar_form_doc = function(){
-      //console.log("item seleccionado: ",self.item);
-      //console.log(self.fila_sol_pago)
-      if(self.item.Id==29){
+      console.log("item seleccionado: ",self.item);
+      console.log(self.fila_sol_pago)
+      if(self.item.ItemInformeId.Nombre=="INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO"){
         self.generar_documento=true;
       }else{
         self.generar_documento=false;
