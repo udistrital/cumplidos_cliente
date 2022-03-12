@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, notificacionRequest, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, nuxeo, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, notificacionRequest, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -611,55 +611,6 @@ angular.module('contractualClienteApp')
       }).catch(function (){
         
       });
-    };
-
-    //
-    /*
-      Función para cargar los documentos a la carpeta  destino
-    */
-    self.cargarDocumento = function (nombre, descripcion, documento, callback) {
-      var defered = $q.defer();
-      var promise = defered.promise;
-
-      nuxeo.operation('Document.Create')
-        .params({
-          type: 'File',
-          name: nombre,
-          properties: 'dc:title=' + nombre + ' \ndc:description=' + descripcion
-        })
-        .input('/default-domain/workspaces/oas/oas_app/soportes_pagos')
-        .execute()
-        .then(function (doc) {
-          var nuxeoBlob = new Nuxeo.Blob({
-            content: documento
-          });
-          nuxeo.batchUpload()
-            .upload(nuxeoBlob)
-            .then(function (res) {
-              return nuxeo.operation('Blob.AttachOnDocument')
-                .param('document', doc.uid)
-                .input(res.blob)
-                .execute();
-            })
-            .then(function () {
-              return nuxeo.repository().fetch(doc.uid, {
-                schemas: ['dublincore', 'file']
-              });
-            })
-            .then(function (doc) {
-              var url = doc.uid;
-              callback(url);
-              defered.resolve(url);
-            })
-            .catch(function (error) {
-              throw error;
-            });
-        })
-        .catch(function (error) {
-          throw error;
-        });
-
-      return promise;
     };
 
 
