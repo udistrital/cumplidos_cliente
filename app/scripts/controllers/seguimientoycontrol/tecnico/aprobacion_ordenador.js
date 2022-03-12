@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, utils, $routeParams, documentoRequest, gestorDocumentalMidRequest, $q, $sce, $window, gridApiService, nuxeoMidRequest, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, utils, $routeParams, documentoRequest, gestorDocumentalMidRequest, $q, $sce, $window, gridApiService,  adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -499,18 +499,10 @@ angular.module('contractualClienteApp')
           self.documentos = response.data;
           angular.forEach(self.documentos, function (value) {
             value.Metadatos = JSON.parse(value.Metadatos);
-            self.aprovacion_documentos_nuxeo(value.Enlace);
+            //self.aprovacion_documentos_nuxeo(value.Enlace);
           });
         })
       }
-    }
-
-    self.aprovacion_documentos_nuxeo = function (IdDocNuxeo) {
-      // console.info(IdDocNuxeo);
-      nuxeoMidRequest.post('validacion/?docID=' + IdDocNuxeo, null)
-        .then(function (response) {
-          //Bandera de validacion
-        });
     }
 
 

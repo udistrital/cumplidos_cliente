@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('InformeGyCertificadoCCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, cumplidosCrudRequest, $route, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, nuxeoMidRequest, cumplidosMidRequest, titanMidRequest) {
+  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest, titanMidRequest) {
     //console.log($routeParams);
     //Pasos a seguir
     //1. traer la informacion del mid del informe 
@@ -346,9 +346,10 @@ angular.module('contractualClienteApp')
         })
       } else {
         //endpoint para actualizar
-        cumplidosMidRequest.put('informe', angular.toJson(self.Informe)).then(function (response) {
-          //console.log("resultado put informe", response)
-          if (response.status == 201) {
+        console.log("Informe a actualizar:",self.Informe)
+        cumplidosMidRequest.put('informe',self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
+          console.log("resultado put informe", response)
+          if (response.status == 200) {
             self.nuevoInforme = false;
             swal(
               'INFORME GUARDADO',
@@ -647,12 +648,6 @@ angular.module('contractualClienteApp')
               //guarda el soporte por medio del gestor documental
               gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
                 //console.log(response.data);
-                nuxeoMidRequest.post('workflow?docID=' + response.data.res.Enlace, null)
-                  .then(function (response) {
-                    //console.log('nuxeoMid response:', response)
-                  }).catch(function (error) {
-                    //console.log('nuxeoMid error:', error)
-                  });
 
                 if (response.data.Status == 200) {
                   self.id_documento = response.data.res.Id;
