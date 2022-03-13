@@ -159,7 +159,7 @@ angular.module('contractualClienteApp')
               inf_aux.PeriodoInformeFin.setHours(inf_aux.PeriodoInformeFin.getHours()+5)
               self.Informe = inf_aux;
               self.nuevoInforme = false;
-              console.log(self.Informe)
+              //console.log(self.Informe)
             } else {
               swal(
                 'ERROR AL OBTENER EL INFORME',
@@ -346,9 +346,9 @@ angular.module('contractualClienteApp')
         })
       } else {
         //endpoint para actualizar
-        console.log("Informe a actualizar:",self.Informe)
+        //console.log("Informe a actualizar:",self.Informe)
         cumplidosMidRequest.put('informe',self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
-          console.log("resultado put informe", response)
+          //console.log("resultado put informe", response)
           if (response.status == 200) {
             self.nuevoInforme = false;
             swal(
@@ -650,28 +650,36 @@ angular.module('contractualClienteApp')
                 //console.log(response.data);
 
                 if (response.data.Status == 200) {
+                  
                   self.id_documento = response.data.res.Id;
-                  self.objeto_soporte = {
-                    "PagoMensualId": {
-                      "Id": pago_mensual_id
-                    },
-                    "Documento": self.id_documento,
-                    "ItemInformeTipoContratoId": {
-                      "Id": 29
-                    },
-                    "Aprobado": false
-                  };
-                  cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
-                    .then(function (response) {
-                      //Bandera de validacion
-                      swal({
-                        title: 'Documento guardado',
-                        text: 'Se ha guardado el documento con exito',
-                        type: 'success',
-                        target: document.getElementById('modal_visualizar_documento')
+
+                  cumplidosCrudRequest.get('item_informe_tipo_contrato', $.param({
+                    query: "Activo:true,TipoContratoId:6,ItemInformeId.CodigoAbreviacion:IGYCC",
+                    limit: 0
+                  })).then(function (response_item_informe_tipo_contrato) {
+                    var ItemInformeTipoContratoId=response_item_informe_tipo_contrato.data.Data[0].Id;
+                    self.objeto_soporte = {
+                      "PagoMensualId": {
+                        "Id": pago_mensual_id
+                      },
+                      "Documento": self.id_documento,
+                      "ItemInformeTipoContratoId": {
+                        "Id": ItemInformeTipoContratoId
+                      },
+                      "Aprobado": false
+                    };
+                    cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
+                      .then(function (response) {
+                        //Bandera de validacion
+                        swal({
+                          title: 'Documento guardado',
+                          text: 'Se ha guardado el documento con exito',
+                          type: 'success',
+                          target: document.getElementById('modal_visualizar_documento')
+                        });
+                        $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
                       });
-                      $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-                    });
+                  })
                 }
               }).catch(function (error) {
                 swal({
