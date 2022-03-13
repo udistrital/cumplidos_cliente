@@ -53,15 +53,15 @@
 
 <body ng-app="contractualClienteApp">
   <div ng-controller="headerCtrl">
-    <div ng-if="!isLogin" id="nb-global-spinner" class="spinner">
+    <!-- <div ng-if="!isLogin" id="nb-global-spinner" class="spinner">
       <div class="blob blob-0"></div>
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
       <div class="blob blob-3"></div>
       <div class="blob blob-4"></div>
       <div class="blob blob-5"></div>
-    </div>
-    <div ng-if="isLogin" ng-include="'views/header.html'" ng-controller="headerCtrl"></div>
+    </div> -->
+    <div ng-include="'views/header.html'" ng-controller="headerCtrl"></div>
     <div ng-if="isLogin" class="body-container-menuaplicaciones" ng-include="'views/menu-aplicaciones.html'"
       ng-controller="menuaplicacionesCtrl"></div>
     <div ng-if="isLogin" class="body-container-notificaciones" ng-include="'views/notificaciones.html'"
@@ -75,7 +75,7 @@
         <div ng-view="" ng-class="sidebarClases.containerDivClase" ng-controller="headerCtrl"></div>
       </div>
     </div>
-    <div ng-if="isLogin" class="container-footer" ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
+    <div  class="container-footer" ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
   </div>
 
   <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->

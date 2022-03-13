@@ -14,6 +14,7 @@ angular.module('contractualClienteApp')
         function (token_service, CONF, behaviorTheme, $scope,notificacionRequest) {
 
             $scope.token_service = token_service;
+            $scope.CONF=CONF
 
             $scope.app = (CONF.APP.toLowerCase()).trim() + "-isotipo";
             $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
