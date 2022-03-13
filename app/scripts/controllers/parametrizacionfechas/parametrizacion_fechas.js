@@ -19,10 +19,10 @@ angular.module('contractualClienteApp')
     self.fechaExiste = false;
     self.opcion = "";
     self.documento = token_service.getAppPayload().documento;
-    console.log('documento', self.documento)
+    //console.log('documento', self.documento)
     self.fechas_parametrizadas = []
 
-    console.log('meses', utils.getMeses())
+    //console.log('meses', utils.getMeses())
     self.meses = utils.getMeses();
     self.hoy = new Date();
 
@@ -43,12 +43,12 @@ angular.module('contractualClienteApp')
         self.periodo = false
         self.sin_limite = true
       }
-      console.log(self.opcion)
+      //console.log(self.opcion)
     }
 
     self.CargarFechas = function () {
-      console.log('anio sel:', self.anio_sel)
-      console.log('mes sel', self.mes_sel)
+      //console.log('anio sel:', self.anio_sel)
+      //console.log('mes sel', self.mes_sel)
       self.Mostrar = true;
       self.periodo = false;
       self.sin_limite = false;
@@ -62,8 +62,8 @@ angular.module('contractualClienteApp')
         })
       } else {
         self.buscarFechasParametrizada();
-        console.log('fecha a parametrizar', self.fechaAParametrizar);
-        console.log('Existe', self.fechaExiste)
+        //console.log('fecha a parametrizar', self.fechaAParametrizar);
+        //console.log('Existe', self.fechaExiste)
         self.opcion = self.fechaAParametrizar.opcion;
 
       }
@@ -79,7 +79,7 @@ angular.module('contractualClienteApp')
       })).then(function (response) {
         //Información contratista
         self.info_supervisor = response.data;
-        console.log('info supervisor', self.info_supervisor)
+        //console.log('info supervisor', self.info_supervisor)
         self.nombre_supervisor = self.info_supervisor[0].NomProveedor;
       });
     };
@@ -92,7 +92,7 @@ angular.module('contractualClienteApp')
           if (response.data.dependencias.dependencia != undefined) {
             if (response.data.dependencias.dependencia.length != 0) {
               self.dependencia_supervisor = response.data.dependencias.dependencia[0];
-              console.log('Dependencia supervisor', self.dependencia_supervisor);
+              //console.log('Dependencia supervisor', self.dependencia_supervisor);
               self.cargar_parametrizaciones();
             } else {
               swal({
@@ -131,7 +131,7 @@ angular.module('contractualClienteApp')
         sortby: '',
         order: '',
       })).then(function (response) {
-        console.log('Fechas Parametrizadas', response)
+        //console.log('Fechas Parametrizadas', response)
         if (response.data.Data == null) {
           self.existenFechasParametrizadas = false;
         } else {
@@ -156,8 +156,8 @@ angular.module('contractualClienteApp')
       self.fechaExiste = false;
       for (var index in self.fechas_parametrizadas) {
         var fecha = self.fechas_parametrizadas[index];
-        console.log('fecha', fecha)
-        console.log('comparacion', fecha.Anio == self.anio_sel && fecha.Mes == self.mes_sel)
+        //console.log('fecha', fecha)
+        //console.log('comparacion', fecha.Anio == self.anio_sel && fecha.Mes == self.mes_sel)
         if (fecha.Anio == self.anio_sel && fecha.Mes == self.mes_sel) {
           self.fechaExiste = true;
           self.fechaAParametrizar = fecha;
@@ -202,7 +202,7 @@ angular.module('contractualClienteApp')
           confirmButtonText: 'Aceptar'
         })
       } else {
-        console.log('validacion', typeof self.fechaAParametrizar.FechaInicio)
+        //console.log('validacion', typeof self.fechaAParametrizar.FechaInicio)
         var fecha = {
           DocumentoSupervisor: parseInt(self.documento),
           Activo: true,
@@ -222,7 +222,7 @@ angular.module('contractualClienteApp')
 
         if (!self.fechaExiste) {
           cumplidosCrudRequest.post('fechas_carga_cumplidos', angular.toJson(fecha)).then(function (response) {
-            console.log("resultado post fechas", response)
+            //console.log("resultado post fechas", response)
             if (response.status == 201) {
               self.nuevoInforme = false;
               swal(
@@ -253,7 +253,7 @@ angular.module('contractualClienteApp')
           fecha.FechaModificacion = new Date();
           fecha.FechaCreacion = self.fechaAParametrizar.FechaCreacion;
           cumplidosCrudRequest.put('fechas_carga_cumplidos', self.fechaAParametrizar.Id, angular.toJson(fecha)).then(function (response) {
-            console.log("resultado put fechas", response)
+            //console.log("resultado put fechas", response)
             if (response.status == 200) {
               self.nuevoInforme = false;
               swal(
@@ -270,7 +270,7 @@ angular.module('contractualClienteApp')
             }
           }).catch(
             function (error) {
-              //console.log(error)
+              ////console.log(error)
               swal({
                 title: 'Ocurrio un error al guardar la configuracion',
                 type: 'error',

@@ -275,27 +275,27 @@ angular.module('contractualClienteApp')
       ]
     };
 
-    self.cambiar_form_doc = function(){
-      console.log("item seleccionado: ",self.item);
+    self.cambiar_form_doc = function () {
+      console.log("item seleccionado: ", self.item);
       console.log(self.fila_sol_pago)
-      if(self.item.ItemInformeId.Nombre=="INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO"){
-        self.generar_documento=true;
-      }else{
-        self.generar_documento=false;
+      if (self.item.ItemInformeId.Nombre == "INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO") {
+        self.generar_documento = true;
+      } else {
+        self.generar_documento = false;
       }
     }
 
     /*
       Función para generar la solicitud de pago
     */
-    self.suscribirse= function(){
+    self.suscribirse = function () {
       //console.log('entro a suscribirse')
       notificacionRequest.verificarSuscripcion().then(
         function (response) {
-          if(!response.data.Data){
+          if (!response.data.Data) {
             notificacionRequest.suscripcion().then(
               function (response) {
-                console.log('Resultado de la suscripcion',response)
+                console.log('Resultado de la suscripcion', response)
               }
             ).catch(
               function (error) {
@@ -370,7 +370,7 @@ angular.module('contractualClienteApp')
                   )
 
                   self.cargar_soportes(self.contrato);
-                  
+
                   //self.gridApi2.core.refresh();
                   //   self.contrato = {};
                   self.mes = undefined;
@@ -433,7 +433,7 @@ angular.module('contractualClienteApp')
 
 
             cumplidosCrudRequest.get("item_informe_tipo_contrato", $.param({
-              query: "TipoContratoId:" + self.tipo_contrato+",Activo:true",
+              query: "TipoContratoId:" + self.tipo_contrato + ",Activo:true",
               limit: 0
             })).then(function (response_iitc) {
 
@@ -475,44 +475,44 @@ angular.module('contractualClienteApp')
     self.enviar_revision = function (solicitud) {
       cumplidosCrudRequest.get('fechas_carga_cumplidos', $.param({
         limit: 0,
-        query: 'Dependencia:' + self.dependencia_supervisor.codigo+',Mes.in:'+solicitud.Mes+'|0,Anio.in:'+solicitud.Ano+'|0',
+        query: 'Dependencia:' + self.dependencia_supervisor.codigo + ',Mes.in:' + solicitud.Mes + '|0,Anio.in:' + solicitud.Ano + '|0',
         sortby: 'FechaModificacion',
         order: 'desc',
       })).then(function (response) {
-        console.log('Fechas Parametrizadas', response)
-        self.fecha_carga=response.data.Data[0];
+        //console.log('Fechas Parametrizadas', response)
+        self.fecha_carga = response.data.Data[0];
         if (Object.entries(self.fecha_carga).length != 0) {
           if (self.fecha_carga.FechaInicio != "0001-01-01T00:00:00Z") {
             // periodo definido
             var ff = new Date(self.fecha_carga.FechaFin.split('T')[0]);
-            ff.setHours(47,59,59);
+            ff.setHours(47, 59, 59);
             self.fecha_carga.FechaFin = ff
             var fi = new Date(self.fecha_carga.FechaInicio.split('T')[0]);
             fi.setHours(24);
             self.fecha_carga.FechaInicio = fi;
-            var fecha_Actual=new Date();
-            console.log('fecha inicial',fi);
-            console.log("fecha_actual",fecha_Actual);
-            console.log('fecha final',ff);
-            if(fi<=fecha_Actual && fecha_Actual<=ff){
-              console.log("dentro del periodo");
+            var fecha_Actual = new Date();
+            //console.log('fecha inicial', fi);
+            //console.log("fecha_actual", fecha_Actual);
+            //console.log('fecha final', ff);
+            if (fi <= fecha_Actual && fecha_Actual <= ff) {
+              //console.log("dentro del periodo");
               self.enviar_cumplido(solicitud);
-            }else{
-              console.log("fuera del periodo");
+            } else {
+              //console.log("fuera del periodo");
               swal({
                 title: 'Fuera de tiempo',
-                text:'Las fechas de carga del cumplidos son del '+self.fecha_carga.FechaInicio.toLocaleString()+' al '+self.fecha_carga.FechaFin.toLocaleString(),
+                text: 'Las fechas de carga del cumplidos son del ' + self.fecha_carga.FechaInicio.toLocaleString() + ' al ' + self.fecha_carga.FechaFin.toLocaleString(),
                 type: 'warning',
                 showCancelButton: false,
                 confirmButtonColor: '#d33',
                 confirmButtonText: 'Aceptar'
               })
             }
-          }else{
+          } else {
             //sin limites
             self.enviar_cumplido(solicitud);
           }
-        }else{
+        } else {
           //no se definio para este mes y año
           self.enviar_cumplido(solicitud);
         }
@@ -527,7 +527,7 @@ angular.module('contractualClienteApp')
           //$window.location.href = '/#/';
         })
       })
-     
+
     };
 
 
@@ -535,7 +535,7 @@ angular.module('contractualClienteApp')
     /*
       Función para enviar el cumplido
     */
-    self.enviar_cumplido=function (solicitud){
+    self.enviar_cumplido = function (solicitud) {
       swal({
         title: '¿Está seguro(a) de enviar a revisar los soportes por el supervisor?',
         type: 'warning',
@@ -581,7 +581,7 @@ angular.module('contractualClienteApp')
                     'Su solicitud se encuentra a la espera de revisión',
                     'success'
                   )
-                  
+
                   self.cargar_soportes(self.contrato);
                   //self.documentos = {};
                 })
@@ -597,7 +597,7 @@ angular.module('contractualClienteApp')
 
             })
             self.suscribirse();
-            notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion','ColaSupervisor','/seguimientoycontrol/tecnico/aprobacion_supervisor');
+            notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaSupervisor', '/seguimientoycontrol/tecnico/aprobacion_supervisor');
           } else {
 
             swal(
@@ -608,8 +608,8 @@ angular.module('contractualClienteApp')
           }
 
         });
-      }).catch(function (){
-        
+      }).catch(function () {
+
       });
     };
 
@@ -640,46 +640,54 @@ angular.module('contractualClienteApp')
                 NombreArchivo: self.fileModel.name,
                 Tipo: "Archivo",
                 Observaciones: self.observaciones
-              }, 
-              descripcion:descripcion,
+              },
+              descripcion: descripcion,
 
             }];
             //guarda el soporte por medio del gestor documental
-            gestorDocumentalMidRequest.post('/document/upload',data).then(function (response){
-             //console.log(response.data);
+            gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
+              //console.log(response.data);
 
-              if(response.data.Status==200){
+              if (response.data.Status == 200) {
                 self.id_documento = response.data.res.Id;
-                self.objeto_soporte = {
-                  "PagoMensualId": {
-                    "Id": self.fila_sol_pago.Id
-                  },
-                  "Documento": self.id_documento,
-                  "ItemInformeTipoContratoId": {
-                    "Id": self.item.Id
-                  },
-                  "Aprobado": false
-                };
-                cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
-                .then(function (response) {
-                  //Bandera de validacion
-                  swal({
-                    title: 'Documento guardado',
-                    text: 'Se ha guardado el documento en el repositorio',
-                    type: 'success',
-                    target: document.getElementById('modal_ver_soportes')
-                  });
 
-                  self.item = undefined;
-                  self.fileModel = undefined;
-                  $('#input-id').fileinput('clear');
+                cumplidosCrudRequest.get('item_informe_tipo_contrato', $.param({
+                  query: "Activo:true,TipoContratoId:6,ItemInformeId.CodigoAbreviacion:IGYCC",
+                  limit: 0
+                })).then(function (response_item_informe_tipo_contrato) {
+                  //console.log(response_item_informe_tipo_contrato)
+                  var ItemInformeTipoContratoId=response_item_informe_tipo_contrato.data.Data[0].Id
+                  self.objeto_soporte = {
+                    "PagoMensualId": {
+                      "Id": self.fila_sol_pago.Id
+                    },
+                    "Documento": self.id_documento,
+                    "ItemInformeTipoContratoId": {
+                      "Id": ItemInformeTipoContratoId
+                    },
+                    "Aprobado": false
+                  };
+                  cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
+                    .then(function (response) {
+                      //Bandera de validacion
+                      swal({
+                        title: 'Documento guardado',
+                        text: 'Se ha guardado el documento en el repositorio',
+                        type: 'success',
+                        target: document.getElementById('modal_ver_soportes')
+                      });
 
-                  self.mostrar_boton = true;
-                  self.obtener_doc(self.fila_sol_pago);
+                      self.item = undefined;
+                      self.fileModel = undefined;
+                      $('#input-id').fileinput('clear');
 
-                  //Limpieza Variable
-                  self.observaciones = "";
-                });
+                      self.mostrar_boton = true;
+                      self.obtener_doc(self.fila_sol_pago);
+
+                      //Limpieza Variable
+                      self.observaciones = "";
+                    });
+                })
               }
             }).catch(function (error) {
               swal({
@@ -690,7 +698,7 @@ angular.module('contractualClienteApp')
               });
             });
           }
-        ).catch(function(){
+        ).catch(function () {
           swal({
             title: 'Error',
             text: 'Ocurrio un error al guardar el documento',
@@ -722,9 +730,9 @@ angular.module('contractualClienteApp')
       Función que permite obtener un documento de nuxeo por el Id
     */
     self.getDocumento = function (docid) {
-      gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
+      gestorDocumentalMidRequest.get('/document/' + docid).then(function (response) {
 
-        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
+        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], { type: 'application/pdf' });
         //console.log('file ',file);
         var fileURL = URL.createObjectURL(file);
         //console.log('fileURL ', fileURL);
@@ -750,9 +758,9 @@ angular.module('contractualClienteApp')
           value.Metadatos = JSON.parse(value.Metadatos);
         });
       }).catch(function (response) {//Manejo de null en la tabla documento
-          //Se deja vacia la variable para que no quede pegada
-          self.documentos = undefined;
-        });
+        //Se deja vacia la variable para que no quede pegada
+        self.documentos = undefined;
+      });
     };
 
     /*
@@ -762,26 +770,26 @@ angular.module('contractualClienteApp')
 
       var documento = self.doc;
       //console.log(documento)  
-      gestorDocumentalMidRequest.delete('/document',documento.Enlace).then(function (response) {
+      gestorDocumentalMidRequest.delete('/document', documento.Enlace).then(function (response) {
         //console.log(response)
         swal({
-             title: 'Documento borrado',
-             text: 'Se ha borrado exitosamente el documento',
-             type: 'success',
-             target:  document.getElementById('modal_ver_soportes')
-           }).then(
-             function (){
-              self.obtener_doc(self.fila_sol_pago)
-             }
-           );
+          title: 'Documento borrado',
+          text: 'Se ha borrado exitosamente el documento',
+          type: 'success',
+          target: document.getElementById('modal_ver_soportes')
+        }).then(
+          function () {
+            self.obtener_doc(self.fila_sol_pago)
+          }
+        );
       }).catch(function (error) {
-         swal({
-           title: 'Error',
-           text: 'Hubo un error al momento de borrar el documento',
-           type: 'error',
-           target: document.getElementById('modal_ver_soportes')
-         });
-       })
+        swal({
+          title: 'Error',
+          text: 'Hubo un error al momento de borrar el documento',
+          type: 'error',
+          target: document.getElementById('modal_ver_soportes')
+        });
+      })
 
     }
 
@@ -851,7 +859,7 @@ angular.module('contractualClienteApp')
 
 
     };
-    
+
 
 
   });
