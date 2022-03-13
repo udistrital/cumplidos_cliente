@@ -140,7 +140,7 @@ angular.module('implicitToken', [])
       },
       live_token: function () {
         if (window.localStorage.getItem('id_token') === 'undefined' || window.localStorage.getItem('id_token') === null || service.logoutValid()) {
-          service.login();
+          //service.login();
           return false;
         } else {
           service.setting_bearer = {
@@ -177,6 +177,7 @@ angular.module('implicitToken', [])
         return data;
       },
       logout: function () {
+        window.localStorage.clear();
         window.location.replace(service.logout_url);
       },
       expired: function () {

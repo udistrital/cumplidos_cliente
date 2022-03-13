@@ -13,6 +13,15 @@
                 !
             </div>
         </div>
+        <div ng-if="!token_service.live_token()">
+
+            <oauth2 authorization-url="{{CONF.GENERAL.TOKEN.AUTORIZATION_URL}}" client-id="{{CONF.GENERAL.TOKEN.CLIENTE_ID}}" redirect-url="{{CONF.GENERAL.TOKEN.REDIRECT_URL}}" response-type="{{CONF.GENERAL.TOKEN.RESPONSE_TYPE}}" scope="{{CONF.GENERAL.TOKEN.SCOPE}}"
+  
+                button-class="{{CONF.GENERAL.TOKEN.BUTTON_CLASS}}">
+  
+            </oauth2>
+  
+        </div>
         <div class="header-button-user-container" ng-click="toogleCerrarSesion()" ng-show="token_service.live_token()">
             <i id="header-user-icon" class="fa fa-user-o"></i>
             <p class="user-info">{{token.sub}}</p>
