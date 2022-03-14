@@ -59,7 +59,7 @@ angular.module("contractualClienteApp").constant("CONF", {
       REDIRECT_URL: "https://contratistas.portaloas.udistrital.edu.co",
       RESPONSE_TYPE: "id_token token",
       SCOPE: "openid email documento",
-      BUTTON_CLASS: "btn btn-warning btn-sm",
+      BUTTON_CLASS: "btn btn-custom btn-sm",
       SIGN_OUT_URL:
         "https://autenticacion.portaloas.udistrital.edu.co/oidc/logout",
       SIGN_OUT_REDIRECT_URL: "https://contratistas.portaloas.udistrital.edu.co",

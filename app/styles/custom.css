@@ -64,3 +64,28 @@ margin-bottom: 10px;
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+.welcome-title{
+  padding-bottom: 0px;
+  margin: 1rem;
+  border-bottom: 1px solid var(--color300);
+  margin-bottom: 50px;
+  color: #731514;
+  font-size: xxx-large;
+  text-transform: uppercase;
+}
+
+.welcome-info{
+  color: black;
+  font-size: x-large;
+}
+
+.welcome-panel{
+  border-color: #f5f5f5;
+  box-shadow: 0 0.5rem 1rem 0 rgb(44 51 73 / 10%);
+  padding: 20px 40px 40px 40px;
+  margin-left: 10%;
+  margin-right: 10%;
+  height: 50%;
+  width: 70%;
+}
