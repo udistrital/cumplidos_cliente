@@ -66,6 +66,24 @@
       ng-controller="menuaplicacionesCtrl"></div>
     <div ng-if="isLogin" class="body-container-notificaciones" ng-include="'views/notificaciones.html'"
       ng-controller="notificacionesCtrl"></div>
+    <div ng-if="!isLogin" class="container-app" style="justify-content: center;
+    align-items: center;">
+      <div class="welcome-panel">
+        <h1 class="welcome-title text-center">Bienvenido al módulo de cumplidos</h1>
+        <p class="welcome-info">Se han implementado nuevas funcionalidades para el sistema, que afectan el flujo de
+          carga de cumplidos de los Contratistas. Los invitamos a revisar los Videotutoriales:</p>
+        <ul class="welcome-info">
+          <li>
+            <a href="https://drive.google.com/file/d/1sALyxOhtRHUvQKTIT_1geAGc7zf9ySTL/view?usp=sharing"
+              target="_blank">Informe de gestión y certificado de cumplimiento</a>
+          </li>
+          <li>
+            <a href="https://drive.google.com/file/d/1UyqLhMjsTVddPZSv_JtNyiia9bJNbanV/view?usp=sharing
+            " target="_blank">Notificaciones</a>
+          </li>
+        </ul>
+      </div>
+    </div>
     <div ng-if="isLogin" class="container-app">
       <div id="menu-sidebar-container" ng-class="sidebarClases.sidebarContainerClase" ng-controller="headerCtrl">
         <div id="menu-sidebar" ng-include="'views/menu-lateral.html'" ng-controller="menuLateralCtrl"
@@ -75,7 +93,7 @@
         <div ng-view="" ng-class="sidebarClases.containerDivClase" ng-controller="headerCtrl"></div>
       </div>
     </div>
-    <div  class="container-footer" ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
+    <div class="container-footer" ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
   </div>
 
   <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
