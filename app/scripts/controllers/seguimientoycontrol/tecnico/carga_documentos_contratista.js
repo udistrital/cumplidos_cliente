@@ -625,7 +625,7 @@ angular.module('contractualClienteApp')
       if (self.fileModel !== undefined && self.item !== undefined && self.fileModel.type === 'application/pdf' && self.fileModel.size <= 1000000) {
         //console.log(self.fileModel);
         self.mostrar_boton = false;
-        console.log("item",self.item)
+        //console.log("item",self.item)
         var descripcion;
         var fileBase64;
         utils.getBase64(self.fileModel).then(
