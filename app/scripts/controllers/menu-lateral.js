@@ -42,8 +42,7 @@ angular.module('contractualClienteApp')
                 } else {
                     roles = $scope.token.role;
                 }
-                roles = roles.replace('Internal/everyone,', '','g');
-                roles = roles.replace('Internal/selfsignup,', '','g');
+                roles = roles.replace(/\//g, '-');
                 ////console.log('roles',roles)
                 configuracionRequest.get('menu_opcion_padre/ArbolMenus/' + roles + '/contratistas', '').then(function(response) {
                     $rootScope.menu = response.data;

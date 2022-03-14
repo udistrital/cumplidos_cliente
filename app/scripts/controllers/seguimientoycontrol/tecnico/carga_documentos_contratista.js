@@ -276,8 +276,8 @@ angular.module('contractualClienteApp')
     };
 
     self.cambiar_form_doc = function () {
-      console.log("item seleccionado: ", self.item);
-      console.log(self.fila_sol_pago)
+      //console.log("item seleccionado: ", self.item);
+      //console.log(self.fila_sol_pago)
       if (self.item.ItemInformeId.Nombre == "INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO") {
         self.generar_documento = true;
       } else {
@@ -295,7 +295,7 @@ angular.module('contractualClienteApp')
           if (!response.data.Data) {
             notificacionRequest.suscripcion().then(
               function (response) {
-                console.log('Resultado de la suscripcion', response)
+                //console.log('Resultado de la suscripcion', response)
               }
             ).catch(
               function (error) {
@@ -831,7 +831,7 @@ angular.module('contractualClienteApp')
           if (response.data.dependencias.dependencia != undefined) {
             if (response.data.dependencias.dependencia.length != 0) {
               self.dependencia_supervisor = response.data.dependencias.dependencia[0];
-              console.log('Dependencia supervisor', self.dependencia_supervisor);
+              //console.log('Dependencia supervisor', self.dependencia_supervisor);
             } else {
               swal({
                 title: 'No se encontro dependencia asociada',
