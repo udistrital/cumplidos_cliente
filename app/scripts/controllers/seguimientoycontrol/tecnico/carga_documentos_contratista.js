@@ -625,7 +625,7 @@ angular.module('contractualClienteApp')
       if (self.fileModel !== undefined && self.item !== undefined && self.fileModel.type === 'application/pdf' && self.fileModel.size <= 1000000) {
         //console.log(self.fileModel);
         self.mostrar_boton = false;
-        //console.log(self.item)
+        //console.log("item",self.item)
         var descripcion;
         var fileBase64;
         utils.getBase64(self.fileModel).then(
@@ -651,43 +651,36 @@ angular.module('contractualClienteApp')
               if (response.data.Status == 200) {
                 self.id_documento = response.data.res.Id;
 
-                cumplidosCrudRequest.get('item_informe_tipo_contrato', $.param({
-                  query: "Activo:true,TipoContratoId:6,ItemInformeId.CodigoAbreviacion:IGYCC",
-                  limit: 0
-                })).then(function (response_item_informe_tipo_contrato) {
-                  //console.log(response_item_informe_tipo_contrato)
-                  var ItemInformeTipoContratoId=response_item_informe_tipo_contrato.data.Data[0].Id
-                  self.objeto_soporte = {
-                    "PagoMensualId": {
-                      "Id": self.fila_sol_pago.Id
-                    },
-                    "Documento": self.id_documento,
-                    "ItemInformeTipoContratoId": {
-                      "Id": ItemInformeTipoContratoId
-                    },
-                    "Aprobado": false
-                  };
-                  cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
-                    .then(function (response) {
-                      //Bandera de validacion
-                      swal({
-                        title: 'Documento guardado',
-                        text: 'Se ha guardado el documento en el repositorio',
-                        type: 'success',
-                        target: document.getElementById('modal_ver_soportes')
-                      });
-
-                      self.item = undefined;
-                      self.fileModel = undefined;
-                      $('#input-id').fileinput('clear');
-
-                      self.mostrar_boton = true;
-                      self.obtener_doc(self.fila_sol_pago);
-
-                      //Limpieza Variable
-                      self.observaciones = "";
+                self.objeto_soporte = {
+                  "PagoMensualId": {
+                    "Id": self.fila_sol_pago.Id
+                  },
+                  "Documento": self.id_documento,
+                  "ItemInformeTipoContratoId": {
+                    "Id": self.item.Id
+                  },
+                  "Aprobado": false
+                };
+                cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
+                  .then(function (response) {
+                    //Bandera de validacion
+                    swal({
+                      title: 'Documento guardado',
+                      text: 'Se ha guardado el documento en el repositorio',
+                      type: 'success',
+                      target: document.getElementById('modal_ver_soportes')
                     });
-                })
+
+                    self.item = undefined;
+                    self.fileModel = undefined;
+                    $('#input-id').fileinput('clear');
+
+                    self.mostrar_boton = true;
+                    self.obtener_doc(self.fila_sol_pago);
+
+                    //Limpieza Variable
+                    self.observaciones = "";
+                });
               }
             }).catch(function (error) {
               swal({
