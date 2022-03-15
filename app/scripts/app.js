@@ -59,6 +59,7 @@ angular
         'adminJbpmV2Service',
         'amazonAdministrativaService',
         'contratoService',
+        'financieraJBPMService',
         'gridOptionsService',
         'configuracionService',
         'requestService',
