@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest, titanMidRequest) {
+  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest, titanMidRequest, financieraJBPMRequest,amazonAdministrativaRequest) {
     //console.log($routeParams);
     //Pasos a seguir
     //1. traer la informacion del mid del informe 
@@ -124,6 +124,37 @@ angular.module('contractualClienteApp')
       return { Ejecutado: porcentajeEjecutado.toFixed(2), Faltante: porcentajeFaltante.toFixed(2) }
     }
 
+    self.calcularEjecutadoDinero = function (fechaInicio, fechaFin, fechaFinActividades) {
+      amazonAdministrativaRequest.get('contrato_general', $.param({
+        query: "ContratoSuscrito.NumeroContratoSuscrito:" + self.contrato+',VigenciaContrato:'+self.vigencia,
+        limit: 0
+      })).then(function (response_contrato_general) {
+        console.log(response_contrato_general)
+        var unidadEjecutora=response_contrato_general.data[0].UnidadEjecutora;
+        console.log(unidadEjecutora)
+        if(response_contrato_general.status==200){
+          financieraJBPMRequest.get('giros_tercero/' + self.documento_contratista + '/' + self.cdp + '/' + self.vigencia_cdp+'/'+unidadEjecutora,'').then(function (response) {
+            console.log("giro_terceros:",response)
+            if(response.data.giros.tercero!=undefined){
+              var pagosAnuales=response.data.giros.tercero;
+              var total=0;
+              for (let index = 0; index < pagosAnuales.length; index++) {
+                const pagado = parseInt(pagosAnuales[index].valor_bruto_girado);
+                total=total+pagado;
+              }
+              total=total+self.Preliquidacion.TotalDevengado;
+              self.informacion_informe.ejecutadoDinero = { Pagado: total, Faltante: parseInt(self.informacion_informe.ValorContrato)-total }
+            }else{
+              self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
+            }
+          })
+        }else{
+          self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
+        }
+       
+      })
+    }
+
     self.obtenerInforme = function () {
       cumplidosMidRequest.get('informe/' + self.contrato + '/' + self.vigencia + '/' + self.mes + '/' + self.anio).then(function (response) {
         //console.log(response)
@@ -154,9 +185,9 @@ angular.module('contractualClienteApp')
             if (response.data.Data.length != 0) {
               var inf_aux = response.data.Data[0];
               inf_aux.PeriodoInformeInicio = new Date(inf_aux.PeriodoInformeInicio.split('T')[0]);
-              inf_aux.PeriodoInformeInicio.setHours(inf_aux.PeriodoInformeInicio.getHours()+5)
+              inf_aux.PeriodoInformeInicio.setHours(inf_aux.PeriodoInformeInicio.getHours() + 5)
               inf_aux.PeriodoInformeFin = new Date(inf_aux.PeriodoInformeFin.split('T')[0]);
-              inf_aux.PeriodoInformeFin.setHours(inf_aux.PeriodoInformeFin.getHours()+5)
+              inf_aux.PeriodoInformeFin.setHours(inf_aux.PeriodoInformeFin.getHours() + 5)
               self.Informe = inf_aux;
               self.nuevoInforme = false;
               //console.log(self.Informe)
@@ -194,7 +225,7 @@ angular.module('contractualClienteApp')
           })
         }
       );
-      
+
     }
 
     self.obtenerInformacionInforme = function () {
@@ -206,8 +237,9 @@ angular.module('contractualClienteApp')
             self.informacion_informe.FechaCPS = new Date(utils.ajustarFecha(self.informacion_informe.FechaCPS))
             self.informacion_informe.CDP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.CDP.Fecha))
             self.informacion_informe.RP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.RP.Fecha))
-            self.obtenerPreliqidacion();
+            self.obtenerPreliquidacion();
             self.validarNovedades();
+            self.calcularEjecutadoDinero();
           } else {
 
             swal({
@@ -239,10 +271,10 @@ angular.module('contractualClienteApp')
       );
     }
 
-    self.obtenerPreliqidacion = function () {
-      titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' +self.vigencia+ '/' + self.documento_contratista).then(
+    self.obtenerPreliquidacion = function () {
+      titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
         function (response) {
-          //console.log(response)
+          console.log(response)
           self.Preliquidacion = response.data.Data
           self.darFormato(self.Preliquidacion);
           //console.log('Fecha inicio', new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio)))
@@ -347,7 +379,7 @@ angular.module('contractualClienteApp')
       } else {
         //endpoint para actualizar
         //console.log("Informe a actualizar:",self.Informe)
-        cumplidosMidRequest.put('informe',self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
+        cumplidosMidRequest.put('informe', self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
           //console.log("resultado put informe", response)
           if (response.status == 200) {
             self.nuevoInforme = false;
@@ -507,7 +539,7 @@ angular.module('contractualClienteApp')
                     + ' del año ' + self.anio + '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio) + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
                 }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'VALOR DEL CONTRATO', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Ejecutado, alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Faltante, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: utils.formatoNumero(parseInt(self.informacion_informe.ValorContrato)), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: 'Sin información', alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: 'Sin información', alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
+                [{ text: utils.formatoNumero(parseInt(self.informacion_informe.ValorContrato)), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Pagado), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Faltante), alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{ colSpan: 8, text: 'Nota: Yo, ' + self.informacion_informe.InformacionContratista.Nombre + ' , autorizo a la Universidad Distrital para hacer el abono de mis pagos a la cuenta bancaria relacionada. Bajo gravedad del juramento, certifico que estoy realizando los aportes a seguridad social, de conformidad con lo establecido por la Ley. ', alignment: 'justify', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}]
               ]
             }
@@ -590,7 +622,8 @@ angular.module('contractualClienteApp')
     }
 
     self.formato_generacion_pdf = function () {
-      self.informacion_informe.porcentajeTiempo = self.calcularPorcentajeTiempo(self.informacion_informe.FechaInicio, self.informacion_informe.FechaFin, self.Informe.PeriodoInformeFin)
+      self.informacion_informe.porcentajeTiempo = self.calcularPorcentajeTiempo(self.informacion_informe.FechaInicio, self.informacion_informe.FechaFin, self.Informe.PeriodoInformeFin);
+      console.log(self.informacion_informe)
       var docDefinition = self.formato_InformeGyCertificadoC();
       //console.log(docDefinition);
       // pdfMake.createPdf(docDefinition).download();
@@ -650,14 +683,14 @@ angular.module('contractualClienteApp')
                 //console.log(response.data);
 
                 if (response.data.Status == 200) {
-                  
+
                   self.id_documento = response.data.res.Id;
 
                   cumplidosCrudRequest.get('item_informe_tipo_contrato', $.param({
                     query: "Activo:true,TipoContratoId:6,ItemInformeId.CodigoAbreviacion:IGYCC",
                     limit: 0
                   })).then(function (response_item_informe_tipo_contrato) {
-                    var ItemInformeTipoContratoId=response_item_informe_tipo_contrato.data.Data[0].Id;
+                    var ItemInformeTipoContratoId = response_item_informe_tipo_contrato.data.Data[0].Id;
                     self.objeto_soporte = {
                       "PagoMensualId": {
                         "Id": pago_mensual_id

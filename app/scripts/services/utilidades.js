@@ -313,9 +313,10 @@ angular.module('utilsService', [])
                 return diff/(1000*60*60*24)
             },
             formatoFecha(fecha){
-                var sf=fecha.toLocaleDateString();
-                var partes=sf.split('/');
-                var ff='del '+partes[0]+' de '+this.nombreMes(parseInt(partes[1])).Nombre+ ' de '+partes[2]
+                var anio = fecha.getFullYear();
+                var mes = fecha.getMonth()+1;
+                var dia = fecha.getDate();
+                var ff='del '+dia+' de '+this.nombreMes(mes).Nombre+ ' de '+anio;
                 return ff
             },
             ajustarFecha(stringFecha){
