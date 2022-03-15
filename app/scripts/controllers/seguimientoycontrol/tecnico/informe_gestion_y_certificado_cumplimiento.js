@@ -142,7 +142,7 @@ angular.module('contractualClienteApp')
                 const pagado = parseInt(pagosAnuales[index].valor_bruto_girado);
                 total=total+pagado;
               }
-              total=total+self.Preliquidacion.TotalDevengado;
+              //total=total+self.Preliquidacion.TotalDevengado;
               self.informacion_informe.ejecutadoDinero = { Pagado: total, Faltante: parseInt(self.informacion_informe.ValorContrato)-total }
             }else{
               self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
@@ -461,7 +461,7 @@ angular.module('contractualClienteApp')
                   height: 60
                 }],
                 ['', { text: 'Macroproceso: Direccionamiento Estratégico', margin: [0, 3, 0, 0] }, { text: 'Versión: 02', margin: [0, 3, 0, 0] }, ''],
-                ['', { text: 'Proceso: Planeación Estratégica e Institucional', margin: [22, 3, 0, 0] }, { text: 'Fecha de Aprobación: XX/10/2021', margin: [35, 3, 0, 0] }, ''],
+                ['', { text: 'Proceso: Planeación Estratégica e Institucional', margin: [22, 3, 0, 0] }, { text: 'Fecha de Aprobación: 14/03/2022', margin: [35, 3, 0, 0] }, ''],
 
               ]
             }
