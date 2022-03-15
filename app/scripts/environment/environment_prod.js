@@ -38,12 +38,12 @@ angular.module("contractualClienteApp").constant("CONF", {
     FINANCIERA_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_crud_api/v1/",
     MODELS_SERVICE: "scripts/models/",
-    NOTIFICACION_WS:
-      "https://autenticacion.portaloas.udistrital.edu.co/apioas/notificacion_mid/v1/",
+    NOTIFICACION_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/notificacion_mid/v1/",
     ARM_AWS_NOTIFICACIONES:"arn:aws:sns:us-east-1:699001025740:production-Cumplidos",
     OIKOS_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
     CONTRATO_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
+    FINANCIERA_JBPM_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_jbpm/v1/",
     NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
     NUXEO_MID:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/nuxeo_mid/v1/",
