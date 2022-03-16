@@ -76,22 +76,6 @@ angular.module('contractualClienteApp')
       //console.log(Preliquidacion)
     }
 
-    self.escogerUltimaNovedad = function (novedades) {
-      var fechaUltimaNovedad = null
-      for (let index = 0; index < novedades.length; index++) {
-        const novedad = novedades[index];
-        if (fechaUltimaNovedad == null) {
-          fechaUltimaNovedad = new Date(utils.ajustarFecha(novedad.FechaProrroga))
-        } else {
-          fechaNovedad = new Date(utils.ajustarFecha(novedad.FechaProrroga))
-          if (fechaNovedad > fechaUltimaNovedad) {
-            fechaUltimaNovedad = fechaNovedad
-          }
-        }
-      }
-      return fechaUltimaNovedad
-    }
-
     self.validarNovedades = function () {
       //console.log('novedades: ', self.informacion_informe.Novedades)
       self.informacion_informe.Novedades.UltimoOtrosi = {}
@@ -102,39 +86,51 @@ angular.module('contractualClienteApp')
         self.informacion_informe.Novedades.UltimoOtrosi.FechaFin = ''
       } else {
         self.informacion_informe.Novedades.UltimoOtrosi.Existe = 'X'
-        self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio = self.escogerUltimaNovedad(self.informacion_informe.Novedades.Otrosi)
-        self.informacion_informe.Novedades.UltimoOtrosi.FechaFin = self.informacion_informe.Novedades.Otrosi.FechaInicio.getDate() + dias
+        self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Otrosi[0].FechaInicio))
+        self.informacion_informe.Novedades.UltimoOtrosi.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Otrosi[0].FechaFin))
+        self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad=self.informacion_informe.Novedades.Otrosi[0].ValorNovedad;
       }
 
+      //console.log(self.informacion_informe.Novedades.Cesion == null)
       if (self.informacion_informe.Novedades.Cesion == null) {
         self.informacion_informe.Novedades.UltimaCesion.Existe = ''
         self.informacion_informe.Novedades.UltimaCesion.FechaCesion = ''
       } else {
         self.informacion_informe.Novedades.UltimaCesion.Existe = 'X'
-        self.informacion_informe.Novedades.UltimaCesion.FechaCesion = self.escogerUltimaNovedad(self.informacion_informe.Novedades.Cesion)
+        self.informacion_informe.Novedades.UltimaCesion.FechaCesion = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Cesion[0].FechaInicio))
       }
+      //console.log("validacion")
     }
 
-    self.calcularPorcentajeTiempo = function (fechaInicio, fechaFin, fechaFinActividades) {
-      //console.log('fechas: ', fechaInicio, fechaFin, fechaFinActividades)
-      var diasContrato = utils.diferenciaFechasDias(fechaInicio, fechaFin)
-      var diasContratoEjecutado = utils.diferenciaFechasDias(fechaInicio, fechaFinActividades)
+    self.calcularPorcentajeTiempo = function () {
+      var diasContrato=null
+      var diasContratoEjecutado=null
+      if(self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X'){
+        diasContrato=utils.diferenciaFechasDias(self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio,self.informacion_informe.Novedades.UltimoOtrosi.FechaFin)
+        diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio, self.Informe.PeriodoInformeFin)
+      }else{
+        diasContrato=utils.diferenciaFechasDias(self.informacion_informe.FechaInicio,self.informacion_informe.FechaFin)
+        diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechaInicio, self.Informe.PeriodoInformeFin)
+      }
+     
       var porcentajeEjecutado = ((diasContratoEjecutado * 100) / diasContrato)
       var porcentajeFaltante = 100 - porcentajeEjecutado
       return { Ejecutado: porcentajeEjecutado.toFixed(2), Faltante: porcentajeFaltante.toFixed(2) }
     }
 
-    self.calcularEjecutadoDinero = function (fechaInicio, fechaFin, fechaFinActividades) {
+    self.calcularEjecutadoDinero = function () {
+      //console.log("calcularEjecutadoDinero")
       amazonAdministrativaRequest.get('contrato_general', $.param({
         query: "ContratoSuscrito.NumeroContratoSuscrito:" + self.contrato+',VigenciaContrato:'+self.vigencia,
         limit: 0
       })).then(function (response_contrato_general) {
-        console.log(response_contrato_general)
+        //console.log(response_contrato_general)
         var unidadEjecutora=response_contrato_general.data[0].UnidadEjecutora;
-        console.log(unidadEjecutora)
+        var NumeroContrato=response_contrato_general.data[0].ContratoSuscrito[0].NumeroContrato.Id;
+        //console.log(unidadEjecutora)
         if(response_contrato_general.status==200){
           financieraJBPMRequest.get('giros_tercero/'+ self.cdp + '/' + self.vigencia_cdp+'/'+unidadEjecutora,'').then(function (response) {
-            console.log("giro_terceros:",response)
+            //console.log("giro_terceros:",response)
             if(response.data.giros.tercero!=undefined){
               var pagosAnuales=response.data.giros.tercero;
               var total=0;
@@ -143,15 +139,30 @@ angular.module('contractualClienteApp')
                 total=total+pagado;
               }
               //total=total+self.Preliquidacion.TotalDevengado;
-              self.informacion_informe.ejecutadoDinero = { Pagado: total, Faltante: parseInt(self.informacion_informe.ValorContrato)-total }
+              self.informacion_informe.ejecutadoDinero = { Pagado: total,Faltante: (self.informacion_informe.Novedades.UltimoOtrosi.Existe =='X'?self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad:parseInt(self.informacion_informe.ValorContrato))-total }
             }else{
               self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
             }
+          }).catch(function (error) {
+            //console.log("error giros",error)
+          })
+
+          amazonAdministrativaRequest.get('acta_inicio', $.param({
+            query: "NumeroContrato:" + NumeroContrato,
+            limit: 0
+          })).then(function (response_acta_inico) {
+            self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaInicio))
+            self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaFin))
+
+          }).catch(function (error) {
+            //console.log("error acta_inicio",error)
           })
         }else{
           self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
         }
        
+      }).catch(function(error) {
+        //console.log("contrato_general",error)
       })
     }
 
@@ -237,9 +248,11 @@ angular.module('contractualClienteApp')
             self.informacion_informe.FechaCPS = new Date(utils.ajustarFecha(self.informacion_informe.FechaCPS))
             self.informacion_informe.CDP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.CDP.Fecha))
             self.informacion_informe.RP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.RP.Fecha))
+            
             self.obtenerPreliquidacion();
             self.validarNovedades();
             self.calcularEjecutadoDinero();
+            
           } else {
 
             swal({
@@ -274,13 +287,9 @@ angular.module('contractualClienteApp')
     self.obtenerPreliquidacion = function () {
       titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
         function (response) {
-          console.log(response)
+          //console.log(response)
           self.Preliquidacion = response.data.Data
           self.darFormato(self.Preliquidacion);
-          //console.log('Fecha inicio', new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio)))
-          //console.log('Fecha fin', new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaFin)))
-          self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio))
-          self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(self.Preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaFin))
         }
       ).catch(
         function (error) {
@@ -408,10 +417,13 @@ angular.module('contractualClienteApp')
     }
 
     self.crear_lista_evidencias = function (Evidencia) {
-      var evidencias = Evidencia.split(',');
       var ul = [];
-      for (var z = 0; z < evidencias.length; z++) {
-        ul.push({ text: 'Evidencia ' + (z + 1), link: evidencias[z], color: '#0645AD', decoration: 'underline', bold: true })
+      if(Evidencia!=''){
+        var evidencias = Evidencia.split(',');
+        
+        for (var z = 0; z < evidencias.length; z++) {
+          ul.push({ text: 'Evidencia ' + (z + 1), link: evidencias[z], color: '#0645AD', decoration: 'underline', bold: true })
+        }
       }
       return ul;
     }
@@ -436,6 +448,41 @@ angular.module('contractualClienteApp')
         indexPrimera = indexPrimera + numActividades;
       }
       return body
+    }
+
+    self.texto_aportes = function () {
+      var fechas = []; // Arreglo de fechas que involucran cambio en la descripción del periodo de informe
+      var fechasInicio = []; //Arreglo de fechas que involucran cambio en la descripción del enunciado de aportes
+      var textoAportes = "";
+
+      if(self.informacion_informe.Novedades.UltimoOtrosi.FechaFin!='' && self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio!=''){
+        fechas.push([self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio.getFullYear(),self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio.getMonth()+1]);
+        fechas.push([self.informacion_informe.Novedades.UltimoOtrosi.FechaFin.getFullYear(),self.informacion_informe.Novedades.UltimoOtrosi.FechaFin.getMonth()+1]);
+      }
+      fechas.push([self.informacion_informe.FechaInicio.getFullYear(),self.informacion_informe.FechaInicio.getMonth()+1]);
+      fechas.push([self.informacion_informe.FechaFin.getFullYear(),self.informacion_informe.FechaFin.getMonth()+1]);
+
+      fechasInicio.push([self.informacion_informe.FechaInicio.getFullYear(),self.informacion_informe.FechaInicio.getMonth()+1]);
+      if(self.informacion_informe.Novedades.UltimaCesion.FechaCesion!=''){
+        fechasInicio.push([self.informacion_informe.Novedades.UltimaCesion.FechaCesion.getFullYear(),self.informacion_informe.Novedades.UltimaCesion.FechaCesion.getMonth()+1]);
+      }
+      
+      //console.log("fechas",fechas)
+      //console.log("fechasInicio",fechasInicio)
+      //console.log("anio",self.anio)
+      //console.log("mes", self.mes)
+      //console.log("if",fechas.includes([self.anio,self.mes]))
+      if(fechas.find(element => element[0]==self.anio && element[1]==self.mes)){ 
+        textoAportes = utils.formatoFecha(self.Informe.PeriodoInformeInicio)+" hasta "+utils.formatoFecha(self.Informe.PeriodoInformeFin).substring(1);
+      }else{
+        textoAportes = 'del mes de ' + self.mes_nombre + ' del año ' + self.anio;
+      }
+      
+      if(!fechasInicio.find(element => element[0]==self.anio && element[1]==self.mes)){ 
+        textoAportes +=  '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio);
+      }
+      return textoAportes;
+
     }
 
     self.formato_InformeGyCertificadoC = function () {
@@ -494,8 +541,8 @@ angular.module('contractualClienteApp')
               widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', '*'],
               body: [
                 [{ text: 'NOMBRE CONTRATISTA:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { colSpan: 3, text: self.informacion_informe.InformacionContratista.Nombre, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: 'FECHA DE INICIO', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.informacion_informe.FechaInicio.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA FINALIZACIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.FechaFin.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: 'PROCESO:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.Informe.Proceso, fontSize: 11, margin: [0, 3, 0, 0] }, { text: 'OTROSÍ:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.Existe, bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA INICIO OTROSÍ:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA FINALIZACIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.FechaFin, fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: 'UNIDAD ACADÉMICA Y/O ADMINISTRATIVA:', bold: true, height: 40, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Dependencia, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'CESIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimaCesion.Existe, bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA CESIÓN: ', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { colSpan: 3, text: self.informacion_informe.Novedades.UltimaCesion.FechaCesion, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}],
+                [{ text: 'PROCESO:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.Informe.Proceso, fontSize: 11, margin: [0, 3, 0, 0] }, { text: 'OTROSÍ:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.Existe, bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA INICIO OTROSÍ:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio!=''?self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio.toLocaleDateString():'', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA FINALIZACIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.FechaFin!=''?self.informacion_informe.Novedades.UltimoOtrosi.FechaFin.toLocaleDateString():'', fontSize: 11, margin: [0, 5, 0, 0] }],
+                [{ text: 'UNIDAD ACADÉMICA Y/O ADMINISTRATIVA:', bold: true, height: 40, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Dependencia, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'CESIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimaCesion.Existe, bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA CESIÓN: ', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { colSpan: 3, text: self.informacion_informe.Novedades.UltimaCesion.FechaCesion!=''?self.informacion_informe.Novedades.UltimaCesion.FechaCesion.toLocaleDateString():'', fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}],
                 [{ text: 'SEDE:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Sede, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'PERIODO INFORME:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, {}, { text: 'DESDE:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.Informe.PeriodoInformeInicio.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'HASTA:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.Informe.PeriodoInformeFin.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{ text: 'DISPONIBILIDAD PRESUPUESTAL', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.CDP.Consecutivo + ' ' + utils.formatoFecha(self.informacion_informe.CDP.Fecha), fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'CERTIFICADO REGISTRO PRESUPUESTAL:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, {}, {}, { colSpan: 3, text: self.informacion_informe.RP.Consecutivo + ' ' + utils.formatoFecha(self.informacion_informe.RP.Fecha), fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}],
               ]
@@ -535,11 +582,10 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'EL JEFE DE ' + self.informacion_informe.Dependencia + ' DE LA UNIVERSIDAD DISTRITAL “FRANCISCO JOSÉ DE CALDAS” CERTIFICA QUE EL/LA CONTRATISTA:', alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'NOMBRE DEL CONTRATISTA:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.Nombre, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'TIPO DE IDENTIFICACIÓN:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.TipoIdentificacion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'No.', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.documento_contratista, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'De', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.CiudadExpedicion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{
-                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' del ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), del mes de ' + self.mes_nombre
-                    + ' del año ' + self.anio + '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio) + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
+                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' del ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), '+ self.texto_aportes() + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
                 }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'VALOR DEL CONTRATO', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Ejecutado, alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Faltante, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: utils.formatoNumero(parseInt(self.informacion_informe.ValorContrato)), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Pagado), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Faltante), alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
+                [{ text: utils.formatoNumero(self.informacion_informe.Novedades.UltimoOtrosi.Existe =='X'?self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad:parseInt(self.informacion_informe.ValorContrato)), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Pagado), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Faltante), alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{ colSpan: 8, text: 'Nota: Yo, ' + self.informacion_informe.InformacionContratista.Nombre + ' , autorizo a la Universidad Distrital para hacer el abono de mis pagos a la cuenta bancaria relacionada. Bajo gravedad del juramento, certifico que estoy realizando los aportes a seguridad social, de conformidad con lo establecido por la Ley. ', alignment: 'justify', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}]
               ]
             }
@@ -622,8 +668,9 @@ angular.module('contractualClienteApp')
     }
 
     self.formato_generacion_pdf = function () {
-      self.informacion_informe.porcentajeTiempo = self.calcularPorcentajeTiempo(self.informacion_informe.FechaInicio, self.informacion_informe.FechaFin, self.Informe.PeriodoInformeFin);
-      console.log(self.informacion_informe)
+      //console.log(self.informacion_informe)
+      self.informacion_informe.porcentajeTiempo = self.calcularPorcentajeTiempo();
+      //console.log(self.informacion_informe)
       var docDefinition = self.formato_InformeGyCertificadoC();
       //console.log(docDefinition);
       // pdfMake.createPdf(docDefinition).download();

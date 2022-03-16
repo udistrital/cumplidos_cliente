@@ -910,7 +910,7 @@ var text_es = {
     CANCEL: "Cancelar",
 
     //Infome de gestion y certificado de cumplimiento
-    TITULO_INFORME_G_Y_CERTIFICADO_C: "INFORME DE GESTION Y CERTIFICADO DE CUMPLIMIENTO",
+    TITULO_INFORME_G_Y_CERTIFICADO_C: "INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO",
 
     //Visualizacion cumplidos
     ERROR_SIN_DOCUMENTOS:"No se encontraron documentos asociados",
