@@ -309,6 +309,8 @@ angular.module('utilsService', [])
                 return number;
             },
             diferenciaFechasDias(fechaInicio, fechaFin){
+                fechaFin.setHours(12);
+                fechaInicio.setHours(12);
                 var diff= fechaFin.getTime()-fechaInicio.getTime()
                 return diff/(1000*60*60*24)
             },
