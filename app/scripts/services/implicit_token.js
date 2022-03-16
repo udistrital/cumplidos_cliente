@@ -183,16 +183,15 @@ angular.module('implicitToken', [])
       },
       logout: function () {
         window.localStorage.clear();
-        //window.location.replace("/");
+        window.location.replace("/");
         // se elimina el redirect
-        window.location.replace(service.logout_url);
+        //window.location.replace(service.logout_url);
       },
       expired: function () {
         return ( window.localStorage.getItem('expires_at')!==null && new Date(window.localStorage.getItem('expires_at')) < new Date());
       },
 
       setExpiresAt: function () {
-        console.log("puto")
         if (angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null) {
           var expires_at = new Date();
           expires_at.setSeconds(expires_at.getSeconds() + parseInt(window.localStorage.getItem('expires_in')) - 40); // 40 seconds less to secure browser and response latency
