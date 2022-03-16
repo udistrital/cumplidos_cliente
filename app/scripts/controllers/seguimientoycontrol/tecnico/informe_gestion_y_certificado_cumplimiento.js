@@ -458,7 +458,7 @@ angular.module('contractualClienteApp')
         textoAportes = 'del mes de ' + self.mes_nombre + ' del año ' + self.anio;
       }
       
-      if(fechasInicio.includes([self.anio,self.mes])){ 
+      if(!fechasInicio.includes([self.anio,self.mes])){ 
         textoAportes +=  '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio);
       }
       return textoAportes;
