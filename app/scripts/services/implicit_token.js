@@ -184,6 +184,7 @@ angular.module('implicitToken', [])
       logout: function () {
         window.localStorage.clear();
         window.location.replace("/");
+        //console.log(service.logout_url)
         // se elimina el redirect
         //window.location.replace(service.logout_url);
       },
