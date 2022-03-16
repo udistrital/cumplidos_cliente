@@ -24,11 +24,14 @@ if (window.localStorage.getItem('access_token') === null ||
   // 
   req.open('GET', query, true);
   if (params.id_token !== null && params.id_token !== undefined) {
+    var expires_at = new Date();
     //console.log('id_token inicial: ',params.id_token)
     window.localStorage.setItem('access_token', params.access_token);
     window.localStorage.setItem('id_token', params.id_token);
     window.localStorage.setItem('state', params.state);
     window.localStorage.setItem('expires_in', params.expires_in);
+    expires_at.setSeconds(expires_at.getSeconds() + parseInt(window.localStorage.getItem('expires_in')) - 40); // 40 seconds less to secure browser and response latency
+    window.localStorage.setItem('expires_at', expires_at);
   } else {
     window.localStorage.clear();
   }
@@ -84,6 +87,8 @@ angular.module('implicitToken', [])
                 //console.log('respuesta autenticacion',appUserDocument,appUserRole)    
                 window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
                 window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
+                setExpiresAt();
+                timer();
                 //
                 deferred.resolve(true);
               })
@@ -180,10 +185,10 @@ angular.module('implicitToken', [])
         window.localStorage.clear();
         window.location.replace("/");
         // se elimina el redirect
-        // window.location.replace(service.logout_url);
+        //window.location.replace(service.logout_url);
       },
       expired: function () {
-        return (new Date(window.localStorage.getItem('expires_at')) < new Date());
+        return ( window.localStorage.getItem('expires_at')!==null && new Date(window.localStorage.getItem('expires_at')) < new Date());
       },
 
       setExpiresAt: function () {
@@ -196,10 +201,29 @@ angular.module('implicitToken', [])
 
       timer: function () {
         if (!angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null || window.localStorage.getItem('expires_at') === 'Invalid Date') {
-          $interval(function () {
-            if (service.expired()) {
+          var mostrado=false
+          $interval(function () {            
+            var restante = new Date()
+            restante.setMinutes(restante.getMinutes()+5)
+            if (window.localStorage.getItem('expires_at') !== null && new Date(window.localStorage.getItem('expires_at')) < restante && !mostrado){
+              mostrado=true
+              swal({
+                title: 'Su sesión caducará pronto, por favor asegurese de guardar todos los cambios',
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+              })
+            }else if (service.expired()) {
+              swal({
+                title: 'Su sesión ha caducado, por favor vuelva a ingresar',
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+              }).then(function () {
               service.logout();
-              service.clearStorage();
+              })
             }
           }, 5000);
         } else {
@@ -232,7 +256,7 @@ angular.module('implicitToken', [])
         window.localStorage.removeItem('expires_at');
       }
     };
-    service.setExpiresAt();
+    //service.setExpiresAt();
     service.timer();
     return service;
   });
