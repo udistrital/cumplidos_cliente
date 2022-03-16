@@ -438,6 +438,33 @@ angular.module('contractualClienteApp')
       return body
     }
 
+    self.texto_aportes = function () {
+      var fechas = []; // Arreglo de fechas que involucran cambio en la descripción del periodo de informe
+      var fechasInicio = []; //Arreglo de fechas que involucran cambio en la descripción del enunciado de aportes
+      var textoAportes = "";
+
+      fechas.push([self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio.getYear(),self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio.getMonth()]);
+      fechas.push([self.informacion_informe.Novedades.UltimoOtrosi.FechaFin.getYear(),self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio.getMonth()]);
+      fechas.push([self.informacion_informe.FechaInicio.getYear(),self.informacion_informe.FechaInicio.getMonth()]);
+      fechas.push([self.informacion_informe.FechaFin.getYear(),self.informacion_informe.FechaFin.getMonth()]);
+
+      fechasInicio.push([self.informacion_informe.FechaInicio.getYear(),self.informacion_informe.FechaInicio.getMonth()]);
+      fechasInicio.push([self.informacion_informe.Novedades.UltimaCesion.FechaCesion.getYear(),self.informacion_informe.Novedades.UltimaCesion.FechaCesion.getMonth()]);
+      
+      
+      if(fechas.includes([self.anio,self.mes])){ 
+        textoAportes = utils.formatoFecha(+new Date(self.anio,self.mes));
+      }else{
+        textoAportes = 'del mes de ' + self.mes_nombre + ' del año ' + self.anio;
+      }
+      
+      if(fechasInicio.includes([self.anio,self.mes])){ 
+        textoAportes +=  '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio);
+      }
+      return textoAportes;
+
+    }
+
     self.formato_InformeGyCertificadoC = function () {
       return {
         pageSize: 'FOLIO',
@@ -535,8 +562,7 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'EL JEFE DE ' + self.informacion_informe.Dependencia + ' DE LA UNIVERSIDAD DISTRITAL “FRANCISCO JOSÉ DE CALDAS” CERTIFICA QUE EL/LA CONTRATISTA:', alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'NOMBRE DEL CONTRATISTA:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.Nombre, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'TIPO DE IDENTIFICACIÓN:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.TipoIdentificacion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'No.', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.documento_contratista, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'De', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.CiudadExpedicion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{
-                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' del ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), del mes de ' + self.mes_nombre
-                    + ' del año ' + self.anio + '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio) + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
+                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' del ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), '+ self.texto_aportes() + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
                 }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'VALOR DEL CONTRATO', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Ejecutado, alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Faltante, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{ text: utils.formatoNumero(parseInt(self.informacion_informe.ValorContrato)), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Pagado), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Faltante), alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
