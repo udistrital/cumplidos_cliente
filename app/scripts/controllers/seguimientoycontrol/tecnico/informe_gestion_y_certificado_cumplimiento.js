@@ -133,7 +133,7 @@ angular.module('contractualClienteApp')
         var unidadEjecutora=response_contrato_general.data[0].UnidadEjecutora;
         console.log(unidadEjecutora)
         if(response_contrato_general.status==200){
-          financieraJBPMRequest.get('giros_tercero/' + self.documento_contratista + '/' + self.cdp + '/' + self.vigencia_cdp+'/'+unidadEjecutora,'').then(function (response) {
+          financieraJBPMRequest.get('giros_tercero/'+ self.cdp + '/' + self.vigencia_cdp+'/'+unidadEjecutora,'').then(function (response) {
             console.log("giro_terceros:",response)
             if(response.data.giros.tercero!=undefined){
               var pagosAnuales=response.data.giros.tercero;

@@ -84,6 +84,8 @@ angular.module('implicitToken', [])
                 //console.log('respuesta autenticacion',appUserDocument,appUserRole)    
                 window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
                 window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
+                setExpiresAt();
+                timer();
                 //
                 deferred.resolve(true);
               })
@@ -187,6 +189,7 @@ angular.module('implicitToken', [])
       },
 
       setExpiresAt: function () {
+        console.log("puto")
         if (angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null) {
           var expires_at = new Date();
           expires_at.setSeconds(expires_at.getSeconds() + parseInt(window.localStorage.getItem('expires_in')) - 40); // 40 seconds less to secure browser and response latency
@@ -197,11 +200,16 @@ angular.module('implicitToken', [])
       timer: function () {
         if (!angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null || window.localStorage.getItem('expires_at') === 'Invalid Date') {
           $interval(function () {
-            if (service.expired()) {
+            swal({
+              title: 'Su Sesion a Caducado, vuelva a ingresar',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar'
+            }).then(function () {
               service.logout();
-              service.clearStorage();
-            }
-          }, 5000);
+            })
+          }, window.localStorage.getItem('expires_in')*1000);
         } else {
           window.location.reload();
         }
@@ -232,7 +240,6 @@ angular.module('implicitToken', [])
         window.localStorage.removeItem('expires_at');
       }
     };
-    service.setExpiresAt();
-    service.timer();
+  
     return service;
   });
