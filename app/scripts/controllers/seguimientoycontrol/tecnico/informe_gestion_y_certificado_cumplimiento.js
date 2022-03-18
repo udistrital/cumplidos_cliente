@@ -181,7 +181,11 @@ angular.module('contractualClienteApp')
                     if (!errorGiroCPS){
                       self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato-totalEjecutado }
                     }else{
-                      self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
+                      if (self.informacion_informe.Novedades.UltimoOtrosi.Existe =='X'){
+                        self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato)+self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad }
+                      }else{
+                        self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato)}
+                      }
                     }
                     
                   }).catch(function (error) {
@@ -196,7 +200,11 @@ angular.module('contractualClienteApp')
               }
               
             }else{
-              self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
+              if (self.informacion_informe.Novedades.UltimoOtrosi.Existe =='X'){
+                self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato)+self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad }
+              }else{
+                self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato)}
+              }
             }
           }).catch(function (error) {
             //console.log("error giros",error)
@@ -213,7 +221,17 @@ angular.module('contractualClienteApp')
             //console.log("error acta_inicio",error)
           })
         }else{
-          self.informacion_informe.ejecutadoDinero = { Pagado: "Sin Informacion", Faltante: "Sin Informacion" }
+          swal({
+            title: 'Ocurrió un error al traer la información del contrato, intente nuevamente más tarde',
+            type: 'error',
+            showCancelButton: false,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Aceptar',
+            allowEscapeKey: false,
+            allowOutsideClick: false
+          }).then(function () {
+            $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+          })
         }
        
       }).catch(function(error) {
