@@ -216,7 +216,9 @@ angular.module('contractualClienteApp')
             type: 'error',
             showCancelButton: false,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
+            confirmButtonText: 'Aceptar',
+            allowEscapeKey: false,
+            allowOutsideClick: false
           }).then(function () {
             $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
           })
@@ -276,7 +278,9 @@ angular.module('contractualClienteApp')
             type: 'error',
             showCancelButton: false,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
+            confirmButtonText: 'Aceptar',
+            allowEscapeKey: false,
+            allowOutsideClick: false
           }).then(function () {
             $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
           })
@@ -299,7 +303,9 @@ angular.module('contractualClienteApp')
             type: 'error',
             showCancelButton: false,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
+            confirmButtonText: 'Aceptar',
+            allowEscapeKey: false,
+            allowOutsideClick: false
           }).then(function () {
             $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
           })
