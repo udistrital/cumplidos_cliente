@@ -84,7 +84,8 @@ angular.module('implicitToken', [])
                 appUserDocument = respuestaAutenticacion.data.documento;
                 
                 appUserRole = respuestaAutenticacion.data.role;        
-                //console.log('respuesta autenticacion',appUserDocument,appUserRole)    
+                //console.log('respuesta autenticacion',appUserDocument,appUserRole)
+                window.location.reload();
                 window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
                 window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
                 setExpiresAt();
