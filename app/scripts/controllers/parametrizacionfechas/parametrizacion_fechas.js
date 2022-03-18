@@ -54,7 +54,7 @@ angular.module('contractualClienteApp')
       self.sin_limite = false;
       if (self.anio_sel == undefined || self.mes_sel == undefined) {
         swal({
-          title: 'Seleccione un mes y añio',
+          title: 'Seleccione un mes y año',
           type: 'warning',
           showCancelButton: false,
           confirmButtonColor: '#d33',
