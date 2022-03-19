@@ -579,6 +579,11 @@ angular.module('contractualClienteApp')
         var fechaInicioCump = fechasInicioCumplido.find(element => element.getFullYear()==self.anio && element.getMonth()+1==self.mes);
 
         var fechaFinCump = new Date (fechaInicioCump.getFullYear(), fechaInicioCump.getMonth()==1 ? 2 : fechaInicioCump.getMonth(), fechaInicioCump.getMonth()==1 ? 0 : 30); //Día 30 para los demás meses o (28/29) para Febrero
+
+        if(fechaInicioCump.getDate()==31){
+          fechaInicioCump.setDate(fechaInicioCump.getDate()+1)
+          fechaFinCump.setMonth(fechaFinCump.getMonth()+1)
+        }//(fecha inicio contrato 31)
         
         textoAportes = utils.formatoFecha(fechaInicioCump)+" hasta "+utils.formatoFecha(fechaFinCump).substring(1);
 
