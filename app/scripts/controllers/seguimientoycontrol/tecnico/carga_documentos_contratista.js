@@ -473,6 +473,7 @@ angular.module('contractualClienteApp')
       Enviar solicitud de revisión de soportes a Supervisor
     */
     self.enviar_revision = function (solicitud) {
+      self.obtener_doc(solicitud);
       cumplidosCrudRequest.get('fechas_carga_cumplidos', $.param({
         limit: 0,
         query: 'Dependencia:' + self.dependencia_supervisor.codigo + ',Mes.in:' + solicitud.Mes + '|0,Anio.in:' + solicitud.Ano + '|0',
