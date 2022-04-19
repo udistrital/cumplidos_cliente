@@ -312,18 +312,18 @@ angular.module('contractualClienteApp')
                   allowOutsideClick: false,
                   confirmButtonText: 'Aceptar'
                 }).then(function () {
+                  self.Informe.ActividadesEspecificas = [{
+                    "ActividadEspecifica": '',
+                    "Avance": 0,
+                    "ActividadesRealizadas": [{
+                      "Actividad": '',
+                      "ProductoAsociado": '',
+                      "Evidencia": '',
+                    }]
+                  }]
                 })
               }
             );
-            self.Informe.ActividadesEspecificas = [{
-              "ActividadEspecifica": '',
-              "Avance": 0,
-              "ActividadesRealizadas": [{
-                "Actividad": '',
-                "ProductoAsociado": '',
-                "Evidencia": '',
-              }]
-            }]
           } else {
             //Informe ya creado
 
@@ -345,6 +345,8 @@ angular.module('contractualClienteApp')
               )
             }
           }
+          //console.log("Nuevo informe",self.nuevoInforme)
+          //console.log("Informe",self.Informe)
         } else {
           swal({
             title: 'Ocurrio un error al traer el informe, intente nuevamente mas tarde',
@@ -851,7 +853,7 @@ angular.module('contractualClienteApp')
     }
 
     self.formato_generacion_pdf = function () {
-      if (self.Informe.PeriodoInformeFin==undefined || self.Informe.PeriodoInformeFin==null ||self.Informe.PeriodoInformeInicio==undefined || self.Informe.PeriodoInformeInicio==null) {
+      if (self.Informe.PeriodoInformeFin == undefined || self.Informe.PeriodoInformeFin == null || self.Informe.PeriodoInformeInicio == undefined || self.Informe.PeriodoInformeInicio == null) {
         swal({
           title: 'Formulario incompleto',
           text: 'Faltan datos para generar el informe',
@@ -860,18 +862,28 @@ angular.module('contractualClienteApp')
           confirmButtonColor: '#3085d6',
         });
       } else {
-        //console.log(self.informacion_informe)
-        self.informacion_informe.porcentajeTiempo = self.calcularPorcentajeTiempo();
-        //console.log(self.informacion_informe)
-        var docDefinition = self.formato_InformeGyCertificadoC();
-        //console.log(docDefinition);
-        // pdfMake.createPdf(docDefinition).download();
-        pdfMake.createPdf(docDefinition).getDataUrl(function (data) {
-          //console.log(data);
-          self.pdf_dataUrl = $sce.trustAsResourceUrl(data);
-          self.pdf_base64 = data.split(',')[1]
-          $('#modal_visualizar_documento').modal('show');
-        });
+        try {
+          //console.log(self.informacion_informe)
+          self.informacion_informe.porcentajeTiempo = self.calcularPorcentajeTiempo();
+          //console.log(self.informacion_informe)
+          var docDefinition = self.formato_InformeGyCertificadoC();
+          //console.log(docDefinition);
+          // pdfMake.createPdf(docDefinition).download();
+          pdfMake.createPdf(docDefinition).getDataUrl(function (data) {
+            //console.log(data);
+            self.pdf_dataUrl = $sce.trustAsResourceUrl(data);
+            self.pdf_base64 = data.split(',')[1]
+            $('#modal_visualizar_documento').modal('show');
+          });
+        } catch (error) {
+          swal({
+            title: 'Error',
+            text: 'Ocurrio un error al intentar generar el informe',
+            type: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3085d6',
+          });
+        }
       }
     }
 
