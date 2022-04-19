@@ -2,10 +2,10 @@
 
 /**
  * @ngdoc service
- * @name cumplidosMidService.cumplidosMidRequest
+ * @name titanMidService.titanMidRequest
  * @description
- * # cumplidosMidRequest
- * Factory in the cumplidosMidService.
+ * # titanMidRequest
+ * Factory in the titanMidService.
  */
 angular.module('titanMidService', [])
     .factory('titanMidRequest', function($http, CONF, token_service) {
