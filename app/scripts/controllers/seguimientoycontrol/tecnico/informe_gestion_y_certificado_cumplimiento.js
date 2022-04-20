@@ -510,46 +510,68 @@ angular.module('contractualClienteApp')
     }
 
     self.guardar = function () {
-      //console.log(angular.toJson(self.Informe));
-      if (self.nuevoInforme) {
-        //endpoint para crear
-        cumplidosMidRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
-          //console.log("resultado post informe", response)
-          if (response.status == 201) {
-            self.nuevoInforme = false;
-            swal(
-              'INFORME GUARDADO',
-              'Su informe fue guardado con exito',
-              'success'
-            )
-          } else {
-            swal(
-              'ERROR AL GUARDAR INFORME',
-              'Ocurrio un problema al guardar el informe',
-              'error'
-            )
-          }
-        })
+      if (self.Informe.Proceso == '' || self.Informe.Proceso == null || self.Informe.Proceso == undefined || self.Informe.PeriodoInformeFin == undefined || self.Informe.PeriodoInformeFin == null || self.Informe.PeriodoInformeInicio == undefined || self.Informe.PeriodoInformeInicio == null) {
+        swal({
+          title: 'Formulario incompleto',
+          text: 'Faltan datos para guardar el informe',
+          type: 'warning',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3085d6',
+        });
       } else {
-        //endpoint para actualizar
-        //console.log("Informe a actualizar:",self.Informe)
-        cumplidosMidRequest.put('informe', self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
-          //console.log("resultado put informe", response)
-          if (response.status == 200) {
-            self.nuevoInforme = false;
-            swal(
-              'INFORME GUARDADO',
-              'Su informe fue guardado con exito',
-              'success'
-            )
+        swal({
+          title: '¿Está seguro(a) de guardar el Informe de gestion y certificado de cumplimiento?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          cancelButtonText: 'Cancelar',
+          confirmButtonText: 'Aceptar'
+        }).then(function () {
+          //console.log(angular.toJson(self.Informe));
+          if (self.nuevoInforme) {
+            //endpoint para crear
+            cumplidosMidRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
+              //console.log("resultado post informe", response)
+              if (response.status == 201) {
+                self.nuevoInforme = false;
+                swal(
+                  'INFORME GUARDADO',
+                  'Su informe fue guardado con exito',
+                  'success'
+                )
+              } else {
+                swal(
+                  'ERROR AL GUARDAR INFORME',
+                  'Ocurrio un problema al guardar el informe',
+                  'error'
+                )
+              }
+            })
           } else {
-            swal(
-              'ERROR AL GUARDAR INFORME',
-              'Ocurrio un problema al guardar el informe',
-              'error'
-            )
+            //endpoint para actualizar
+            //console.log("Informe a actualizar:",self.Informe)
+            cumplidosMidRequest.put('informe', self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
+              //console.log("resultado put informe", response)
+              if (response.status == 200) {
+                self.nuevoInforme = false;
+                swal(
+                  'INFORME GUARDADO',
+                  'Su informe fue guardado con exito',
+                  'success'
+                )
+              } else {
+                swal(
+                  'ERROR AL GUARDAR INFORME',
+                  'Ocurrio un problema al guardar el informe',
+                  'error'
+                )
+              }
+            })
           }
-        })
+        }).catch(function(error){
+
+        });
       }
     }
 
@@ -853,7 +875,7 @@ angular.module('contractualClienteApp')
     }
 
     self.formato_generacion_pdf = function () {
-      if (self.Informe.PeriodoInformeFin == undefined || self.Informe.PeriodoInformeFin == null || self.Informe.PeriodoInformeInicio == undefined || self.Informe.PeriodoInformeInicio == null) {
+      if (self.Informe.Proceso == '' || self.Informe.Proceso == null || self.Informe.Proceso == undefined || self.Informe.PeriodoInformeFin == undefined || self.Informe.PeriodoInformeFin == null || self.Informe.PeriodoInformeInicio == undefined || self.Informe.PeriodoInformeInicio == null) {
         swal({
           title: 'Formulario incompleto',
           text: 'Faltan datos para generar el informe',
