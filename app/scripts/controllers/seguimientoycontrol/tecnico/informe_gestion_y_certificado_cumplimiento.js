@@ -142,19 +142,21 @@ angular.module('contractualClienteApp')
         var NumeroContrato = response_contrato_general.data[0].ContratoSuscrito[0].NumeroContrato.Id;
         //console.log(unidadEjecutora)
         if (response_contrato_general.status == 200) {
+          let totalEjecutado = 0;
+          var totalContrato = 0;
+          var errorGiroCPS = false;
           financieraJBPMRequest.get('giros_tercero/' + self.cdp + '/' + self.vigencia_cdp + '/' + unidadEjecutora, '').then(function (response) {
             //console.log("giro_terceros:",response)
             if (response.data.giros.tercero != undefined) {
-              var pagosAnuales = response.data.giros.tercero;
-              let totalEjecutado = 0;
+              var pagosAnuales = response.data.giros.tercero;     
               for (let index = 0; index < pagosAnuales.length; index++) {
                 const pagado = parseInt(pagosAnuales[index].valor_bruto_girado);
                 totalEjecutado = totalEjecutado + pagado;
               }
 
               //total=total+self.Preliquidacion.TotalDevengado;
-              var totalContrato = 0;
-              var errorGiroCPS = false;
+              
+              //console.log(self.informacion_informe.Novedades)
               if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {//Valor total del contrato más valor de la novedad
                 amazonAdministrativaRequest.get('contrato_disponibilidad', $.param({
                   query: "NumeroContrato:" + NumeroContrato,
@@ -167,7 +169,7 @@ angular.module('contractualClienteApp')
                   financieraJBPMRequest.get('giros_tercero/' + cdpContrato + '/' + vigenciaCdpContrato + '/' + unidadEjecutora, '').then(function (responseGirosContrato) {
                     //console.log("giro_terceros:",response)
                     if (responseGirosContrato.data.giros.tercero != undefined) {
-                      var pagosAnualesContrato = response.data.giros.tercero;
+                      var pagosAnualesContrato = responseGirosContrato.data.giros.tercero;
                       for (let index = 0; index < pagosAnualesContrato.length; index++) {
                         const pagadoContrato = parseInt(pagosAnualesContrato[index].valor_bruto_girado);
                         totalEjecutado = totalEjecutado + pagadoContrato;
@@ -201,7 +203,42 @@ angular.module('contractualClienteApp')
 
             } else {
               if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {
-                self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) + self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad }
+                amazonAdministrativaRequest.get('contrato_disponibilidad', $.param({
+                  query: "NumeroContrato:" + NumeroContrato,
+                  limit: 0
+                })).then(function (response_contrato_disponibilidad) {
+                  var cdpContrato = response_contrato_disponibilidad.data[0].NumeroCdp;
+                  var vigenciaCdpContrato = response_contrato_disponibilidad.data[0].VigenciaCdp
+
+                  financieraJBPMRequest.get('giros_tercero/' + cdpContrato + '/' + vigenciaCdpContrato + '/' + unidadEjecutora, '').then(function (responseGirosContrato) {
+                    if (responseGirosContrato.data.giros.tercero != undefined) {
+                      var pagosAnualesContrato = responseGirosContrato.data.giros.tercero;
+                      for (let index = 0; index < pagosAnualesContrato.length; index++) {
+                        const pagadoContrato = parseInt(pagosAnualesContrato[index].valor_bruto_girado);
+                        totalEjecutado = totalEjecutado + pagadoContrato;
+                      }
+                    } else {
+                      errorGiroCPS = true;
+                    }
+                    totalContrato = self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad;
+                    totalContrato += parseInt(self.informacion_informe.ValorContrato)
+
+                    if (!errorGiroCPS) {
+                      self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato - totalEjecutado }
+                    } else {
+                      if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {
+                        self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) + self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad }
+                      } else {
+                        self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) }
+                      }
+                    }
+                  }).catch(function (error) {
+                    //console.log("error contrato_disponibilidad",error)
+                  })
+                }).catch(function (error) {
+                  //console.log("error contrato_disponibilidad",error)
+                })
+                
               } else {
                 self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) }
               }
