@@ -424,6 +424,8 @@ angular.module('contractualClienteApp')
       //self.obtener_informacion_coordinador(self.contrato.IdDependencia);
       cumplidosCrudRequest.get('pago_mensual', $.param({
         query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito + ",VigenciaContrato:" + self.contrato.Vigencia + ",DocumentoPersonaId:" + self.Documento,
+        sortby: "Ano,Mes",
+        order: "desc,desc",
         limit: 0
       })).then(function (response) {
         contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia)
