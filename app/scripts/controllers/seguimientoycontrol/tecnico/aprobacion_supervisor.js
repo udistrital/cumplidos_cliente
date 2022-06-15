@@ -362,21 +362,43 @@ angular.module('contractualClienteApp')
     /*
       Función para ver los soportes de los contratistas a cargo
     */
-    self.obtener_doc = function (fila) {
-      self.fila_sol_pago = fila;
-      var nombre_docs = self.fila_sol_pago.VigenciaContrato + self.fila_sol_pago.NumeroContrato + self.fila_sol_pago.DocumentoPersonaId + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-      documentoRequest.get('documento', $.param({
-        query: "Nombre:" + nombre_docs + ",Activo:true",
-        limit: 0
-      })).then(function (response) {
-        //console.log(self.documentos);
-        self.documentos = response.data;
-        angular.forEach(self.documentos, function (value) {
-          self.descripcion_doc = value.Descripcion;
-          value.Metadatos = JSON.parse(value.Metadatos);
-        });
-      })
-    };
+      self.obtener_doc = function (fila) {
+        self.fila_sol_pago = fila;
+        console.log("obtener doc", fila)
+        cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
+          query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
+          limit: 0
+        })).then(function (response_sop_pagos) {
+          var soportes=response_sop_pagos.data.Data;
+         if(Object.entries(soportes[0]).length != 0){
+          console.log("doc", response_sop_pagos)
+         
+          var ids_soportes=soportes.map(soporte=>{return soporte.Documento}).join('|');
+          console.log('ids_soportes',ids_soportes);
+          documentoRequest.get('documento', $.param({
+            query: "Id.in:" + ids_soportes + ",Activo:true",
+            limit: 0
+          })).then(function (response) {
+            //console.log("obtener documento")
+            console.log('documentos',response)
+            self.documentos = response.data;
+            angular.forEach(self.documentos, function (value) {
+              self.descripcion_doc = value.Descripcion;
+              value.Metadatos = JSON.parse(value.Metadatos);
+            });
+          }).catch(function (response) {//Manejo de null en la tabla documento
+            //Se deja vacia la variable para que no quede pegada
+            self.documentos = undefined;
+          });
+         }else{
+          self.documentos = undefined;
+         }
+        }).catch(function (error) {
+  
+        })
+        // var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
+  
+      };
 
     /*
       Función que permite obtener un documento de nuxeo por el Id

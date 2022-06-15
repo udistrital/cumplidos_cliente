@@ -139,11 +139,7 @@ angular.module('contractualClienteApp')
           field: 'NumeroContrato',
           //cellTemplate: tmpl,
           displayName: 'NUMERO CONTRATO',
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
-          },
-          width: "20%"
+          width: "*"
         },
         {
           field: 'VigenciaContrato',
@@ -151,19 +147,27 @@ angular.module('contractualClienteApp')
           displayName: 'VIGENCIA',
           sort: {
             direction: uiGridConstants.ASC,
-            priority: 1
+            priority: 3
           },
-          width: "10%"
+          width: "*"
+        },
+        {
+          field: 'NumeroCDP',
+          //cellTemplate: tmpl,
+          displayName: 'NUMERO CDP',
+          width: "*"
+        },
+        {
+          field: 'VigenciaCDP',
+          cellTemplate: tmpl,
+          displayName: 'VIGENCIA CDP',
+          width: "*"
         },
         {
           field: 'DocumentoPersonaId',
           //cellTemplate: tmpl,
           displayName: 'DOCUMENTO CONTRATISTA',
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
-          },
-          width: "30%"
+          width: "*"
         },
         {
           field: 'Ano',
@@ -173,7 +177,7 @@ angular.module('contractualClienteApp')
             direction: uiGridConstants.ASC,
             priority: 1
           },
-          width: "10%"
+          width: "*"
         },
         {
           field: 'mesNombre',
@@ -181,16 +185,16 @@ angular.module('contractualClienteApp')
           displayName: 'MES',
           sort: {
             direction: uiGridConstants.ASC,
-            priority: 1
+            priority: 2
           },
-          width: "20%"
+          width: "*"
         },
         {
           field: 'DOCUMENTOS',
           displayName: $translate.instant('ACC'),
           cellTemplate: '<a type="button" title="Ver soportes" type="button" class="fa fa-eye fa-lg  faa-shake animated-hover"' +
           'style="margin: 0 auto; display:block; text-align: center" ng-click="grid.appScope.VisualizarCumplidos.obtener_doc(row.entity)" data-toggle="modal" data-target="#modal_ver_soportes"</a>',
-          width: "10%"
+          width: "*"
         }
         ]
       };
@@ -267,30 +271,41 @@ angular.module('contractualClienteApp')
       }
 
       self.obtener_doc = function (fila) {
-        self.filaCumplido = fila;
-        self.tituloCumplidos='Soportes Contrato '+self.filaCumplido.NumeroContrato+' de '+self.filaCumplido.mesNombre+' del '+self.filaCumplido.Ano;
-        var nombre_docs = self.filaCumplido.VigenciaContrato + self.filaCumplido.NumeroContrato + self.filaCumplido.DocumentoPersonaId + self.filaCumplido.Mes + self.filaCumplido.Ano;
-        documentoRequest.get('documento', $.param({
-          query: "Nombre:" + nombre_docs + ",Activo:true",
+        self.fila_sol_pago = fila;
+        console.log("obtener doc", fila)
+        cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
+          query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
           limit: 0
-        })).then(function (response) {
-          self.documentos = response.data;
-          if(Object.keys(response.data[0]).length === 0 ){
-            self.sinDocumentos=true;
-          }else{
-            self.sinDocumentos=false;
+        })).then(function (response_sop_pagos) {
+          var soportes=response_sop_pagos.data.Data;
+         if(Object.entries(soportes[0]).length != 0){
+          console.log("doc", response_sop_pagos)
+         
+          var ids_soportes=soportes.map(soporte=>{return soporte.Documento}).join('|');
+          console.log('ids_soportes',ids_soportes);
+          documentoRequest.get('documento', $.param({
+            query: "Id.in:" + ids_soportes + ",Activo:true",
+            limit: 0
+          })).then(function (response) {
+            //console.log("obtener documento")
+            console.log('documentos',response)
+            self.documentos = response.data;
             angular.forEach(self.documentos, function (value) {
               self.descripcion_doc = value.Descripcion;
               value.Metadatos = JSON.parse(value.Metadatos);
             });
-          } 
-        }, function (error) {
-          swal({
-            title: 'Error',
-            text: 'Ocurrio un error al solicitar los documentos',
-            type: 'error',
+          }).catch(function (response) {//Manejo de null en la tabla documento
+            //Se deja vacia la variable para que no quede pegada
+            self.documentos = undefined;
           });
+         }else{
+          self.documentos = undefined;
+         }
+        }).catch(function (error) {
+  
         })
+        // var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
+  
       };
 
       self.getDocumento = function (docid) {
