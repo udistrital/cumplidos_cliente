@@ -468,8 +468,22 @@ angular.module('contractualClienteApp')
       titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
         function (response) {
           //console.log(response)
-          self.Preliquidacion = response.data.Data
-          self.darFormato(self.Preliquidacion);
+          if (response.data.Data.length != 0) {
+            self.Preliquidacion = response.data.Data[0];
+            self.darFormato(self.Preliquidacion);
+          }else{
+            swal({
+              title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar',
+              allowEscapeKey: false,
+              allowOutsideClick: false
+            }).then(function () {
+              $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+            })
+          }
         }
       ).catch(
         function (error) {
