@@ -24,6 +24,12 @@ angular.module('contractualClienteApp')
     var self = this;
     self.existe = true;
 
+    //Variable que indica cuando mostrar tabla de contratos
+    self.TablaContratos=true;
+
+    //Variable que indica cuando mostrar tabla de soportes
+    self.TablaSoportes=false;
+
     //Variable que indica el estado del boton cargar soporte
     self.mostrar_boton = true;
 
@@ -184,7 +190,7 @@ angular.module('contractualClienteApp')
       {
         field: 'Acciones',
         displayName: $translate.instant('ACC'),
-        cellTemplate: '<a type="button" title="CARGAR SOPORTES" type="button" class="fa fa-upload fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.cargar_soportes(row.entity)"  data-toggle="modal" data-target="#modal_carga_listas_docente">',
+        cellTemplate: '<a type="button" title="CARGAR SOPORTES" type="button" class="fa fa-upload fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.cargarTablaSoportes(row.entity)">',
         width: "10%"
       }
       ]
@@ -194,6 +200,24 @@ angular.module('contractualClienteApp')
     self.gridOptions1.onRegisterApi = function (gridApi) {
       self.gridApi = gridApi;
     };
+
+    /*
+      Función para consultar los contratos asociados al contratista
+    */
+    self.cargarTablaSoportes=function (fila){
+      self.TablaContratos=false;
+      self.TablaSoportes=true;
+      self.cargar_soportes(fila);
+      console.log("tabla contratos",self.TablaContratos)
+    }
+
+    /*
+      Función para consultar los contratos asociados al contratista
+    */
+    self.cargarTablaContratos=function (){
+      self.TablaContratos=true;
+      self.TablaSoportes=false;
+    }
 
     /*
       Función para consultar los contratos asociados al contratista
@@ -278,30 +302,18 @@ angular.module('contractualClienteApp')
         field: 'Mes',
         cellTemplate: tmpl,
         displayName: $translate.instant('MES'),
-        sort: {
-          direction: uiGridConstants.DESC,
-          priority: 2
-        },
         width: '6%',
       },
       {
         field: 'Ano',
         cellTemplate: tmpl,
         displayName: $translate.instant('ANO'),
-        sort: {
-          direction: uiGridConstants.DESC,
-          priority: 1
-        },
         width: '7%',
       },
       {
         field: 'FechaCreacion',
         cellTemplate: tmpl,
         displayName: 'FECHA CREACION',
-        sort: {
-          direction: uiGridConstants.ASC,
-          priority: 3
-        },
         width: '*',
       },
       {
@@ -449,7 +461,6 @@ angular.module('contractualClienteApp')
       Función para cargar los soportes
     */
     self.cargar_soportes = function (contrato) {
-      console.log('anio',self.anio);
       self.anio=undefined;
       self.mes=undefined;
       self.seleccionado = false;
