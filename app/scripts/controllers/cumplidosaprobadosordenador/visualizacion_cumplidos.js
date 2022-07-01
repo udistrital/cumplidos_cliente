@@ -272,6 +272,7 @@ angular.module('contractualClienteApp')
 
       self.obtener_doc = function (fila) {
         self.fila_sol_pago = fila;
+        self.tituloCumplidos='Soportes Contrato '+self.fila_sol_pago.NumeroContrato+' de '+self.fila_sol_pago.mesNombre+' del '+self.fila_sol_pago.Ano;
         console.log("obtener doc", fila)
         cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
           query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
