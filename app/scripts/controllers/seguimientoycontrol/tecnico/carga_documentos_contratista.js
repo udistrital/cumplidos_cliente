@@ -25,10 +25,10 @@ angular.module('contractualClienteApp')
     self.existe = true;
 
     //Variable que indica cuando mostrar tabla de contratos
-    self.TablaContratos=true;
+    self.TablaContratos = true;
 
     //Variable que indica cuando mostrar tabla de soportes
-    self.TablaSoportes=false;
+    self.TablaSoportes = false;
 
     //Variable que indica el estado del boton cargar soporte
     self.mostrar_boton = true;
@@ -97,38 +97,37 @@ angular.module('contractualClienteApp')
     /*
       Función que permite realizar una solicitud de pago mensual
     */
-    self.anios_solicitud_pago = function () {
-      self.informacion_contratos.forEach(function (contrato){
-        contrato.FechaInicio=new Date(contrato.FechaInicio.split('T')[0]);
-        contrato.FechaFin=new Date(contrato.FechaFin.split('T')[0]);
-        console.log("contrato a sacar fechas:",contrato)
-        //Arreglo que contiene los años de los cuales puede hacer la solicitud
-        var anio_inicial=contrato.FechaInicio.getFullYear();
-        var anio_final=contrato.FechaFin.getFullYear();
-        self.anios = [];
-        var dates  = [];
-        self.anios_meses=[];
-        for(var anio = anio_inicial; anio <= anio_final; anio++){
-          self.anios.push(anio);
-          var endMonth = anio != anio_final ? 11 : contrato.FechaFin.getMonth() ;
-          var startMon = anio === anio_inicial ? contrato.FechaInicio.getMonth() : 0;
-          for(var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j+1) {
-            var month = j;
-            dates.push(self.meses_aux[month]);
-          }
-          self.anios_meses[anio]=dates;
-          dates  = [];
+    self.anios_solicitud_pago = function (contrato) {
+      if(!(contrato.FechaInicio instanceof Date) && !(contrato.FechaFin instanceof Date)){
+        contrato.FechaInicio = new Date(contrato.FechaInicio.split('T')[0]);
+        contrato.FechaFin = new Date(contrato.FechaFin.split('T')[0]);
+      }
+      console.log("contrato a sacar fechas:", contrato)
+      //Arreglo que contiene los años de los cuales puede hacer la solicitud
+      var anio_inicial = contrato.FechaInicio.getFullYear();
+      var anio_final = contrato.FechaFin.getFullYear();
+      self.anios = [];
+      var dates = [];
+      self.anios_meses = [];
+      for (var anio = anio_inicial; anio <= anio_final; anio++) {
+        self.anios.push(anio);
+        var endMonth = anio != anio_final ? 11 : contrato.FechaFin.getMonth();
+        var startMon = anio === anio_inicial ? contrato.FechaInicio.getMonth() : 0;
+        for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
+          var month = j;
+          dates.push(self.meses_aux[month]);
         }
-        console.log('anios_meses',self.anios_meses);
-      })
-      console.log(self.informacion_contratos)
+        self.anios_meses[anio] = dates;
+        dates = [];
+      }
+      console.log('anios_meses', self.anios_meses);
     };
 
     /*
       Función que visualiza los meses de acuerdo al año seleccionado
     */
     self.getMeses = function (anio) {
-     self.meses=self.anios_meses[anio]
+      self.meses = self.anios_meses[anio]
     };
 
     /*
@@ -204,19 +203,19 @@ angular.module('contractualClienteApp')
     /*
       Función para consultar los contratos asociados al contratista
     */
-    self.cargarTablaSoportes=function (fila){
-      self.TablaContratos=false;
-      self.TablaSoportes=true;
+    self.cargarTablaSoportes = function (fila) {
+      self.TablaContratos = false;
+      self.TablaSoportes = true;
       self.cargar_soportes(fila);
-      console.log("tabla contratos",self.TablaContratos)
+      console.log("tabla contratos", self.TablaContratos)
     }
 
     /*
       Función para consultar los contratos asociados al contratista
     */
-    self.cargarTablaContratos=function (){
-      self.TablaContratos=true;
-      self.TablaSoportes=false;
+    self.cargarTablaContratos = function () {
+      self.TablaContratos = true;
+      self.TablaSoportes = false;
     }
 
     /*
@@ -233,7 +232,6 @@ angular.module('contractualClienteApp')
             self.informacion_contratos = response.data.Data;
             //Se envia la data a la tabla
             self.gridOptions1.data = self.informacion_contratos;
-            self.anios_solicitud_pago();
             //Contiene el numero de documento del Responsable
             self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
             self.obtenerDependenciasSupervisor();
@@ -461,11 +459,12 @@ angular.module('contractualClienteApp')
       Función para cargar los soportes
     */
     self.cargar_soportes = function (contrato) {
-      self.anio=undefined;
-      self.mes=undefined;
+      self.anio = undefined;
+      self.mes = undefined;
       self.seleccionado = false;
       self.gridOptions2.data = [];
       self.contrato = contrato;
+      self.anios_solicitud_pago(contrato);
       console.log("contrato", self.contrato);
       //self.obtener_informacion_coordinador(self.contrato.IdDependencia);
       cumplidosCrudRequest.get('pago_mensual', $.param({
@@ -802,30 +801,30 @@ angular.module('contractualClienteApp')
         query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
         limit: 0
       })).then(function (response_sop_pagos) {
-        var soportes=response_sop_pagos.data.Data;
-       if(Object.entries(soportes[0]).length != 0){
-        console.log("doc", response_sop_pagos)
-       
-        var ids_soportes=soportes.map(soporte=>{return soporte.Documento}).join('|');
-        console.log('ids_soportes',ids_soportes);
-        documentoRequest.get('documento', $.param({
-          query: "Id.in:" + ids_soportes + ",Activo:true",
-          limit: 0
-        })).then(function (response) {
-          //console.log("obtener documento")
-          console.log('documentos',response)
-          self.documentos = response.data;
-          angular.forEach(self.documentos, function (value) {
-            self.descripcion_doc = value.Descripcion;
-            value.Metadatos = JSON.parse(value.Metadatos);
+        var soportes = response_sop_pagos.data.Data;
+        if (Object.entries(soportes[0]).length != 0) {
+          console.log("doc", response_sop_pagos)
+
+          var ids_soportes = soportes.map(soporte => { return soporte.Documento }).join('|');
+          console.log('ids_soportes', ids_soportes);
+          documentoRequest.get('documento', $.param({
+            query: "Id.in:" + ids_soportes + ",Activo:true",
+            limit: 0
+          })).then(function (response) {
+            //console.log("obtener documento")
+            console.log('documentos', response)
+            self.documentos = response.data;
+            angular.forEach(self.documentos, function (value) {
+              self.descripcion_doc = value.Descripcion;
+              value.Metadatos = JSON.parse(value.Metadatos);
+            });
+          }).catch(function (response) {//Manejo de null en la tabla documento
+            //Se deja vacia la variable para que no quede pegada
+            self.documentos = undefined;
           });
-        }).catch(function (response) {//Manejo de null en la tabla documento
-          //Se deja vacia la variable para que no quede pegada
+        } else {
           self.documentos = undefined;
-        });
-       }else{
-        self.documentos = undefined;
-       }
+        }
       }).catch(function (error) {
 
       })
@@ -926,10 +925,5 @@ angular.module('contractualClienteApp')
           }
 
         });
-
-
     };
-
-
-
   });
