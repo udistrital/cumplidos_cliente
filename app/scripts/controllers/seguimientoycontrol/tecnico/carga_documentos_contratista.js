@@ -24,6 +24,12 @@ angular.module('contractualClienteApp')
     var self = this;
     self.existe = true;
 
+    //Variable que indica cuando mostrar tabla de contratos
+    self.TablaContratos = true;
+
+    //Variable que indica cuando mostrar tabla de soportes
+    self.TablaSoportes = false;
+
     //Variable que indica el estado del boton cargar soporte
     self.mostrar_boton = true;
 
@@ -91,20 +97,37 @@ angular.module('contractualClienteApp')
     /*
       Función que permite realizar una solicitud de pago mensual
     */
-    self.solicitar_pago = function () {
+    self.anios_solicitud_pago = function (contrato) {
+      if(!(contrato.FechaInicio instanceof Date) && !(contrato.FechaFin instanceof Date)){
+        contrato.FechaInicio = new Date(contrato.FechaInicio.split('T')[0]);
+        contrato.FechaFin = new Date(contrato.FechaFin.split('T')[0]);
+      }
+      console.log("contrato a sacar fechas:", contrato)
       //Arreglo que contiene los años de los cuales puede hacer la solicitud
-      self.anios = [self.hoy.getFullYear(), self.hoy.getFullYear() - 1];
+      var anio_inicial = contrato.FechaInicio.getFullYear();
+      var anio_final = contrato.FechaFin.getFullYear();
+      self.anios = [];
+      var dates = [];
+      self.anios_meses = [];
+      for (var anio = anio_inicial; anio <= anio_final; anio++) {
+        self.anios.push(anio);
+        var endMonth = anio != anio_final ? 11 : contrato.FechaFin.getMonth();
+        var startMon = anio === anio_inicial ? contrato.FechaInicio.getMonth() : 0;
+        for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
+          var month = j;
+          dates.push(self.meses_aux[month]);
+        }
+        self.anios_meses[anio] = dates;
+        dates = [];
+      }
+      console.log('anios_meses', self.anios_meses);
     };
 
     /*
       Función que visualiza los meses de acuerdo al año seleccionado
     */
     self.getMeses = function (anio) {
-      if (anio < self.hoy.getFullYear()) {
-        self.meses = self.meses_aux;
-      } else if (anio == self.hoy.getFullYear()) {
-        self.meses = self.meses_aux.slice(0, self.hoy.getMonth() + 1);
-      }
+      self.meses = self.anios_meses[anio]
     };
 
     /*
@@ -166,7 +189,7 @@ angular.module('contractualClienteApp')
       {
         field: 'Acciones',
         displayName: $translate.instant('ACC'),
-        cellTemplate: '<a type="button" title="CARGAR SOPORTES" type="button" class="fa fa-upload fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.solicitar_pago();grid.appScope.cargaDocumentosContratista.cargar_soportes(row.entity)"  data-toggle="modal" data-target="#modal_carga_listas_docente">',
+        cellTemplate: '<a type="button" title="CARGAR SOPORTES" type="button" class="fa fa-upload fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.cargarTablaSoportes(row.entity)">',
         width: "10%"
       }
       ]
@@ -176,6 +199,24 @@ angular.module('contractualClienteApp')
     self.gridOptions1.onRegisterApi = function (gridApi) {
       self.gridApi = gridApi;
     };
+
+    /*
+      Función para consultar los contratos asociados al contratista
+    */
+    self.cargarTablaSoportes = function (fila) {
+      self.TablaContratos = false;
+      self.TablaSoportes = true;
+      self.cargar_soportes(fila);
+      console.log("tabla contratos", self.TablaContratos)
+    }
+
+    /*
+      Función para consultar los contratos asociados al contratista
+    */
+    self.cargarTablaContratos = function () {
+      self.TablaContratos = true;
+      self.TablaSoportes = false;
+    }
 
     /*
       Función para consultar los contratos asociados al contratista
@@ -229,48 +270,62 @@ angular.module('contractualClienteApp')
     */
     self.gridOptions2 = {
       enableSorting: true,
-      //enableFiltering: true,
-      resizable: true,
+      enableFiltering: false,
+      resizable: false,
       columnDefs: [{
         field: 'NumeroContrato',
         cellTemplate: tmpl,
         displayName: $translate.instant('NUMERO_CONTRATO'),
-        //width:'*',
+        width: '*',
       },
       {
         field: 'VigenciaContrato',
         cellTemplate: tmpl,
         displayName: $translate.instant('VIGENCIA'),
-        //width:'*',
+        width: '7%',
+      },
+      {
+        field: 'NumeroCDP',
+        cellTemplate: tmpl,
+        displayName: 'CDP',
+        width: '8%',
+      },
+      {
+        field: 'VigenciaCDP',
+        cellTemplate: tmpl,
+        displayName: 'VIGENCIA CDP',
+        width: '12%',
       },
       {
         field: 'Mes',
         cellTemplate: tmpl,
         displayName: $translate.instant('MES'),
-        sort: {
-          direction: uiGridConstants.ASC,
-          priority: 1
-        },
-        //width:'*',
+        width: '6%',
       },
       {
         field: 'Ano',
         cellTemplate: tmpl,
         displayName: $translate.instant('ANO'),
-        //width:'*',
+        width: '7%',
+      },
+      {
+        field: 'FechaCreacion',
+        cellTemplate: tmpl,
+        displayName: 'FECHA CREACION',
+        width: '*',
       },
       {
         field: 'EstadoPagoMensualId.Nombre',
         cellTemplate: tmpl,
         displayName: $translate.instant('EST_SOL'),
-        //width:'*',
+        width: '*',
       },
       {
         field: 'Acciones',
         displayName: $translate.instant('ACC'),
         cellTemplate: '<a type="button" title="{{\'VER_SOP\'| translate }}" type="button" class="fa fa-folder-open-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.obtener_doc(row.entity)" data-toggle="modal" data-target="#modal_ver_soportes">' +
           '</a>&nbsp;' + '<a ng-if="row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'CD\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RS\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RP\' || row.entity.EstadoPagoMensualId.CodigoAbreviacion === \'RO\'" type="button" title="ENVIAR A REVISION SUPERVISOR" type="button" class="fa fa-send-o fa-lg  faa-shake animated-hover" ng-click="grid.appScope.cargaDocumentosContratista.enviar_revision(row.entity)"  >',
-        //width:'*'
+        width: '8%'
       }
       ]
     };
@@ -324,6 +379,7 @@ angular.module('contractualClienteApp')
           query: "CodigoAbreviacion:CD",
           limit: 0
         })).then(function (response) {
+          console.log("estado_pago_mensual", response)
           //Variable que contiene el Id del estado pago mensual
           var id_estado = response.data.Data[0].Id;
           //Se arma elemento JSON para la solicitud
@@ -332,15 +388,15 @@ angular.module('contractualClienteApp')
             Pago: {
               CargoResponsable: "CONTRATISTA",
               EstadoPagoMensualId: { Id: id_estado },
-              FechaModificacion: new Date(),
-              FechaCreacion: new Date(),
               Mes: self.mes,
               Ano: self.anio,
               Activo: true,
               NumeroContrato: self.contrato.NumeroContratoSuscrito,
               DocumentoPersonaId: self.Documento,
               DocumentoResponsableId: self.Documento,
-              VigenciaContrato: parseInt(self.contrato.Vigencia)
+              VigenciaContrato: parseInt(self.contrato.Vigencia),
+              NumeroCDP: self.contrato.NumeroCdp,
+              VigenciaCDP: parseInt(self.contrato.VigenciaCdp)
             },
             CargoEjecutor: "CONTRATISTA",
             DocumentoEjecutor: self.Documento
@@ -353,45 +409,31 @@ angular.module('contractualClienteApp')
               ",VigenciaContrato:" + self.contrato.Vigencia +
               ",Mes:" + self.mes +
               ",Ano:" + self.anio +
-              ",DocumentoPersonaId:" + self.Documento,
+              ",DocumentoPersonaId:" + self.Documento +
+              ",NumeroCDP:" + self.contrato.NumeroCdp +
+              ",VigenciaCDP:" + self.contrato.VigenciaCdp,
             limit: 0
           })).then(function (responsePago) {
+            //no existe pago para ese mes y se crea 
+            cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
+              .then(function (responsePagoPost) {
 
-            if (Object.keys(responsePago.data.Data[0]).length === 0) {
-              //no existe pago para ese mes y se crea 
-              cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
-                .then(function (responsePagoPost) {
+                //console.log(responsePagoPost.data);
+                swal(
+                  $translate.instant('SOLICITUD_REGISTRADA'),
+                  $translate.instant('CARGUE_CORRESPONDIENTE'),
+                  'success'
+                )
 
-                  //console.log(responsePagoPost.data);
-                  swal(
-                    $translate.instant('SOLICITUD_REGISTRADA'),
-                    $translate.instant('CARGUE_CORRESPONDIENTE'),
-                    'success'
-                  )
+                self.cargar_soportes(self.contrato);
 
-                  self.cargar_soportes(self.contrato);
+                //self.gridApi2.core.refresh();
+                //   self.contrato = {};
+                self.mes = undefined;
+                self.anio = undefined;
+                self.mostrar_boton = true;
 
-                  //self.gridApi2.core.refresh();
-                  //   self.contrato = {};
-                  self.mes = undefined;
-                  self.anio = undefined;
-                  self.mostrar_boton = true;
-
-                });
-
-            } else {
-              //SweetAlert si la solicitud ya esta creada
-              swal(
-                'Error',
-                $translate.instant('YA_EXISTE'),
-                'error'
-              );
-
-              self.mostrar_boton = true;
-            }
-
-
-
+              });
           })
             //Si responde con un error 
             .catch(function (responsePago) {
@@ -417,13 +459,22 @@ angular.module('contractualClienteApp')
       Función para cargar los soportes
     */
     self.cargar_soportes = function (contrato) {
-
+      self.anio = undefined;
+      self.mes = undefined;
       self.seleccionado = false;
       self.gridOptions2.data = [];
       self.contrato = contrato;
+      self.anios_solicitud_pago(contrato);
+      console.log("contrato", self.contrato);
       //self.obtener_informacion_coordinador(self.contrato.IdDependencia);
       cumplidosCrudRequest.get('pago_mensual', $.param({
-        query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito + ",VigenciaContrato:" + self.contrato.Vigencia + ",DocumentoPersonaId:" + self.Documento,
+        query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito
+          + ",VigenciaContrato:" + self.contrato.Vigencia
+          + ",DocumentoPersonaId:" + self.Documento
+          + ",NumeroCDP:" + self.contrato.NumeroCdp
+          + ",VigenciaCDP:" + self.contrato.VigenciaCdp,
+        sortby: "Ano,Mes",
+        order: "desc,desc",
         limit: 0
       })).then(function (response) {
         contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia)
@@ -433,7 +484,7 @@ angular.module('contractualClienteApp')
 
 
             cumplidosCrudRequest.get("item_informe_tipo_contrato", $.param({
-              query: "TipoContratoId:" + self.tipo_contrato + ",Activo:true",
+              query: "TipoContratoId:" + '6' + ",Activo:true",
               limit: 0
             })).then(function (response_iitc) {
 
@@ -441,13 +492,32 @@ angular.module('contractualClienteApp')
             });
 
           });
-
-        self.gridOptions2.data = response.data.Data;
+        var solicitudes_pago_mensual = response.data.Data
+        console.log(solicitudes_pago_mensual);
+        if(Object.entries(solicitudes_pago_mensual[0]).length===0){
+          solicitudes_pago_mensual=[];
+        }
+        var pagos_mensuales = solicitudes_pago_mensual.map(pago_mensual => {
+          pago_mensual.FechaCreacion = new Date(pago_mensual.FechaCreacion).toLocaleDateString();
+          return pago_mensual
+        });
+        console.log('pagos men',pagos_mensuales)
+        console.log('longitud pagos',pagos_mensuales.length);
+        pagos_mensuales.length>0?self.gridOptions2.data =pagos_mensuales:self.gridOptions2.noData=true;
 
       })
 
         .catch(function (response) {
-
+          console.log('error',response)
+          swal({
+            title: 'Ocurrio un error al traer los registros de pago',
+            type: 'error',
+            showCancelButton: false,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Aceptar'
+          }).then(function () {
+            //$window.location.href = '/#/';
+          })
           contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia)
             .then(function (response_ce) {
 
@@ -465,7 +535,7 @@ angular.module('contractualClienteApp')
 
             });
 
-          self.gridOptions2.data = response.data.Data;
+          self.gridOptions2.noData = true;
         });
     };
 
@@ -556,7 +626,9 @@ angular.module('contractualClienteApp')
                   NumeroContrato: self.contrato.NumeroContratoSuscrito,
                   DocumentoPersonaId: self.Documento,
                   DocumentoResponsableId: self.contrato.NumDocumentoSupervisor,
-                  VigenciaContrato: parseInt(self.contrato.Vigencia)
+                  VigenciaContrato: parseInt(self.contrato.Vigencia),
+                  NumeroCDP: self.contrato.NumeroCdp,
+                  VigenciaCDP: parseInt(self.contrato.VigenciaCdp)
                 },
                 CargoEjecutor: "CONTRATISTA",
                 DocumentoEjecutor: self.Documento
@@ -726,22 +798,40 @@ angular.module('contractualClienteApp')
     */
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
-      var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-      documentoRequest.get('documento', $.param({
-        query: "Nombre:" + nombre_docs + ",Activo:true",
+      console.log("obtener doc", fila)
+      cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
+        query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
         limit: 0
-      })).then(function (response) {
-        //console.log("obtener documento")
-        //console.log(response)
-        self.documentos = response.data;
-        angular.forEach(self.documentos, function (value) {
-          self.descripcion_doc = value.Descripcion;
-          value.Metadatos = JSON.parse(value.Metadatos);
-        });
-      }).catch(function (response) {//Manejo de null en la tabla documento
-        //Se deja vacia la variable para que no quede pegada
-        self.documentos = undefined;
-      });
+      })).then(function (response_sop_pagos) {
+        var soportes = response_sop_pagos.data.Data;
+        if (Object.entries(soportes[0]).length != 0) {
+          console.log("doc", response_sop_pagos)
+
+          var ids_soportes = soportes.map(soporte => { return soporte.Documento }).join('|');
+          console.log('ids_soportes', ids_soportes);
+          documentoRequest.get('documento', $.param({
+            query: "Id.in:" + ids_soportes + ",Activo:true",
+            limit: 0
+          })).then(function (response) {
+            //console.log("obtener documento")
+            console.log('documentos', response)
+            self.documentos = response.data;
+            angular.forEach(self.documentos, function (value) {
+              self.descripcion_doc = value.Descripcion;
+              value.Metadatos = JSON.parse(value.Metadatos);
+            });
+          }).catch(function (response) {//Manejo de null en la tabla documento
+            //Se deja vacia la variable para que no quede pegada
+            self.documentos = undefined;
+          });
+        } else {
+          self.documentos = undefined;
+        }
+      }).catch(function (error) {
+
+      })
+      // var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
+
     };
 
     /*
@@ -837,10 +927,5 @@ angular.module('contractualClienteApp')
           }
 
         });
-
-
     };
-
-
-
   });

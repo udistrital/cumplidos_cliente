@@ -122,7 +122,7 @@ angular
               controller: 'AprobacionOrdenadorCtrl',
               controllerAs: 'aprobacionOrdenador'
             })
-            .when('/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/:contrato/:vigencia/:cdp/:vigencia_cdp/:anio/:mes', {
+            .when('/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/:pago_mensual_id', {
                 templateUrl: 'views/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.html',
                 controller: 'InformeGyCertificadoCCtrl',
                 controllerAs: 'InformeGyCertificadoC'
