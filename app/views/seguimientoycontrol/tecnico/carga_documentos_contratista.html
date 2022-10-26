@@ -6,7 +6,7 @@
 
     <div class="panel-body">
       <div class="row">
-        <div class="panel panel-default col-lg-12 col-lg-offset-1">
+        <div ng-if="cargaDocumentosContratista.TablaContratos" class="panel panel-default col-lg-12 col-lg-offset-1">
           <div class="panel-body">
             <form role="form">
               <div class="row">
@@ -31,106 +31,83 @@
 
             </form>
           </div>
+         
+        </div>
+        <div  ng-if="cargaDocumentosContratista.TablaSoportes" class="panel panel-default">
+          <div class="panel-heading">
+            <button type="button" class="btn btn-success btn-xs pull-right" ng-click="cargaDocumentosContratista.cargarTablaContratos()">Regresar</button>
+            <h3 class="panel-title">{{'TITULO_MOD' | translate}}</h3>
+          </div>
+  
+          <br>
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="col-md-12">
+                <p>{{'PARRAFO_SOLICITAR_PAGO' | translate }}</p>
+              </div>
+    
+              <div class="col-md-1" align="right">
+                <label>{{'ANO' | translate }}</label>
+              </div>
+              <div class="col-md-3">
+                <select ng-model="cargaDocumentosContratista.anio"
+                  ng-change="cargaDocumentosContratista.getMeses(cargaDocumentosContratista.anio)" class="form-control">
+                  <option value="">--{{'SEL_ANO' | translate}}--</option>
+                  <option ng-repeat="iAnio in cargaDocumentosContratista.anios" ng-value="iAnio">{{iAnio}} </option>
+                </select>
+              </div>
+    
+              <div class="col-md-1" align="right">
+                <label>{{'MES' | translate }}</label>
+              </div>
+              <div class="col-md-3">
+                <select ng-model="cargaDocumentosContratista.mes" class="form-control">
+                  <option value="">--{{'SEL_MES' | translate}}--</option>
+                  <option ng-repeat="iMes in cargaDocumentosContratista.meses" ng-value="iMes.Id">{{iMes.Nombre}} </option>
+                </select>
+              </div>
+    
+              <button class="col-md-2 btn btn-success" ng-click="cargaDocumentosContratista.enviar_solicitud()"
+                ng-show="cargaDocumentosContratista.mostrar_boton">
+                {{'ENVIAR' | translate }}
+              </button>
+    
+    
+    
+              <div class="col-md-12">
+                <br>
+                <p>{{'PARRAFO_CARGAR_LISTAS' | translate }}</p>
+              </div>
+    
+            </div>
+            <div class="col-md-12" style="margin-top: 15px;">
+              <div class="mi-grid" 
+              ui-grid="cargaDocumentosContratista.gridOptions2" style="height: {{gridHeight}}px;" align="center" ui-grid-auto-resize></div>
+            </div>
+  
+            <br>
+            <br>
+  
+            <!--Div que se visualiza al seleccionar una vinculación y muestra los tipos de adjuntos que el usuario puede hacer-->
+            <div class="col-md-12"
+              ng-if="cargaDocumentosContratista.seleccionado && (cargaDocumentosContratista.fila_seleccionada.EstadoPagoMensual.CodigoAbreviacion === 'CD' || cargaDocumentosContratista.fila_seleccionada.EstadoPagoMensual.CodigoAbreviacion === 'RS' || cargaDocumentosContratista.fila_seleccionada.EstadoPagoMensual.CodigoAbreviacion === 'RP')">
+              <p>{{'DESC_ADJ' | translate}}</p>
+              <!--Campo que pinta la opción archivo-->
+              <fieldset class="form-group">
+                <label> {{'ARC' | translate}}</label>
+                <input type="checkbox" ng-model="cargaDocumentosContratista.archivo"
+                  ng-change="cargaDocumentosContratista.cambiarCheckArchivo()">
+              </fieldset>
+  
+            </div>
+  
+          </div>
         </div>
       </div>
     </div>
 
   </div>
 </div><!-- Fin Panel -->
-
-
-<!--Modal Para Cargar Soportes De Acuerdo A Las Solicitudes Creadas-->
-<div id="modal_carga_listas_docente" class="modal fade" role="dialog">
-  <div class="modal-content col-md-10 col-md-offset-1" style="margin-top: 5%">
-
-    <div class="modal-header">
-      <button type="button" class="btn btn-outline btn-danger btn-xs pull-right" data-dismiss="modal">&times</button>
-      <br>
-    </div>
-
-    <div class="modal-body">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">{{'TITULO_MOD' | translate}}</h3>
-        </div>
-
-        <br>
-
-        <div class="col-md-12">
-          <div class="col-md-12">
-            <p>{{'PARRAFO_SOLICITAR_PAGO' | translate }}</p>
-          </div>
-
-          <div class="col-md-1" align="right">
-            <label>{{'ANO' | translate }}</label>
-          </div>
-          <div class="col-md-3">
-            <select ng-model="cargaDocumentosContratista.anio"
-              ng-change="cargaDocumentosContratista.getMeses(cargaDocumentosContratista.anio)" class="form-control">
-              <option value="">--{{'SEL_ANO' | translate}}--</option>
-              <option ng-repeat="iAnio in cargaDocumentosContratista.anios" ng-value="iAnio">{{iAnio}} </option>
-            </select>
-          </div>
-
-          <div class="col-md-1" align="right">
-            <label>{{'MES' | translate }}</label>
-          </div>
-          <div class="col-md-3">
-            <select ng-model="cargaDocumentosContratista.mes" class="form-control">
-              <option value="">--{{'SEL_MES' | translate}}--</option>
-              <option ng-repeat="iMes in cargaDocumentosContratista.meses" ng-value="iMes.Id">{{iMes.Nombre}} </option>
-            </select>
-          </div>
-
-          <button class="col-md-2 btn btn-success" ng-click="cargaDocumentosContratista.enviar_solicitud()"
-            ng-show="cargaDocumentosContratista.mostrar_boton">
-            {{'ENVIAR' | translate }}
-          </button>
-
-
-
-          <div class="col-md-12">
-            <br>
-            <p>{{'PARRAFO_CARGAR_LISTAS' | translate }}</p>
-          </div>
-
-        </div>
-
-        <br><br><br><br><br>
-
-
-        <div class="panel-body">
-
-          <div class="mi-grid" style="height: {{gridHeight}}px;width:{{gridWidth}}px"
-            ui-grid="cargaDocumentosContratista.gridOptions2" align="center" ui-grid-auto-resize></div>
-
-          <br>
-          <br>
-
-          <!--Div que se visualiza al seleccionar una vinculación y muestra los tipos de adjuntos que el usuario puede hacer-->
-          <div class="col-md-12"
-            ng-if="cargaDocumentosContratista.seleccionado && (cargaDocumentosContratista.fila_seleccionada.EstadoPagoMensual.CodigoAbreviacion === 'CD' || cargaDocumentosContratista.fila_seleccionada.EstadoPagoMensual.CodigoAbreviacion === 'RS' || cargaDocumentosContratista.fila_seleccionada.EstadoPagoMensual.CodigoAbreviacion === 'RP')">
-            <p>{{'DESC_ADJ' | translate}}</p>
-            <!--Campo que pinta la opción archivo-->
-            <fieldset class="form-group">
-              <label> {{'ARC' | translate}}</label>
-              <input type="checkbox" ng-model="cargaDocumentosContratista.archivo"
-                ng-change="cargaDocumentosContratista.cambiarCheckArchivo()">
-            </fieldset>
-
-          </div>
-
-        </div>
-      </div>
-
-
-
-    </div>
-  </div>
-</div>
-
-
-
 
 
 <!--Modal de Visualizar los Soportes-->
@@ -196,7 +173,7 @@
 
           <div ng-show="cargaDocumentosContratista.generar_documento">
             <br><br><br><br>
-            <a class="btn btn-success" href="/#/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/{{cargaDocumentosContratista.fila_sol_pago.NumeroContrato}}/{{cargaDocumentosContratista.fila_sol_pago.VigenciaContrato}}/{{cargaDocumentosContratista.contrato.NumeroCdp}}/{{cargaDocumentosContratista.contrato.VigenciaCdp}}/{{cargaDocumentosContratista.fila_sol_pago.Ano}}/{{cargaDocumentosContratista.fila_sol_pago.Mes}}">GENERAR DOCUMENTO</a>
+            <a class="btn btn-success" href="/#/seguimientoycontrol/tecnico/InformeG_y_CertificadoC/{{cargaDocumentosContratista.fila_sol_pago.Id}}">GENERAR DOCUMENTO</a>
           </div>
         </div>
        

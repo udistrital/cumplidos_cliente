@@ -9,25 +9,71 @@
  */
 angular.module('contractualClienteApp')
   .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest, titanMidRequest, financieraJBPMRequest, amazonAdministrativaRequest, adminJbpmV2Request) {
-    //console.log($routeParams);
-    //Pasos a seguir
-    //1. traer la informacion del mid del informe 
-    //2. Verificar en el crud si hay un informe bajo este contrato/mes/año
-    //(true) Cargar la informacion de esa version
-    //(false) Mostrar un formulario limpio
-    //3. Generar PDF
-    //4. Si se acepta el pdf, subirlo a cumplidos
 
     var self = this;
 
-    self.contrato = $routeParams.contrato;
-    self.anio = $routeParams.anio;
-    self.mes = $routeParams.mes;
-    self.mes_nombre = utils.nombreMes(self.mes).Nombre;
-    self.vigencia = $routeParams.vigencia
-    self.cdp = $routeParams.cdp
-    self.vigencia_cdp = $routeParams.vigencia_cdp
-    //console.log(self.contrato)
+    self.pago_mensual_id = $routeParams.pago_mensual_id;
+    self.ObtenerInformacionPagoMensual = function () {
+      if (self.pago_mensual_id == null || self.pago_mensual_id == undefined) {
+        swal({
+          title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
+          type: 'error',
+          showCancelButton: false,
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Aceptar',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        }).then(function () {
+          $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+        })
+      } else {
+        cumplidosCrudRequest.get('pago_mensual', $.param({
+          query: "Id:" + self.pago_mensual_id,
+          limit: 1
+        })).then(function (response_pago_mensual) {
+          if (Object.keys(response_pago_mensual.data.Data[0]).length !== 0) {
+            var pago_mensual = response_pago_mensual.data.Data[0];
+            //console.log("pago mensual", pago_mensual)
+            self.contrato = pago_mensual.NumeroContrato;
+            self.anio = pago_mensual.Ano;
+            self.mes = pago_mensual.Mes;
+            self.mes_nombre = utils.nombreMes(self.mes).Nombre;
+            self.vigencia = pago_mensual.VigenciaContrato;
+            self.cdp = pago_mensual.NumeroCDP;
+            self.vigencia_cdp = pago_mensual.VigenciaCDP;
+            self.obtenerInforme();
+            self.obtenerInformacionInforme();
+          } else {
+            swal({
+              title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar',
+              allowEscapeKey: false,
+              allowOutsideClick: false
+            }).then(function () {
+              $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+            })
+          }
+        }).catch(function (error) {
+          swal({
+            title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
+            type: 'error',
+            showCancelButton: false,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Aceptar',
+            allowEscapeKey: false,
+            allowOutsideClick: false
+          }).then(function () {
+            $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+          })
+        })
+      }
+
+    }
+
+    self.ObtenerInformacionPagoMensual();
 
     self.documento_contratista = token_service.getAppPayload().documento;
 
@@ -58,15 +104,14 @@ angular.module('contractualClienteApp')
       "Control Disciplinario"
     ]
 
-    self.actividades_especificas_Usadas = []
+    self.actividades_especificas_Usadas = [];
 
-    //console.log(self.actividades_especificas_disponibles);
+    self.actividades_especificas_usadas = [];
 
-    self.actividades_especificas_usadas = []
-
-    self.informacion_informe = null
+    self.informacion_informe = null;
 
     self.darFormato = function (Preliquidacion) {
+      //console.log('en dar formato',Preliquidacion)
       Preliquidacion.TotalDevengadoConFormato = utils.formatoNumero(Preliquidacion.TotalDevengado, 0, ',', '.')
       Preliquidacion.TotalDescuentosConFormato = utils.formatoNumero(Preliquidacion.TotalDescuentos, 0, ',', '.')
       Preliquidacion.TotalPagoConFormato = utils.formatoNumero(Preliquidacion.TotalPago, 0, ',', '.')
@@ -104,6 +149,7 @@ angular.module('contractualClienteApp')
         self.informacion_informe.Novedades.UltimaCesion.FechaCesion = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Cesion[0].FechaInicio))
       }
       //console.log("validacion")
+      self.calcularEjecutadoDinero();
     }
 
     self.calcularPorcentajeTiempo = function () {
@@ -148,14 +194,14 @@ angular.module('contractualClienteApp')
           financieraJBPMRequest.get('giros_tercero/' + self.cdp + '/' + self.vigencia_cdp + '/' + unidadEjecutora, '').then(function (response) {
             //console.log("giro_terceros:",response)
             if (response.data.giros.tercero != undefined) {
-              var pagosAnuales = response.data.giros.tercero;     
+              var pagosAnuales = response.data.giros.tercero;
               for (let index = 0; index < pagosAnuales.length; index++) {
                 const pagado = parseInt(pagosAnuales[index].valor_bruto_girado);
                 totalEjecutado = totalEjecutado + pagado;
               }
 
               //total=total+self.Preliquidacion.TotalDevengado;
-              
+
               //console.log(self.informacion_informe.Novedades)
               if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {//Valor total del contrato más valor de la novedad
                 amazonAdministrativaRequest.get('contrato_disponibilidad', $.param({
@@ -238,7 +284,7 @@ angular.module('contractualClienteApp')
                 }).catch(function (error) {
                   //console.log("error contrato_disponibilidad",error)
                 })
-                
+
               } else {
                 self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) }
               }
@@ -253,9 +299,20 @@ angular.module('contractualClienteApp')
           })).then(function (response_acta_inico) {
             self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaInicio))
             self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaFin))
-
+            self.obtenerPreliquidacion();
           }).catch(function (error) {
             //console.log("error acta_inicio",error)
+            swal({
+              title: 'Ocurrió un error al traer la información del contrato, intente nuevamente más tarde',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar',
+              allowEscapeKey: false,
+              allowOutsideClick: false
+            }).then(function () {
+              $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+            })
           })
         } else {
           swal({
@@ -274,10 +331,12 @@ angular.module('contractualClienteApp')
       }).catch(function (error) {
         //console.log("contrato_general",error)
       })
+
+
     }
 
     self.obtenerInforme = function () {
-      cumplidosMidRequest.get('informe/' + self.contrato + '/' + self.vigencia + '/' + self.mes + '/' + self.anio).then(function (response) {
+      cumplidosMidRequest.get('informe/' + self.pago_mensual_id).then(function (response) {
         //console.log(response)
         if (response.status == 200) {
           if (response.data.Data == null) {
@@ -285,11 +344,6 @@ angular.module('contractualClienteApp')
             self.nuevoInforme = true;
             //Crea la estructura base para un nuevo Informe
             self.Informe = {};
-            self.Informe.Contrato = self.contrato;
-            self.Informe.Vigencia = Number(self.vigencia);
-            self.Informe.Mes = Number(self.mes);
-            self.Informe.Anio = Number(self.anio);
-            self.Informe.DocumentoContratista = self.documento_contratista;
             //consulto la informacion del ultimo informe creado
             cumplidosMidRequest.get('informe/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(function (response) {
               //console.log(response)
@@ -314,6 +368,7 @@ angular.module('contractualClienteApp')
                     var inf_aux = response.data.Data[0];
                     self.Informe.Proceso = inf_aux.Proceso;
                     self.Informe.ActividadesEspecificas = inf_aux.ActividadesEspecificas;
+                    self.Informe.PagoMensualId.Id = self.pago_mensual_id;
                     //console.log(self.Informe)
                   } else {
                     swal(
@@ -427,9 +482,8 @@ angular.module('contractualClienteApp')
             self.informacion_informe.CDP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.CDP.Fecha))
             self.informacion_informe.RP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.RP.Fecha))
 
-            self.obtenerPreliquidacion();
             self.validarNovedades();
-            self.calcularEjecutadoDinero();
+
 
           } else {
 
@@ -464,16 +518,26 @@ angular.module('contractualClienteApp')
       );
     }
 
-    self.obtenerPreliquidacion = function () {
-      titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
-        function (response) {
-          //console.log(response)
-          if (response.data.Data.length != 0) {
-            self.Preliquidacion = response.data.Data[0];
-            self.darFormato(self.Preliquidacion);
-          }else{
+    self.seleccionar_preliquidacion = function (preliquidaciones) {
+
+      // se hace seleccion de la preliquidacion 
+      var lenPreli=preliquidaciones.length;
+      if (lenPreli != 0) {
+        if (lenPreli == 1) {
+          self.Preliquidacion = preliquidaciones[0];
+        } else {
+          //seleccionar por cdp
+          for (let index = 0; index <lenPreli; index++) {
+            const preliquidacion = preliquidaciones[index];
+            var cdp_pre = preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.Cdp;
+            if (cdp_pre == self.cdp) {
+              self.Preliquidacion = preliquidacion;
+              break;
+            }
+          }
+          if(!self.Preliquidacion){
             swal({
-              title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
+              title: 'No se encontro preliquidacion para el numero de cdp, comuníquese con soporte',
               type: 'error',
               showCancelButton: false,
               confirmButtonColor: '#d33',
@@ -485,9 +549,35 @@ angular.module('contractualClienteApp')
             })
           }
         }
+        self.Preliquidacion?self.darFormato(self.Preliquidacion):null;
+      } else {
+        swal({
+          title: 'No se encontro preliquidacion, intente nuevamente mas tarde',
+          type: 'warning',
+          showCancelButton: false,
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Aceptar',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        }).then(function () {
+          $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+        })
+      }
+      //console.log('la preliquidacion escogida es:',self.Preliquidacion);
+    };
+
+    self.obtenerPreliquidacion = function () {
+      console.log('entro');
+      titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
+        function (response) {
+          //console.log(response)
+          //self.Preliquidacion = response.data.Data
+          self.seleccionar_preliquidacion(response.data.Data);
+          //self.darFormato(self.Preliquidacion);
+        }
       ).catch(
         function (error) {
-          //console.log('Error preliquidacion', error)
+          console.log('Error preliquidacion', error)
           swal({
             title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
             type: 'error',
@@ -503,9 +593,7 @@ angular.module('contractualClienteApp')
       );
     }
 
-    self.obtenerInforme();
-    self.obtenerInformacionInforme();
-
+    self.obtenerPreliquidacion();
 
 
     self.agregarActividadEspecifica = function () {
@@ -598,7 +686,16 @@ angular.module('contractualClienteApp')
                   'error'
                 )
               }
-            })
+            }).catch(
+              function (error) {
+                //console.log(error)
+                swal(
+                  'ERROR AL GUARDAR INFORME',
+                  'Ocurrio un problema al guardar el informe',
+                  'error'
+                )
+              }
+            )
           } else {
             //endpoint para actualizar
             //console.log("Informe a actualizar:",self.Informe)
@@ -620,7 +717,7 @@ angular.module('contractualClienteApp')
               }
             })
           }
-        }).catch(function(error){
+        }).catch(function (error) {
 
         });
       }
@@ -974,104 +1071,80 @@ angular.module('contractualClienteApp')
       }).then(function () {
         //console.log(self.pdf_dataUrl)
         var nombre_doc = self.vigencia + self.contrato + self.documento_contratista + self.mes + self.anio;
-        var pago_mensual_id;
         var error = false;
+        if (self.pdf_base64 !== undefined && !error && self.pago_mensual_id !== undefined) {
+          var nombre_Archivo = 'Informe Gestion y Certificado de Cumplimiento_' + self.contrato + '_' + self.mes + '_' + self.anio;
 
-        cumplidosCrudRequest.get('pago_mensual', $.param({
-          query: "NumeroContrato:" + self.contrato +
-            ",VigenciaContrato:" + self.vigencia +
-            ",Mes:" + self.mes +
-            ",Ano:" + self.anio +
-            ",DocumentoPersonaId:" + self.documento_contratista,
-          limit: 0
-        })).then(function (response_pago_mensual) {
-          if (Object.keys(response_pago_mensual.data.Data[0]).length !== 0) {
-            pago_mensual_id = response_pago_mensual.data.Data[0].Id
-            //Condicional del item y del file model
-            if (self.pdf_base64 !== undefined && !error && pago_mensual_id !== undefined) {
-              var nombre_Archivo = 'Informe Gestion y Certificado de Cumplimiento_' + self.contrato + '_' + self.mes + '_' + self.anio;
+          var data = [{
+            IdTipoDocumento: 19, //id tipo documento de documentos_crud
+            nombre: nombre_doc,// nombre formado por vigencia+contrato+cedula+mes+año
+            file: self.pdf_base64,
+            metadatos: {
+              NombreArchivo: nombre_Archivo,
+              Tipo: "Archivo",
+              Observaciones: ''
+            },
+            descripcion: 'INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO',
 
-              var data = [{
-                IdTipoDocumento: 19, //id tipo documento de documentos_crud
-                nombre: nombre_doc,// nombre formado por vigencia+contrato+cedula+mes+año
-                file: self.pdf_base64,
-                metadatos: {
-                  NombreArchivo: nombre_Archivo,
-                  Tipo: "Archivo",
-                  Observaciones: ''
-                },
-                descripcion: 'INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO',
+          }];
+          //guarda el soporte por medio del gestor documental
+          gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
+            //console.log(response.data);
 
-              }];
-              //guarda el soporte por medio del gestor documental
-              gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
-                //console.log(response.data);
+            if (response.data.Status == 200) {
 
-                if (response.data.Status == 200) {
+              self.id_documento = response.data.res.Id;
 
-                  self.id_documento = response.data.res.Id;
-
-                  cumplidosCrudRequest.get('item_informe_tipo_contrato', $.param({
-                    query: "Activo:true,TipoContratoId:6,ItemInformeId.CodigoAbreviacion:IGYCC",
-                    limit: 0
-                  })).then(function (response_item_informe_tipo_contrato) {
-                    var ItemInformeTipoContratoId = response_item_informe_tipo_contrato.data.Data[0].Id;
-                    self.objeto_soporte = {
-                      "PagoMensualId": {
-                        "Id": pago_mensual_id
-                      },
-                      "Documento": self.id_documento,
-                      "ItemInformeTipoContratoId": {
-                        "Id": ItemInformeTipoContratoId
-                      },
-                      "Aprobado": false
-                    };
-                    cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
-                      .then(function (response) {
-                        //Bandera de validacion
-                        swal({
-                          title: 'Documento guardado',
-                          text: 'Se ha guardado el documento con exito',
-                          type: 'success',
-                          target: document.getElementById('modal_visualizar_documento')
-                        });
-                        $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-                      });
-                  })
-                }
-              }).catch(function (error) {
-                swal({
-                  title: 'Error',
-                  text: 'Ocurrio un error al guardar el documento',
-                  type: 'error',
-                  target: document.getElementById('modal_visualizar_documento')
-                });
-              });
-
-            } else {
-
-              swal({
-                title: 'Error',
-                text: 'Ocurrio un error al guardar el documento',
-                type: 'error',
-                target: document.getElementById('modal_visualizar_documento')
-              });
-
+              cumplidosCrudRequest.get('item_informe_tipo_contrato', $.param({
+                query: "Activo:true,TipoContratoId:6,ItemInformeId.CodigoAbreviacion:IGYCC",
+                limit: 0
+              })).then(function (response_item_informe_tipo_contrato) {
+                var ItemInformeTipoContratoId = response_item_informe_tipo_contrato.data.Data[0].Id;
+                self.objeto_soporte = {
+                  "PagoMensualId": {
+                    "Id": self.pago_mensual_id
+                  },
+                  "Documento": self.id_documento,
+                  "ItemInformeTipoContratoId": {
+                    "Id": ItemInformeTipoContratoId
+                  },
+                  "Aprobado": false
+                };
+                cumplidosCrudRequest.post('soporte_pago_mensual', self.objeto_soporte)
+                  .then(function (response) {
+                    //Bandera de validacion
+                    swal({
+                      title: 'Documento guardado',
+                      text: 'Se ha guardado el documento con exito',
+                      type: 'success',
+                      target: document.getElementById('modal_visualizar_documento')
+                    });
+                    $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+                  });
+              })
             }
-          } else {
-            error = true;
+          }).catch(function (error) {
             swal({
               title: 'Error',
               text: 'Ocurrio un error al guardar el documento',
               type: 'error',
               target: document.getElementById('modal_visualizar_documento')
             });
-          }
-        })
+          });
+
+        } else {
+
+          swal({
+            title: 'Error',
+            text: 'Ocurrio un error al guardar el documento',
+            type: 'error',
+            target: document.getElementById('modal_visualizar_documento')
+          });
+
+        }
 
       });
     }
-
 
   });
 
