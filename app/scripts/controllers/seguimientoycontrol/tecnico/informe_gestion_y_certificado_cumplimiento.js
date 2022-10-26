@@ -13,7 +13,6 @@ angular.module('contractualClienteApp')
     var self = this;
 
     self.pago_mensual_id = $routeParams.pago_mensual_id;
-
     self.ObtenerInformacionPagoMensual = function () {
       if (self.pago_mensual_id == null || self.pago_mensual_id == undefined) {
         swal({
@@ -34,7 +33,7 @@ angular.module('contractualClienteApp')
         })).then(function (response_pago_mensual) {
           if (Object.keys(response_pago_mensual.data.Data[0]).length !== 0) {
             var pago_mensual = response_pago_mensual.data.Data[0];
-            console.log("pago mensual", pago_mensual)
+            //console.log("pago mensual", pago_mensual)
             self.contrato = pago_mensual.NumeroContrato;
             self.anio = pago_mensual.Ano;
             self.mes = pago_mensual.Mes;
@@ -43,7 +42,7 @@ angular.module('contractualClienteApp')
             self.cdp = pago_mensual.NumeroCDP;
             self.vigencia_cdp = pago_mensual.VigenciaCDP;
             self.obtenerInforme();
-            self.obtenerInformacionInforme();        
+            self.obtenerInformacionInforme();
           } else {
             swal({
               title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
@@ -105,15 +104,14 @@ angular.module('contractualClienteApp')
       "Control Disciplinario"
     ]
 
-    self.actividades_especificas_Usadas = []
+    self.actividades_especificas_Usadas = [];
 
-    //console.log(self.actividades_especificas_disponibles);
+    self.actividades_especificas_usadas = [];
 
-    self.actividades_especificas_usadas = []
-
-    self.informacion_informe = null
+    self.informacion_informe = null;
 
     self.darFormato = function (Preliquidacion) {
+      //console.log('en dar formato',Preliquidacion)
       Preliquidacion.TotalDevengadoConFormato = utils.formatoNumero(Preliquidacion.TotalDevengado, 0, ',', '.')
       Preliquidacion.TotalDescuentosConFormato = utils.formatoNumero(Preliquidacion.TotalDescuentos, 0, ',', '.')
       Preliquidacion.TotalPagoConFormato = utils.formatoNumero(Preliquidacion.TotalPago, 0, ',', '.')
@@ -338,7 +336,7 @@ angular.module('contractualClienteApp')
     }
 
     self.obtenerInforme = function () {
-      cumplidosMidRequest.get('informe/'+self.pago_mensual_id).then(function (response) {
+      cumplidosMidRequest.get('informe/' + self.pago_mensual_id).then(function (response) {
         //console.log(response)
         if (response.status == 200) {
           if (response.data.Data == null) {
@@ -370,7 +368,7 @@ angular.module('contractualClienteApp')
                     var inf_aux = response.data.Data[0];
                     self.Informe.Proceso = inf_aux.Proceso;
                     self.Informe.ActividadesEspecificas = inf_aux.ActividadesEspecificas;
-                    self.Informe.PagoMensualId.Id=self.pago_mensual_id;
+                    self.Informe.PagoMensualId.Id = self.pago_mensual_id;
                     //console.log(self.Informe)
                   } else {
                     swal(
@@ -520,7 +518,56 @@ angular.module('contractualClienteApp')
       );
     }
 
+    self.seleccionar_preliquidacion = function (preliquidaciones) {
+
+      // se hace seleccion de la preliquidacion 
+      var lenPreli=preliquidaciones.length;
+      if (lenPreli != 0) {
+        if (lenPreli == 1) {
+          self.Preliquidacion = preliquidaciones[0];
+        } else {
+          //seleccionar por cdp
+          for (let index = 0; index <lenPreli; index++) {
+            const preliquidacion = preliquidaciones[index];
+            var cdp_pre = preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.Cdp;
+            if (cdp_pre == self.cdp) {
+              self.Preliquidacion = preliquidacion;
+              break;
+            }
+          }
+          if(!self.Preliquidacion){
+            swal({
+              title: 'No se encontro preliquidacion para el numero de cdp, comuníquese con soporte',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar',
+              allowEscapeKey: false,
+              allowOutsideClick: false
+            }).then(function () {
+              $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+            })
+          }
+        }
+        self.Preliquidacion?self.darFormato(self.Preliquidacion):null;
+      } else {
+        swal({
+          title: 'No se encontro preliquidacion, intente nuevamente mas tarde',
+          type: 'warning',
+          showCancelButton: false,
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Aceptar',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        }).then(function () {
+          $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+        })
+      }
+      //console.log('la preliquidacion escogida es:',self.Preliquidacion);
+    };
+
     self.obtenerPreliquidacion = function () {
+      console.log('entro');
       titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
         function (response) {
           //console.log(response)
@@ -546,7 +593,7 @@ angular.module('contractualClienteApp')
       );
     }
 
-  
+    self.obtenerPreliquidacion();
 
 
     self.agregarActividadEspecifica = function () {
@@ -640,13 +687,13 @@ angular.module('contractualClienteApp')
                 )
               }
             }).catch(
-              function (error){
-                console.log(error)
+              function (error) {
+                //console.log(error)
                 swal(
                   'ERROR AL GUARDAR INFORME',
                   'Ocurrio un problema al guardar el informe',
                   'error'
-                  )
+                )
               }
             )
           } else {
@@ -1098,76 +1145,6 @@ angular.module('contractualClienteApp')
 
       });
     }
-
-    self.seleccionar_preliquidacion = function (preliquidaciones) {
-
-      // se hace seleccion de la preliquidacion 
-      console.log("info informe seleccionar preliquidacion: ", self.informacion_informe);
-      console.log("preliquidaciones:", preliquidaciones)
-      var fechaInicio = null;
-      console.log("fecha inicio: ", self.informacion_informe.FechaInicio)
-      console.log("validacion: ", self.informacion_informe.FechaInicio < self.informacion_informe.CDP.Fecha)
-      if (self.informacion_informe.FechaInicio < self.informacion_informe.CDP.Fecha) {
-        fechaInicio = self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio;
-      } else {
-        fechaInicio = self.informacion_informe.FechaInicio;
-      }
-      console.log("fecha Inicio:", fechaInicio)
-      var preliquidaciones_cdp = [];
-      if (preliquidaciones.length == 0) {
-        if (preliquidaciones.length == 1) {
-          self.Preliquidacion = preliquidaciones[0];
-        } else {
-          //seleccionar por cdp(fecha)
-          for (let index = 0; index < preliquidaciones.length; index++) {
-            const preliquidacion = preliquidaciones[index];
-            console.log("validacion fecha:", fechaInicio.getTime() == (new Date(utils.ajustarFecha(preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio))).getTime())
-            console.log("fecha pre:", new Date(utils.ajustarFecha(preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio)))
-            if (fechaInicio.getTime() == (new Date(utils.ajustarFecha(preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.FechaInicio))).getTime()) {
-              preliquidaciones_cdp.push(preliquidacion);
-            }
-          }
-          console.log("preliquidaciones por cdp", preliquidaciones_cdp)
-          if (preliquidaciones_cdp.length == 0) {
-            self.Preliquidacion = preliquidaciones[0];
-          } else {
-            cumplidosCrudRequest.get('pago_mensual', $.param({
-              query: "NumeroContrato:" + self.contrato +
-                ",VigenciaContrato:" + self.vigencia +
-                ",Mes:" + self.mes +
-                ",Ano:" + self.anio +
-                ",DocumentoPersonaId:" + self.documento_contratista +
-                ",NumeroCDP:" + self.cdp +
-                ",VigenciaCDP:" + self.vigencia_cdp,
-              limit: 0
-            })).then(function (response_pago_mensual) {
-              var pagos = []
-              pagos = response_pago_mensual.data.Data;
-              if (preliquidaciones_cdp.length <= pagos.length) {
-                self.Preliquidacion = preliquidaciones_cdp[preliquidaciones_cdp.length - 1];
-              } else {
-                self.Preliquidacion = preliquidaciones_cdp[pagos.length - 1];
-              }
-            }).catch(function (error) {
-
-            })
-          }
-        }
-        self.darFormato(self.Preliquidacion);
-      } else {
-        swal({
-          title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
-          type: 'error',
-          showCancelButton: false,
-          confirmButtonColor: '#d33',
-          confirmButtonText: 'Aceptar',
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then(function () {
-          $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-        })
-      }
-    };
 
   });
 

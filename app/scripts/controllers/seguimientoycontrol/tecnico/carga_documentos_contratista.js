@@ -484,7 +484,7 @@ angular.module('contractualClienteApp')
 
 
             cumplidosCrudRequest.get("item_informe_tipo_contrato", $.param({
-              query: "TipoContratoId:" + self.tipo_contrato + ",Activo:true",
+              query: "TipoContratoId:" + '6' + ",Activo:true",
               limit: 0
             })).then(function (response_iitc) {
 
@@ -493,16 +493,31 @@ angular.module('contractualClienteApp')
 
           });
         var solicitudes_pago_mensual = response.data.Data
+        console.log(solicitudes_pago_mensual);
+        if(Object.entries(solicitudes_pago_mensual[0]).length===0){
+          solicitudes_pago_mensual=[];
+        }
         var pagos_mensuales = solicitudes_pago_mensual.map(pago_mensual => {
           pago_mensual.FechaCreacion = new Date(pago_mensual.FechaCreacion).toLocaleDateString();
           return pago_mensual
         });
-        self.gridOptions2.data = pagos_mensuales;
+        console.log('pagos men',pagos_mensuales)
+        console.log('longitud pagos',pagos_mensuales.length);
+        pagos_mensuales.length>0?self.gridOptions2.data =pagos_mensuales:self.gridOptions2.noData=true;
 
       })
 
         .catch(function (response) {
-
+          console.log('error',response)
+          swal({
+            title: 'Ocurrio un error al traer los registros de pago',
+            type: 'error',
+            showCancelButton: false,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Aceptar'
+          }).then(function () {
+            //$window.location.href = '/#/';
+          })
           contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia)
             .then(function (response_ce) {
 
@@ -520,7 +535,7 @@ angular.module('contractualClienteApp')
 
             });
 
-          self.gridOptions2.data = response.data.Data;
+          self.gridOptions2.noData = true;
         });
     };
 
