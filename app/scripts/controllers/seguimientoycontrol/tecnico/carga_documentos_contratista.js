@@ -544,48 +544,35 @@ angular.module('contractualClienteApp')
     */
     self.enviar_revision = function (solicitud) {
       self.obtener_doc(solicitud);
-      cumplidosCrudRequest.get('fechas_carga_cumplidos', $.param({
-        limit: 0,
-        query: 'Dependencia:' + self.dependencia_supervisor.codigo + ',Mes.in:' + solicitud.Mes + '|0,Anio.in:' + solicitud.Ano + '|0',
-        sortby: 'FechaModificacion',
-        order: 'desc',
-      })).then(function (response) {
+      cumplidosMidRequest.get('validacion_periodo_carga_cumplido/' + self.dependencia_supervisor.codigo + '/' + solicitud.Ano + '/' + solicitud.Mes).then(function (response) {
         //console.log('Fechas Parametrizadas', response)
-        self.fecha_carga = response.data.Data[0];
-        if (Object.entries(self.fecha_carga).length != 0) {
-          if (self.fecha_carga.FechaInicio != "0001-01-01T00:00:00Z") {
-            // periodo definido
-            var ff = new Date(self.fecha_carga.FechaFin.split('T')[0]);
-            ff.setHours(47, 59, 59);
-            self.fecha_carga.FechaFin = ff
-            var fi = new Date(self.fecha_carga.FechaInicio.split('T')[0]);
-            fi.setHours(24);
-            self.fecha_carga.FechaInicio = fi;
-            var fecha_Actual = new Date();
-            //console.log('fecha inicial', fi);
-            //console.log("fecha_actual", fecha_Actual);
-            //console.log('fecha final', ff);
-            if (fi <= fecha_Actual && fecha_Actual <= ff) {
-              //console.log("dentro del periodo");
-              self.enviar_cumplido(solicitud);
-            } else {
-              //console.log("fuera del periodo");
-              swal({
-                title: 'Fuera de tiempo',
-                text: 'Las fechas de carga del cumplidos son del ' + self.fecha_carga.FechaInicio.toLocaleString() + ' al ' + self.fecha_carga.FechaFin.toLocaleString(),
-                type: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Aceptar'
-              })
-            }
-          } else {
-            //sin limites
+        self.Validacion = response.data.Data;
+
+        if (response.data.Status == "200") {
+          if (self.Validacion.CargaHabilitada) {
+            //console.log("Carga Habilitada: true");
             self.enviar_cumplido(solicitud);
+          } else {
+            //console.log("Carga Habilitada: false");
+            swal({
+              title: 'Fuera de tiempo',
+              text: 'Las fechas de carga del cumplidos son del ' + self.Validacion.Periodo.Inicio + ' al ' + self.Validacion.Periodo.Fin,
+              type: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar'
+            })
           }
         } else {
-          //no se definio para este mes y año
-          self.enviar_cumplido(solicitud);
+          swal({
+            title: 'Ocurrio un error al traer los registros',
+            type: 'error',
+            showCancelButton: false,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Aceptar'
+          }).then(function () {
+            //$window.location.href = '/#/';
+          })
         }
       }, function (error) {
         swal({
