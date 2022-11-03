@@ -536,17 +536,27 @@ angular.module('contractualClienteApp')
             }
           }
           if(!self.Preliquidacion){
-            swal({
-              title: 'No se encontro preliquidacion para el numero de cdp, comuníquese con soporte',
-              type: 'error',
-              showCancelButton: false,
-              confirmButtonColor: '#d33',
-              confirmButtonText: 'Aceptar',
-              allowEscapeKey: false,
-              allowOutsideClick: false
-            }).then(function () {
-              $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-            })
+            for (let index = 0; index <lenPreli; index++) {
+              const preliquidacion = preliquidaciones[index];
+              var cdp_pre = preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.Cdp;
+              if (cdp_pre == 0) {
+                self.Preliquidacion = preliquidacion;
+                break;
+              }
+            }
+            if(!self.Preliquidacion){
+              swal({
+                title: 'No se encontro preliquidacion para el numero de cdp, comuníquese con soporte',
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                allowEscapeKey: false,
+                allowOutsideClick: false
+              }).then(function () {
+                $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+              })
+            }
           }
         }
         self.Preliquidacion?self.darFormato(self.Preliquidacion):null;
@@ -567,7 +577,7 @@ angular.module('contractualClienteApp')
     };
 
     self.obtenerPreliquidacion = function () {
-      console.log('entro');
+      //console.log('entro');
       titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
         function (response) {
           //console.log(response)
@@ -577,7 +587,7 @@ angular.module('contractualClienteApp')
         }
       ).catch(
         function (error) {
-          console.log('Error preliquidacion', error)
+          //console.log('Error preliquidacion', error)
           swal({
             title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
             type: 'error',
@@ -592,9 +602,6 @@ angular.module('contractualClienteApp')
         }
       );
     }
-
-    self.obtenerPreliquidacion();
-
 
     self.agregarActividadEspecifica = function () {
       //console.log("entro a agregarMeta")

@@ -99,10 +99,10 @@ angular.module('contractualClienteApp')
     */
     self.anios_solicitud_pago = function (contrato) {
       if(!(contrato.FechaInicio instanceof Date) && !(contrato.FechaFin instanceof Date)){
-        contrato.FechaInicio = new Date(contrato.FechaInicio.split('T')[0]);
-        contrato.FechaFin = new Date(contrato.FechaFin.split('T')[0]);
+        contrato.FechaInicio = new Date(utils.ajustarFecha(contrato.FechaInicio));
+        contrato.FechaFin = new Date(utils.ajustarFecha(contrato.FechaFin));
       }
-      console.log("contrato a sacar fechas:", contrato)
+      //console.log("contrato a sacar fechas:", contrato)
       //Arreglo que contiene los años de los cuales puede hacer la solicitud
       var anio_inicial = contrato.FechaInicio.getFullYear();
       var anio_final = contrato.FechaFin.getFullYear();
@@ -120,7 +120,7 @@ angular.module('contractualClienteApp')
         self.anios_meses[anio] = dates;
         dates = [];
       }
-      console.log('anios_meses', self.anios_meses);
+      //console.log('anios_meses', self.anios_meses);
     };
 
     /*
@@ -207,7 +207,7 @@ angular.module('contractualClienteApp')
       self.TablaContratos = false;
       self.TablaSoportes = true;
       self.cargar_soportes(fila);
-      console.log("tabla contratos", self.TablaContratos)
+      //console.log("tabla contratos", self.TablaContratos)
     }
 
     /*
@@ -379,7 +379,7 @@ angular.module('contractualClienteApp')
           query: "CodigoAbreviacion:CD",
           limit: 0
         })).then(function (response) {
-          console.log("estado_pago_mensual", response)
+          //console.log("estado_pago_mensual", response)
           //Variable que contiene el Id del estado pago mensual
           var id_estado = response.data.Data[0].Id;
           //Se arma elemento JSON para la solicitud
@@ -402,8 +402,6 @@ angular.module('contractualClienteApp')
             DocumentoEjecutor: self.Documento
           }
 
-
-          ////console.log("Hizo el primero");
           cumplidosCrudRequest.get('pago_mensual', $.param({
             query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito +
               ",VigenciaContrato:" + self.contrato.Vigencia +
@@ -465,7 +463,7 @@ angular.module('contractualClienteApp')
       self.gridOptions2.data = [];
       self.contrato = contrato;
       self.anios_solicitud_pago(contrato);
-      console.log("contrato", self.contrato);
+      //console.log("contrato", self.contrato);
       //self.obtener_informacion_coordinador(self.contrato.IdDependencia);
       cumplidosCrudRequest.get('pago_mensual', $.param({
         query: "NumeroContrato:" + self.contrato.NumeroContratoSuscrito
@@ -493,7 +491,7 @@ angular.module('contractualClienteApp')
 
           });
         var solicitudes_pago_mensual = response.data.Data
-        console.log(solicitudes_pago_mensual);
+        //console.log(solicitudes_pago_mensual);
         if(Object.entries(solicitudes_pago_mensual[0]).length===0){
           solicitudes_pago_mensual=[];
         }
@@ -501,14 +499,14 @@ angular.module('contractualClienteApp')
           pago_mensual.FechaCreacion = new Date(pago_mensual.FechaCreacion).toLocaleDateString();
           return pago_mensual
         });
-        console.log('pagos men',pagos_mensuales)
-        console.log('longitud pagos',pagos_mensuales.length);
+        //console.log('pagos men',pagos_mensuales)
+        //console.log('longitud pagos',pagos_mensuales.length);
         pagos_mensuales.length>0?self.gridOptions2.data =pagos_mensuales:self.gridOptions2.noData=true;
 
       })
 
         .catch(function (response) {
-          console.log('error',response)
+          //console.log('error',response)
           swal({
             title: 'Ocurrio un error al traer los registros de pago',
             type: 'error',
@@ -798,23 +796,23 @@ angular.module('contractualClienteApp')
     */
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
-      console.log("obtener doc", fila)
+      //console.log("obtener doc", fila)
       cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
         query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
         limit: 0
       })).then(function (response_sop_pagos) {
         var soportes = response_sop_pagos.data.Data;
         if (Object.entries(soportes[0]).length != 0) {
-          console.log("doc", response_sop_pagos)
+          //console.log("doc", response_sop_pagos)
 
           var ids_soportes = soportes.map(soporte => { return soporte.Documento }).join('|');
-          console.log('ids_soportes', ids_soportes);
+          //console.log('ids_soportes', ids_soportes);
           documentoRequest.get('documento', $.param({
             query: "Id.in:" + ids_soportes + ",Activo:true",
             limit: 0
           })).then(function (response) {
             //console.log("obtener documento")
-            console.log('documentos', response)
+            //console.log('documentos', response)
             self.documentos = response.data;
             angular.forEach(self.documentos, function (value) {
               self.descripcion_doc = value.Descripcion;
