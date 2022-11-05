@@ -41,6 +41,7 @@ angular.module('contractualClienteApp')
             self.vigencia = pago_mensual.VigenciaContrato;
             self.cdp = pago_mensual.NumeroCDP;
             self.vigencia_cdp = pago_mensual.VigenciaCDP;
+            self.informe.PagoMensualId.Id=parseInt(self.pago_mensual_id);
             self.obtenerInforme();
             self.obtenerInformacionInforme();
           } else {
@@ -368,7 +369,7 @@ angular.module('contractualClienteApp')
                     var inf_aux = response.data.Data[0];
                     self.Informe.Proceso = inf_aux.Proceso;
                     self.Informe.ActividadesEspecificas = inf_aux.ActividadesEspecificas;
-                    self.Informe.PagoMensualId.Id = self.pago_mensual_id;
+                    self.Informe.PagoMensualId.Id = parseInt(self.pago_mensual_id);
                     //console.log(self.Informe)
                   } else {
                     swal(
@@ -1109,7 +1110,7 @@ angular.module('contractualClienteApp')
                 var ItemInformeTipoContratoId = response_item_informe_tipo_contrato.data.Data[0].Id;
                 self.objeto_soporte = {
                   "PagoMensualId": {
-                    "Id": self.pago_mensual_id
+                    "Id": parseInt(self.pago_mensual_id)
                   },
                   "Documento": self.id_documento,
                   "ItemInformeTipoContratoId": {
