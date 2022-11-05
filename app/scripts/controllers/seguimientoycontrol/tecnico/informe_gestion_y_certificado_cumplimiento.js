@@ -351,7 +351,9 @@ angular.module('contractualClienteApp')
                 //No encontro un informe anterior
                 if (response.data.Data == null) {
                   //Crea la estructura base para un nuevo Informe
-                  self.Informe.PagoMensualId.Id=parseInt(self.pago_mensual_id);
+                  self.Informe.PagoMensualId={
+                    "Id":parseInt(self.pago_mensual_id),
+                  }
                   self.Informe.ActividadesEspecificas = [{
                     "ActividadEspecifica": '',
                     "Avance": 0,
@@ -369,7 +371,9 @@ angular.module('contractualClienteApp')
                     var inf_aux = response.data.Data[0];
                     self.Informe.Proceso = inf_aux.Proceso;
                     self.Informe.ActividadesEspecificas = inf_aux.ActividadesEspecificas;
-                    self.Informe.PagoMensualId.Id = parseInt(self.pago_mensual_id);
+                    self.Informe.PagoMensualId={
+                      "Id":parseInt(self.pago_mensual_id),
+                    }
                     //console.log(self.Informe)
                   } else {
                     swal(
