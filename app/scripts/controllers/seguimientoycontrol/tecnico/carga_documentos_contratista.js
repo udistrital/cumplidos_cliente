@@ -374,7 +374,7 @@ angular.module('contractualClienteApp')
 
       if (self.mes !== undefined && self.anio !== undefined) {
         //Petición para obtener id de estado pago mensual
-        self.mostrar_boton = false;
+        //self.mostrar_boton = false;
         cumplidosCrudRequest.get('estado_pago_mensual', $.param({
           query: "CodigoAbreviacion:CD",
           limit: 0
@@ -412,10 +412,10 @@ angular.module('contractualClienteApp')
               ",VigenciaCDP:" + self.contrato.VigenciaCdp,
             limit: 0
           })).then(function (responsePago) {
-            //no existe pago para ese mes y se crea 
-            cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
+            if(Object.entries(responsePago.data.Data[0]).length==0){
+              //no existe pago para ese mes y se crea 
+              cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
               .then(function (responsePagoPost) {
-
                 //console.log(responsePagoPost.data);
                 swal(
                   $translate.instant('SOLICITUD_REGISTRADA'),
@@ -429,9 +429,19 @@ angular.module('contractualClienteApp')
                 //   self.contrato = {};
                 self.mes = undefined;
                 self.anio = undefined;
-                self.mostrar_boton = true;
+                //self.mostrar_boton = true;
 
               });
+            }else{
+              //self.mostrar_boton = true;
+              swal(
+                'Error',
+                'No se puede crear mas de una solicitud de pago del mismo mes y año',
+                'warning'
+              );
+            }
+            
+           
           })
             //Si responde con un error 
             .catch(function (responsePago) {
