@@ -89,3 +89,11 @@ margin-bottom: 10px;
   height: 50%;
   width: 70%;
 }
+
+#table_visualizar_aprobados .ui-grid-header-cell .ui-grid-cell{
+  text-align:center;
+}
+
+#table_visualizar_aprobados .ui-grid-cell {
+  text-align:center;
+}
