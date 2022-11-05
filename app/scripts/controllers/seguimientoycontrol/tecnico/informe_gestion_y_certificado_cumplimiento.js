@@ -41,7 +41,6 @@ angular.module('contractualClienteApp')
             self.vigencia = pago_mensual.VigenciaContrato;
             self.cdp = pago_mensual.NumeroCDP;
             self.vigencia_cdp = pago_mensual.VigenciaCDP;
-            self.informe.PagoMensualId.Id=parseInt(self.pago_mensual_id);
             self.obtenerInforme();
             self.obtenerInformacionInforme();
           } else {
@@ -352,6 +351,7 @@ angular.module('contractualClienteApp')
                 //No encontro un informe anterior
                 if (response.data.Data == null) {
                   //Crea la estructura base para un nuevo Informe
+                  self.informe.PagoMensualId.Id=parseInt(self.pago_mensual_id);
                   self.Informe.ActividadesEspecificas = [{
                     "ActividadEspecifica": '',
                     "Avance": 0,
