@@ -219,8 +219,8 @@ angular.module('contractualClienteApp')
 
     self.obtener_contratistas_supervisor();
 
-    self.enviar_notificacion=function (asunto,destinatario,mensaje,remitenteId) {
-      notificacionRequest.enviarCorreo(asunto,{},[destinatario],'','',mensaje,remitenteId).then(function (response) {
+    self.enviar_notificacion = function (asunto, destinatario, mensaje, remitenteId) {
+      notificacionRequest.enviarCorreo(asunto, {}, [destinatario], '', '', mensaje, remitenteId).then(function (response) {
         //console.log(response)
       }).catch(
         function (error) {
@@ -236,16 +236,16 @@ angular.module('contractualClienteApp')
 
           self.contrato = response.data.contrato;
 
-          self.enviar_notificacion('[APROBADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por supervisor',self.Documento);
-          notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion','ColaOrdenador','/seguimientoycontrol/tecnico/aprobacion_ordenador');
-          notificacionRequest.borrarNotificaciones('ColaSupervisor',[self.aux_pago_mensual.DocumentoPersonaId]);
+          self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por supervisor', self.Documento);
+          notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
+          notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
           //Obtiene la información correspondiente del ordenador
           cumplidosMidRequest.get('solicitudes_ordenador/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             .then(function (responseOrdenador) {
               self.ordenador = responseOrdenador.data.Data;
               self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
               self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
-              
+
 
               cumplidosCrudRequest.get('estado_pago_mensual', $.param({
                 limit: 0,
@@ -258,7 +258,7 @@ angular.module('contractualClienteApp')
                 var pago_mensual_auditoria = {
                   Pago: {
                     CargoResponsable: self.ordenador.Cargo,
-                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id},
+                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
                     FechaModificacion: new Date(),
                     Mes: self.aux_pago_mensual.Mes,
                     Ano: self.aux_pago_mensual.Ano,
@@ -280,7 +280,7 @@ angular.module('contractualClienteApp')
                     )
                     self.obtener_contratistas_supervisor();
                     self.gridApi.core.refresh();
-                 })
+                  })
                   .catch(function (response) { //Manejo de error
                     swal(
                       'Error',
@@ -297,8 +297,8 @@ angular.module('contractualClienteApp')
 
     self.rechazar = function (pago_mensual) {
       self.aux_pago_mensual = pago_mensual;
-      self.enviar_notificacion('[RECHAZADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por supervisor',self.Documento)
-      notificacionRequest.borrarNotificaciones('ColaSupervisor',[self.aux_pago_mensual.DocumentoPersonaId])
+      self.enviar_notificacion('[RECHAZADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido rechazados por supervisor', self.Documento)
+      notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId])
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.contrato = response.data.contrato;
@@ -311,14 +311,14 @@ angular.module('contractualClienteApp')
                 limit: 0,
                 query: 'CodigoAbreviacion:RS'
               })).then(function (responseCod) {
-                
+
                 var sig_estado = responseCod.data.Data;
                 self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
                 var pago_mensual_auditoria = {
                   Pago: {
                     CargoResponsable: "CONTRATISTA",
-                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id},
+                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
                     FechaModificacion: new Date(),
                     Mes: self.aux_pago_mensual.Mes,
                     Ano: self.aux_pago_mensual.Ano,
@@ -330,7 +330,7 @@ angular.module('contractualClienteApp')
                   CargoEjecutor: ("SUPERVISOR: " + self.contrato.supervisor.cargo).substring(0, 69),
                   DocumentoEjecutor: self.contrato.supervisor.documento_identificacion
                 }
-                
+
                 cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
                   .then(function (response) {
                     swal(
@@ -348,7 +348,7 @@ angular.module('contractualClienteApp')
                     );
                   })//Termina promesa then
 
-                  //Manejo de error
+                //Manejo de error
               })
 
 
@@ -362,25 +362,25 @@ angular.module('contractualClienteApp')
     /*
       Función para ver los soportes de los contratistas a cargo
     */
-      self.obtener_doc = function (fila) {
-        self.fila_sol_pago = fila;
-        console.log("obtener doc", fila)
-        cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
-          query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
-          limit: 0
-        })).then(function (response_sop_pagos) {
-          var soportes=response_sop_pagos.data.Data;
-         if(Object.entries(soportes[0]).length != 0){
+    self.obtener_doc = function (fila) {
+      self.fila_sol_pago = fila;
+      console.log("obtener doc", fila)
+      cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
+        query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
+        limit: 0
+      })).then(function (response_sop_pagos) {
+        var soportes = response_sop_pagos.data.Data;
+        if (Object.entries(soportes[0]).length != 0) {
           console.log("doc", response_sop_pagos)
-         
-          var ids_soportes=soportes.map(soporte=>{return soporte.Documento}).join('|');
-          console.log('ids_soportes',ids_soportes);
+
+          var ids_soportes = soportes.map(soporte => { return soporte.Documento }).join('|');
+          console.log('ids_soportes', ids_soportes);
           documentoRequest.get('documento', $.param({
             query: "Id.in:" + ids_soportes + ",Activo:true",
             limit: 0
           })).then(function (response) {
             //console.log("obtener documento")
-            console.log('documentos',response)
+            console.log('documentos', response)
             self.documentos = response.data;
             angular.forEach(self.documentos, function (value) {
               self.descripcion_doc = value.Descripcion;
@@ -390,23 +390,23 @@ angular.module('contractualClienteApp')
             //Se deja vacia la variable para que no quede pegada
             self.documentos = undefined;
           });
-         }else{
+        } else {
           self.documentos = undefined;
-         }
-        }).catch(function (error) {
-  
-        })
-        // var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-  
-      };
+        }
+      }).catch(function (error) {
+
+      })
+      // var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
+
+    };
 
     /*
       Función que permite obtener un documento de nuxeo por el Id
     */
     self.getDocumento = function (docid) {
-      gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
+      gestorDocumentalMidRequest.get('/document/' + docid).then(function (response) {
 
-        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
+        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], { type: 'application/pdf' });
         //console.log('file ',file);
         var fileURL = URL.createObjectURL(file);
         //console.log('fileURL ', fileURL);
@@ -447,7 +447,7 @@ angular.module('contractualClienteApp')
               type: 'error',
               target: document.getElementById('modal_ver_soportes')
             });
-            
+
 
           });
 
@@ -471,9 +471,9 @@ angular.module('contractualClienteApp')
     /*
       Función que genera el documento de quienes cumplieron con sus obligaciones
     */
-    self.generarPDF=  function () {
+    self.generarPDF = function () {
 
-      if(self.mes==undefined || self.anio==undefined){
+      if (self.mes == undefined || self.anio == undefined) {
         swal({
           title: 'Seleccione un mes y año',
           type: 'warning',
@@ -481,32 +481,32 @@ angular.module('contractualClienteApp')
           confirmButtonColor: '#d33',
           confirmButtonText: 'Aceptar'
         })
-      }else{
+      } else {
         self.mes.Id = parseInt(self.mes.Id);
 
         if (self.mes.Id / 10 < 1) {
-  
+
           self.mes.Id = '0' + self.mes.Id.toString();
-  
+
         }
         cumplidosMidRequest.get('solicitudes_ordenador_contratistas/certificaciones/' + self.dependencia.codigo + '/' + self.mes.Id + '/' + self.anio).
           then(function (responseMid) {
-  
+
             //console.log(responseMid.data[0]['Rubro']);
             self.docentes_incumplidos = responseMid.data.Data;
-  
-  
+
+
             // self.facultad = responseHom.data[0];
-  
+
             var date = new Date()
             var dia = moment(date).format('D');
             var mes = moment(date).format('M');
             var mes_ss = self.mes.Id - 1;
             var anio = moment(date).format('YYYY');
-  
+
             var mes_ss = 0;
             var anio_ss = 0;
-  
+
             if (self.mes.Id == '01') {
               mes_ss = 12;
               anio_ss = self.anio - 1;
@@ -515,15 +515,15 @@ angular.module('contractualClienteApp')
               mes_ss = self.mes.Id - 1;
               anio_ss = self.anio;
             }
-  
+
             var contenidoInv = [];
             var contenidoFun = [];
-  
+
             var tablaInv = {
               style: 'tableExample',
               table: {
                 body: [
-                  ['Documento', 'Nombre', 'Contrato', 'Vigencia', 'Rubro']
+                  ['Documento', 'Nombre', 'Contrato', 'Cdp', 'Vigencia', 'Rubro']
                 ]
               }
             }
@@ -531,13 +531,13 @@ angular.module('contractualClienteApp')
               style: 'tableExample',
               table: {
                 body: [
-                  ['Documento', 'Nombre', 'Contrato', 'Vigencia', 'Rubro']
+                  ['Documento', 'Nombre', 'Contrato', 'Cdp', 'Vigencia', 'Rubro']
                 ]
               }
             }
             var inversion = [];
             var funcionamiento = [];
-  
+
             angular.forEach(self.docentes_incumplidos, function (value) {
               if (value.Rubro == 'Inversión') {
                 inversion.push(value);
@@ -546,13 +546,13 @@ angular.module('contractualClienteApp')
                 funcionamiento.push(value);
               }
             });
-  
+
             if (inversion.length > 0) {
               contenidoInv.push({ text: 'EL JEFE DE LA DEPENDENCIA ' + self.dependencia.nombre + ' DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS', bold: true, alignment: 'center', style: 'top_space' }, '\n\n\n\n');
               contenidoInv.push({ text: 'CERTIFICA QUE: ', bold: true, alignment: 'center', style: 'top_space' }, '\n\n\n\n');
               contenidoInv.push({ text: 'Los contratos de prestación de servicios bajo esta supervisión listados a continuación cumplieron a satisfacción con el objeto establecido en el contrato en el Mes de ' + self.mes.Nombre + ' de ' + self.anio + ' y con el pago reglamentario de los aportes al sistema de seguridad social del Mes de ' + self.meses[mes_ss - 1].Nombre + ' de ' + anio_ss + '.', style: 'general_font' }, '\n\n')
               angular.forEach(inversion, function (valueInv) {
-                tablaInv.table.body.push([valueInv.NumDocumento, valueInv.Nombre, valueInv.NumeroContrato, valueInv.Vigencia, valueInv.Rubro]);
+                tablaInv.table.body.push([valueInv.NumDocumento, valueInv.Nombre, valueInv.NumeroContrato, valueInv.NumeroCdp, valueInv.Vigencia, valueInv.Rubro]);
               });
               contenidoInv.push(tablaInv);
               contenidoInv.push('\n', { text: 'Se expide para el trámite de pago ante la DIVISIÓN DE RECURSOS FINANCIEROS al mes de ' + self.meses[mes - 1].Nombre + ' de ' + anio + '.', style: 'general_font' }, '\n\n\n\n\n\n');
@@ -566,17 +566,17 @@ angular.module('contractualClienteApp')
               contenidoFun.push({ text: 'CERTIFICA QUE: ', bold: true, alignment: 'center', style: 'top_space' }, '\n\n\n\n');
               contenidoFun.push({ text: 'Los contratos de prestación de servicios bajo esta supervisión listados a continuación cumplieron a satisfacción con el objeto establecido en el contrato en el Mes de ' + self.mes.Nombre + ' de ' + self.anio + ' y con el pago reglamentario de los aportes al sistema de seguridad social del Mes de ' + self.meses[mes_ss - 1].Nombre + ' de ' + anio_ss + '.', style: 'general_font' }, '\n\n')
               angular.forEach(funcionamiento, function (valueFun) {
-                tablaFun.table.body.push([valueFun.NumDocumento, valueFun.Nombre, valueFun.NumeroContrato, valueFun.Vigencia, valueFun.Rubro]);
+                tablaFun.table.body.push([valueFun.NumDocumento, valueFun.Nombre, valueFun.NumeroContrato, valueFun.NumeroCdp, valueFun.Vigencia, valueFun.Rubro]);
               });
               contenidoFun.push(tablaFun);
               contenidoFun.push('\n', { text: 'Se expide para el trámite de pago ante la DIVISIÓN DE RECURSOS FINANCIEROS al mes de ' + self.meses[mes - 1].Nombre + ' de ' + anio + '.', style: 'general_font' }, '\n\n\n\n\n\n');
               contenidoFun.push({ text: '' + self.nombre_supervisor, style: 'bottom_space' });
               contenidoFun.push({ text: 'JEFE DE', style: 'bottom_space' });
               contenidoFun.push({ text: self.dependencia.nombre, style: 'bottom_space' });
-  
+
             }
-  
-  
+
+
             /*
                 //console.log(self.contenido);
                 contenido.push( {text:'EL JEFE DE LA DEPENDENCIA ' +  self.dependencia.nombre  + ' DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS', bold: true,  alignment: 'center', style:'top_space'}, '\n\n\n\n');
@@ -598,8 +598,8 @@ angular.module('contractualClienteApp')
                 contenido.push({text:'' + self.nombre_supervisor, style:'bottom_space'});
                 contenido.push({text:'JEFE DE', style:'bottom_space'});
                 contenido.push({text: self.dependencia.nombre , style:'bottom_space'});*/
-  
-  
+
+
             //Generación documento
             var docDefinitionInv = {
               footer: function (currentPage, pageCount) {
@@ -687,7 +687,7 @@ angular.module('contractualClienteApp')
                 }
               }
             }
-  
+
             //Variable para obtener la fecha y hora que se genera el dcoumento
             var date = new Date();
             date = moment(date).format('DD_MMM_YYYY_HH_mm_ss');
@@ -697,12 +697,12 @@ angular.module('contractualClienteApp')
             if (funcionamiento.length > 0) {
               pdfMake.createPdf(docDefinitionFun).download('Certificación cumplido Funcionamiento' + date + '.pdf');
             }
-  
+
             //  pdfMake.createPdf(docDefinition).download('Certificación cumplido coordinación ' + date + '.pdf');
           }).catch(function (responseMid) {//nulos
             self.docentes_incumplidos = undefined;
             // self.facultad = responseHom.data[0];
-  
+
             var date = new Date()
             var dia = moment(date).format('D');
             var mes = moment(date).format('M');
@@ -728,16 +728,16 @@ angular.module('contractualClienteApp')
               contenido.push(tabla);
             } else {
               contenido.push({ text: 'Ninguno de los contratos de prestación de servicios bajo esta supervisión cumplió con las actividades del objeto establecido en el contrato o con el pago reglamentario de los aportes al sistema de seguridad social del Mes de ' + self.mes.Nombre + ' de ' + self.anio + '.', style: 'general_font' }, '\n\n')
-  
-  
+
+
             }
             //contenido.push(  );
             contenido.push('\n', { text: 'Se expide para el trámite de pago ante la DIVISIÓN DE RECURSOS FINANCIEROS al mes de ' + self.meses[mes - 1].Nombre + ' de ' + anio + '.', style: 'general_font' }, '\n\n\n\n\n\n');
             contenido.push({ text: '' + self.nombre_supervisor, style: 'bottom_space' });
             contenido.push({ text: 'JEFE DE', style: 'bottom_space' });
             contenido.push({ text: self.dependencia.nombre, style: 'bottom_space' });
-  
-  
+
+
             //Generación documento
             var docDefinition = {
               pageMargins: [30, 140, 40, 40],
@@ -770,19 +770,19 @@ angular.module('contractualClienteApp')
                 }
               }
             }
-  
+
             //Variable para obtener la fecha y hora que se genera el dcoumento
             var date = new Date();
             date = moment(date).format('DD_MMM_YYYY_HH_mm_ss');
             pdfMake.createPdf(docDefinition).download('Certificación cumplido ' + date + '.pdf');
-  
-  
-  
+
+
+
             //  pdfMake.createPdf(docDefinition).download('Certificación cumplido coordinación ' + date + '.pdf');
           }
-  
-  
-  
+
+
+
           );
       }
     };
