@@ -364,23 +364,23 @@ angular.module('contractualClienteApp')
     */
     self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
-      console.log("obtener doc", fila)
+      //console.log("obtener doc", fila)
       cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
         query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
         limit: 0
       })).then(function (response_sop_pagos) {
         var soportes = response_sop_pagos.data.Data;
         if (Object.entries(soportes[0]).length != 0) {
-          console.log("doc", response_sop_pagos)
+          //console.log("doc", response_sop_pagos)
 
           var ids_soportes = soportes.map(soporte => { return soporte.Documento }).join('|');
-          console.log('ids_soportes', ids_soportes);
+          //console.log('ids_soportes', ids_soportes);
           documentoRequest.get('documento', $.param({
             query: "Id.in:" + ids_soportes + ",Activo:true",
             limit: 0
           })).then(function (response) {
-            //console.log("obtener documento")
-            console.log('documentos', response)
+            ////console.log("obtener documento")
+            //console.log('documentos', response)
             self.documentos = response.data;
             angular.forEach(self.documentos, function (value) {
               self.descripcion_doc = value.Descripcion;
