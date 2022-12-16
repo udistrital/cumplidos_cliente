@@ -217,12 +217,10 @@ angular.module('contractualClienteApp')
 
                       totalContrato+=self.informacion_informe.Novedades.Otrosi[index].ValorNovedad
                       totalEjecutado+=self.informacion_informe.Novedades.Otrosi[index].ValorNovedadPagado
-                      console.log('novedad'+self.informacion_informe.Novedades.Otrosi[index].NumeroCdp,self.informacion_informe.Novedades.Otrosi[index].ValorNovedad,self.informacion_informe.Novedades.Otrosi[index].ValorNovedadPagado)
                   }
                   
                   self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato - totalEjecutado , Total: totalContrato}
-                  console.log('total',totalContrato)
-                  console.log('total eje',totalEjecutado)
+                  
                   // if(cdpContrato!=self.cdp){
 
                   //   financieraJBPMRequest.get('giros_tercero/' + self.cdp + '/' + self.vigencia_cdp + '/' + unidadEjecutora, '').then(function (responseGirosContrato) {
@@ -272,7 +270,6 @@ angular.module('contractualClienteApp')
                 }
                 
               } else {
-                console.log('validacion')
                 if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {
                   totalContrato = self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad;
                   totalContrato += parseInt(self.informacion_informe.ValorContrato)
@@ -295,7 +292,6 @@ angular.module('contractualClienteApp')
           })).then(function (response_acta_inico) {
             self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaInicio))
             self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaFin))
-            console.log(self.informacion_informe)
             self.obtenerPreliquidacion();
           }).catch(function (error) {
             //console.log("error acta_inicio",error)
