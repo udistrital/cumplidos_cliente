@@ -8,7 +8,7 @@
  * Factory in the cumplidosCrudService.
  */
 angular.module('utilsService', [])
-    .factory('utils', function ($http, CONF,  $translate,$window) {
+    .factory('utils', function (  $translate,$window) {
         // Service logic
         // ...
         var meses = [{
