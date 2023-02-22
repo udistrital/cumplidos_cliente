@@ -198,6 +198,8 @@ angular.module('contractualClienteApp')
 
             var cdpContrato = response_contrato_disponibilidad.data[0].NumeroCdp;
             var vigenciaCdpContrato = response_contrato_disponibilidad.data[0].VigenciaCdp
+            
+            totalContrato = parseInt(self.informacion_informe.ValorContrato)
 
             financieraJBPMRequest.get('giros_tercero/' + cdpContrato + '/' + vigenciaCdpContrato + '/' + unidadEjecutora, '').then(function (response) {
               //console.log("giro_terceros:",response)
@@ -206,7 +208,6 @@ angular.module('contractualClienteApp')
                 for (let index = 0; index < pagosAnuales.length; index++) {
                   const pagado = parseInt(pagosAnuales[index].valor_bruto_girado);
                   totalEjecutado = totalEjecutado + pagado;
-                  totalContrato += parseInt(self.informacion_informe.ValorContrato)
                 }
   
                 //total=total+self.Preliquidacion.TotalDevengado;
@@ -275,7 +276,7 @@ angular.module('contractualClienteApp')
                   totalContrato += parseInt(self.informacion_informe.ValorContrato)
                   self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato, Total: totalContrato}
                 } else {
-                  self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) , Total: totalContrato}
+                  self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) , Total: parseInt(self.informacion_informe.ValorContrato)}
                 }
               }
             }).catch(function (error) {
@@ -284,7 +285,6 @@ angular.module('contractualClienteApp')
           }).catch(function(error){
 
           })
-          self.informacion_informe.ValorTotalContrato=totalContrato;
 
           amazonAdministrativaRequest.get('acta_inicio', $.param({
             query: "NumeroContrato:" + NumeroContrato,
