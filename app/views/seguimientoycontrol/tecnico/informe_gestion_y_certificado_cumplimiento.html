@@ -80,18 +80,16 @@
                 <div class="panel panel-default"
                   ng-repeat="actividadEspecifica in InformeGyCertificadoC.Informe.ActividadesEspecificas"
                   ng-init="index_actividadEspecifica=$index">
-                  <div class="row" ng-if="$index>0">
-                    <button type="button" class="btn pull-right btn-custom"
-                      ng-click="InformeGyCertificadoC.eliminarActividadEspecifica($index)">Eliminar Activida
-                      Especifica</button>
-                  </div>
-                  <div class="row">
+                  
+                  <div class="row" ng-if="actividadEspecifica.Activo">
 
                     <div class="panel panel-default col-lg-12 col-lg-offset-1">
-
+                      <button type="button" class="btn pull-right btn-custom"
+                      ng-click="InformeGyCertificadoC.eliminarActividadEspecifica($index)" ng-if="$index>0 && actividadEspecifica.Activo" title="Eliminar actividad especifica"><a class="fa fa-trash" style="color:white"></a></button>
                       <form class="form">
                         <div class="form-group row">
-                          <label>Actividad especifica:</label>
+                          <label>Actividad especifica: 
+                          </label>
                           <!--Select para cuando este activo las actividades especificas desde necesidades-->
                           <!-- <select class="form-control" ng-model="actividadEspecifica.ActividadEspecifica"
                           ng-options="actividadEspecifica for actividadEspecifica in InformeGyCertificadoC.actividades_especificas|excludeUsed:InformeGyCertificadoC.Informe.ActividadesEspecificas:index_actividadEspecifica">
@@ -114,7 +112,7 @@
 
                       <div class="panel panel-body">
                         <div ng-repeat="actividadRealizada in actividadEspecifica.ActividadesRealizadas">
-                          <div class="row">
+                          <div class="row" ng-if="actividadRealizada.Activo">
                             <form class="form-horizontal" role="form">
 
                               <div class="col-md-4">
@@ -133,7 +131,7 @@
                                 <label class="control-label" for="id_evidencias">Evidencias:</label>
                                 <button type="button" class="btn pull-right btn-sm btn-custom btn-delete-ae"
                                   ng-click="InformeGyCertificadoC.eliminarActividad(index_actividadEspecifica,$index)"
-                                  ng-if="$index>0">x</button>
+                                  ng-if="$index>0" title="Eliminar actividad realizada"> <a class="fa fa-trash" style="color:white"></a> </button>
                                 <textarea class="form-control" id="id_evidencias"
                                   value="{{actividadRealizada.Evidencia}}"
                                   ng-model="actividadRealizada.Evidencia"  maxlength="1000"></textarea>
