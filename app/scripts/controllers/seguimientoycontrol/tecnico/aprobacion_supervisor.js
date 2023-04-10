@@ -240,7 +240,7 @@ angular.module('contractualClienteApp')
           notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
           notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
           //Obtiene la información correspondiente del ordenador
-          cumplidosMidRequest.get('solicitudes_ordenador/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
+          cumplidosMidRequest.get('solicitudes_ordenador_contratistas/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             .then(function (responseOrdenador) {
               self.ordenador = responseOrdenador.data.Data;
               self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
@@ -302,7 +302,7 @@ angular.module('contractualClienteApp')
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.contrato = response.data.contrato;
-          cumplidosMidRequest.get('/solicitudes_ordenador/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
+          cumplidosMidRequest.get('/solicitudes_ordenador_contratistas/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
             .then(function (responseOrdenador) {
               self.ordenador = responseOrdenador.data.Data;
               self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
