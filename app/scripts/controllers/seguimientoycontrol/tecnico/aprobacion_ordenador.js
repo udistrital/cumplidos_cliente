@@ -8,12 +8,13 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, cookie, $sessionStorage, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, utils, $routeParams, documentoRequest, gestorDocumentalMidRequest, $q, $sce, $window, gridApiService,  adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest, notificacionRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service,funcGen, $scope, oikosRequest, $http, uiGridConstants, contratoRequest, $translate, utils, $routeParams, documentoRequest, gestorDocumentalMidRequest, $q, $sce, $window, gridApiService,  adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest, notificacionRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
     //Se utiliza la variable self estandarizada
     var self = this;
+    self.funcGen=funcGen;
     self.Documento = token_service.getAppPayload().documento;
     self.contratistas = [];
     self.dependencias_contratos = {};
@@ -415,10 +416,6 @@ angular.module('contractualClienteApp')
 
     };
 
-
-
-
-
     self.aprobar_multiples_pagos = function () {
       swal({
         title: '¿Está seguro(a) de aprobar varias solicitudes a la vez?',
@@ -506,61 +503,16 @@ angular.module('contractualClienteApp')
     }
 
 
-    /*
-      Función para ver los soportes de los contratistas a cargo
-    */
-      self.obtener_doc = function (fila) {
-        self.fila_sol_pago = fila;
-        //console.log("obtener doc", fila)
-        cumplidosCrudRequest.get('soporte_pago_mensual', $.param({
-          query: "PagoMensualId.Id:" + self.fila_sol_pago.Id,
-          limit: 0
-        })).then(function (response_sop_pagos) {
-          var soportes=response_sop_pagos.data.Data;
-         if(Object.entries(soportes[0]).length != 0){
-          //console.log("doc", response_sop_pagos)
-         
-          var ids_soportes=soportes.map(soporte=>{return soporte.Documento}).join('|');
-          //console.log('ids_soportes',ids_soportes);
-          documentoRequest.get('documento', $.param({
-            query: "Id.in:" + ids_soportes + ",Activo:true",
-            limit: 0
-          })).then(function (response) {
-            //console.log("obtener documento")
-            //console.log('documentos',response)
-            self.documentos = response.data;
-            angular.forEach(self.documentos, function (value) {
-              self.descripcion_doc = value.Descripcion;
-              value.Metadatos = JSON.parse(value.Metadatos);
-            });
-          }).catch(function (response) {//Manejo de null en la tabla documento
-            //Se deja vacia la variable para que no quede pegada
-            self.documentos = undefined;
-          });
-         }else{
-          self.documentos = undefined;
-         }
-        }).catch(function (error) {
-  
-        })
-        // var nombre_docs = self.contrato.Vigencia + self.contrato.NumeroContratoSuscrito + self.Documento + self.fila_sol_pago.Mes + self.fila_sol_pago.Ano;
-  
-      };
-
-    /*
-      Función que permite obtener un documento de nuxeo por el Id
-    */
-    self.getDocumento = function (docid) {
-      gestorDocumentalMidRequest.get('/document/'+docid).then(function (response) {
-
-        var file = new Blob([utils.base64ToArrayBuffer(response.data.file)], {type: 'application/pdf'});
-        //console.log('file ',file);
-        var fileURL = URL.createObjectURL(file);
-        //console.log('fileURL ', fileURL);
-        $window.open(fileURL, 'Soporte Cumplido', 'resizable=yes,status=no,location=no,toolbar=no,menubar=no,fullscreen=yes,scrollbars=yes,dependent=no,width=700,height=900');
+    self.obtener_doc= function (fila) {
+      self.fila_sol_pago = fila;
+      funcGen.obtener_doc(self.fila_sol_pago.Id).then(function (documentos) {
+        self.documentos=documentos;
+        console.log(self.documentos);
+      }).catch(function (error) {
+        console.log("error",error)
+        self.documentos=undefined;
       })
     };
-
 
     /*
       Función para enviar un comentario en el soporte    */

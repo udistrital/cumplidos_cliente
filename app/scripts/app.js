@@ -65,7 +65,8 @@ angular
         'themeService',
         'notificacionService',
         'utilsService',
-        'titanMidService'
+        'titanMidService',
+        'funcionalidadesGeneralesService'
     ])
     .run(function(amMoment) {
         amMoment.changeLocale('es');
@@ -130,6 +131,11 @@ angular
                 templateUrl: 'views/parametrizacionfechas/parametrizacion_fechas.html',
                 controller: 'ParametrizacionFechasCtrl',
                 controllerAs: 'ParametrizacionFechas'
+            })
+            .when('/seguimientoycontrol/tecnico/reversion_cumplidos_aprobados',{
+                templateUrl: 'views/seguimientoycontrol/tecnico/reversion_aprobados.html',
+                controller: 'ReversionAprobadosCtrl',
+                controllerAs: 'ReversionAprobados'
             })
             .otherwise({
                 redirectTo: '/'
