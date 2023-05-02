@@ -43,6 +43,7 @@ angular.module('contractualClienteApp')
             self.vigencia_cdp = pago_mensual.VigenciaCDP;
             self.obtenerInforme();
             self.obtenerInformacionInforme();
+            self.obtenerPreliquidacion();
           } else {
             swal({
               title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
@@ -110,16 +111,6 @@ angular.module('contractualClienteApp')
 
     self.informacion_informe = null;
 
-    self.darFormato = function (Preliquidacion) {
-      //console.log('en dar formato',Preliquidacion)
-      Preliquidacion.TotalDevengadoConFormato = utils.formatoNumero(Preliquidacion.TotalDevengado, 0, ',', '.')
-      Preliquidacion.TotalDescuentosConFormato = utils.formatoNumero(Preliquidacion.TotalDescuentos, 0, ',', '.')
-      Preliquidacion.TotalPagoConFormato = utils.formatoNumero(Preliquidacion.TotalPago, 0, ',', '.')
-      for (let index = 0; index < Preliquidacion.Detalle.length; index++) {
-        Preliquidacion.Detalle[index].ValorCalculadoConFormato = utils.formatoNumero(Preliquidacion.Detalle[index].ValorCalculado, 0, ',', '.');
-      }
-      //console.log(Preliquidacion)
-    }
 
     self.validarNovedades = function () {
       //console.log('novedades: ', self.informacion_informe.Novedades)
@@ -149,10 +140,10 @@ angular.module('contractualClienteApp')
         self.informacion_informe.Novedades.UltimaCesion.FechaCesion = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Cesion[0].FechaInicio))
       }
       //console.log("validacion")
-      self.calcularEjecutadoDinero();
     }
 
     self.calcularPorcentajeTiempo = function () {
+      console.log(self.informacion_informe);
       var diasContrato = null
       var diasContratoEjecutado = null
       if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') { // Se suman los días ejecutados del contrato más los días ejecutados del otrosí
@@ -169,163 +160,6 @@ angular.module('contractualClienteApp')
       var porcentajeEjecutado = ((diasContratoEjecutado * 100) / diasContrato);
       var porcentajeFaltante = 100 - porcentajeEjecutado;
       return { Ejecutado: porcentajeEjecutado.toFixed(2), Faltante: porcentajeFaltante.toFixed(2) }
-    }
-
-    self.calcularEjecutadoDinero = function () {
-      //console.log("calcularEjecutadoDinero")
-      adminJbpmV2Request.get('informacion_contrato_contratista/' + self.contrato + '/' + self.vigencia, '').then(function (response_contrato) {
-        self.documentoCedente = response_contrato.data.informacion_contratista.Documento.numero;
-      }).catch(function (error) {
-        //console.log("contrato_general",error)
-      })
-
-      amazonAdministrativaRequest.get('contrato_general', $.param({
-        query: "ContratoSuscrito.NumeroContratoSuscrito:" + self.contrato + ',VigenciaContrato:' + self.vigencia,
-        limit: 0
-      })).then(function (response_contrato_general) {
-        //console.log(response_contrato_general)
-        var unidadEjecutora = response_contrato_general.data[0].UnidadEjecutora;
-        var NumeroContrato = response_contrato_general.data[0].ContratoSuscrito[0].NumeroContrato.Id;
-        //console.log(unidadEjecutora)
-        if (response_contrato_general.status == 200) {
-          let totalEjecutado = 0;
-          var totalContrato = 0;
-          var errorGiroCPS = false;
-          amazonAdministrativaRequest.get('contrato_disponibilidad', $.param({
-            query: "NumeroContrato:" + NumeroContrato,
-            limit: 0
-          })).then(function (response_contrato_disponibilidad) {
-
-            var cdpContrato = response_contrato_disponibilidad.data[0].NumeroCdp;
-            var vigenciaCdpContrato = response_contrato_disponibilidad.data[0].VigenciaCdp
-            
-            totalContrato = parseInt(self.informacion_informe.ValorContrato)
-
-            financieraJBPMRequest.get('giros_tercero/' + cdpContrato + '/' + vigenciaCdpContrato + '/' + unidadEjecutora, '').then(function (response) {
-              //console.log("giro_terceros:",response)
-              if (response.data.giros.tercero != undefined) {
-                var pagosAnuales = response.data.giros.tercero;
-                for (let index = 0; index < pagosAnuales.length; index++) {
-                  const pagado = parseInt(pagosAnuales[index].valor_bruto_girado);
-                  totalEjecutado = totalEjecutado + pagado;
-                }
-  
-                //total=total+self.Preliquidacion.TotalDevengado;
-  
-                //console.log(self.informacion_informe.Novedades)
-                if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {//Valor total del contrato más valor de la novedad
-                  for (let index = 0; index < self.informacion_informe.Novedades.Otrosi.length; index++) {
-
-                      totalContrato+=self.informacion_informe.Novedades.Otrosi[index].ValorNovedad
-                      totalEjecutado+=self.informacion_informe.Novedades.Otrosi[index].ValorNovedadPagado
-                  }
-                  
-                  self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato - totalEjecutado , Total: totalContrato}
-                  
-                  // if(cdpContrato!=self.cdp){
-
-                  //   financieraJBPMRequest.get('giros_tercero/' + self.cdp + '/' + self.vigencia_cdp + '/' + unidadEjecutora, '').then(function (responseGirosContrato) {
-                  //     //console.log("giro_terceros:",response)
-                  //     if (responseGirosContrato.data.giros.tercero != undefined) {
-                  //       var pagosAnualesContrato = responseGirosContrato.data.giros.tercero;
-                  //       for (let index = 0; index < pagosAnualesContrato.length; index++) {
-                  //         const pagadoContrato = parseInt(pagosAnualesContrato[index].valor_bruto_girado);
-                  //         totalEjecutado = totalEjecutado + pagadoContrato;
-                  //       }
-                  //     } else {
-                  //       errorGiroCPS = true;
-                  //     }
-                  //     totalContrato = self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad;
-                  //     totalContrato += parseInt(self.informacion_informe.ValorContrato)
-  
-                  //     if (!errorGiroCPS) {
-                  //       self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato - totalEjecutado }
-                  //     } else {
-                  //       if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {
-                  //         self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante:self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad }
-                  //       } else {
-                  //         self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: 0 }
-                  //       }
-                  //     }
-  
-                  //   }).catch(function (error) {
-                  //     //console.log("error contrato_disponibilidad",error)
-                  //   })
-                  // }else{
-                  //   totalContrato = self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad;
-                  //   totalContrato += parseInt(self.informacion_informe.ValorContrato)
-
-                  //   if (!errorGiroCPS) {
-                  //     self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato - totalEjecutado }
-                  //   } else {
-                  //     if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {
-                  //       self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) + self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad }
-                  //     } else {
-                  //       self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) }
-                  //     }
-                  //   }
-                  // }
-                } else {
-                  totalContrato = parseInt(self.informacion_informe.ValorContrato);
-                  self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato - totalEjecutado , Total: totalContrato}
-                }
-                
-              } else {
-                if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') {
-                  totalContrato = self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad;
-                  totalContrato += parseInt(self.informacion_informe.ValorContrato)
-                  self.informacion_informe.ejecutadoDinero = { Pagado: totalEjecutado, Faltante: totalContrato, Total: totalContrato}
-                } else {
-                  self.informacion_informe.ejecutadoDinero = { Pagado: 0, Faltante: parseInt(self.informacion_informe.ValorContrato) , Total: parseInt(self.informacion_informe.ValorContrato)}
-                }
-              }
-            }).catch(function (error) {
-              //console.log("error giros",error)
-            })
-          }).catch(function(error){
-
-          })
-
-          amazonAdministrativaRequest.get('acta_inicio', $.param({
-            query: "NumeroContrato:" + NumeroContrato,
-            limit: 0
-          })).then(function (response_acta_inico) {
-            self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaInicio))
-            self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(response_acta_inico.data[0].FechaFin))
-            self.obtenerPreliquidacion();
-          }).catch(function (error) {
-            //console.log("error acta_inicio",error)
-            swal({
-              title: 'Ocurrió un error al traer la información del contrato, intente nuevamente más tarde',
-              type: 'error',
-              showCancelButton: false,
-              confirmButtonColor: '#d33',
-              confirmButtonText: 'Aceptar',
-              allowEscapeKey: false,
-              allowOutsideClick: false
-            }).then(function () {
-              $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-            })
-          })
-        } else {
-          swal({
-            title: 'Ocurrió un error al traer la información del contrato, intente nuevamente más tarde',
-            type: 'error',
-            showCancelButton: false,
-            confirmButtonColor: '#d33',
-            confirmButtonText: 'Aceptar',
-            allowEscapeKey: false,
-            allowOutsideClick: false
-          }).then(function () {
-            $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-          })
-        }
-
-      }).catch(function (error) {
-        //console.log("contrato_general",error)
-      })
-
-
     }
 
     self.obtenerInforme = function () {
@@ -350,12 +184,15 @@ angular.module('contractualClienteApp')
                   self.Informe.ActividadesEspecificas = [{
                     "ActividadEspecifica": '',
                     "Avance": 0,
+                    "Activo":true,
                     "ActividadesRealizadas": [{
                       "Actividad": '',
+                      "Activo":true,
                       "ProductoAsociado": '',
                       "Evidencia": '',
                     }]
                   }]
+                  console.log(self.Informe);
                 } else {
                   //Informe anterior encontrado
 
@@ -405,8 +242,10 @@ angular.module('contractualClienteApp')
                   self.Informe.ActividadesEspecificas = [{
                     "ActividadEspecifica": '',
                     "Avance": 0,
+                    "Activo":true,
                     "ActividadesRealizadas": [{
                       "Actividad": '',
+                      "Activo":true,
                       "ProductoAsociado": '',
                       "Evidencia": '',
                     }]
@@ -467,11 +306,10 @@ angular.module('contractualClienteApp')
           })
         }
       );
-
     }
 
     self.obtenerInformacionInforme = function () {
-      cumplidosMidRequest.get('informacion_informe/' + self.documento_contratista + '/' + self.contrato + '/' + self.vigencia + '/' + self.cdp + '/' + self.vigencia_cdp).then(function (response) {
+      cumplidosMidRequest.get('informacion_informe/' + self.pago_mensual_id).then(function (response) {
         //console.log(response)
         if (response.status == 200) {
           if (response.data.Data != null) {
@@ -479,6 +317,8 @@ angular.module('contractualClienteApp')
             self.informacion_informe.FechaCPS = new Date(utils.ajustarFecha(self.informacion_informe.FechaCPS))
             self.informacion_informe.CDP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.CDP.Fecha))
             self.informacion_informe.RP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.RP.Fecha))
+            self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.FechaInicio))
+            self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.FechaFin))
 
             self.validarNovedades();
 
@@ -516,72 +356,25 @@ angular.module('contractualClienteApp')
       );
     }
 
-    self.seleccionar_preliquidacion = function (preliquidaciones) {
-
-      // se hace seleccion de la preliquidacion 
-      var lenPreli=preliquidaciones.length;
-      if (lenPreli != 0) {
-        if (lenPreli == 1) {
-          self.Preliquidacion = preliquidaciones[0];
-        } else {
-          //seleccionar por cdp
-          for (let index = 0; index <lenPreli; index++) {
-            const preliquidacion = preliquidaciones[index];
-            var cdp_pre = preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.Cdp;
-            if (cdp_pre == self.cdp) {
-              self.Preliquidacion = preliquidacion;
-              break;
-            }
-          }
-          if(!self.Preliquidacion){
-            for (let index = 0; index <lenPreli; index++) {
-              const preliquidacion = preliquidaciones[index];
-              var cdp_pre = preliquidacion.Detalle[0].ContratoPreliquidacionId.ContratoId.Cdp;
-              if (cdp_pre == 0) {
-                self.Preliquidacion = preliquidacion;
-                break;
-              }
-            }
-            if(!self.Preliquidacion){
-              swal({
-                title: 'No se encontro preliquidacion para el numero de cdp, comuníquese con soporte',
-                type: 'error',
-                showCancelButton: false,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Aceptar',
-                allowEscapeKey: false,
-                allowOutsideClick: false
-              }).then(function () {
-                $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-              })
-            }
-          }
-        }
-        self.Preliquidacion?self.darFormato(self.Preliquidacion):null;
-      } else {
-        swal({
-          title: 'No se encontro preliquidacion, intente nuevamente mas tarde',
-          type: 'warning',
-          showCancelButton: false,
-          confirmButtonColor: '#d33',
-          confirmButtonText: 'Aceptar',
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then(function () {
-          $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
-        })
-      }
-      //console.log('la preliquidacion escogida es:',self.Preliquidacion);
-    };
-
     self.obtenerPreliquidacion = function () {
       //console.log('entro');
-      titanMidRequest.get('detalle_preliquidacion/obtener_detalle_CT/' + self.anio + '/' + self.mes + '/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(
+      cumplidosMidRequest.get('informacion_informe/preliquidacion/' + self.pago_mensual_id).then(
         function (response) {
-          //console.log(response)
-          //self.Preliquidacion = response.data.Data
-          self.seleccionar_preliquidacion(response.data.Data);
-          //self.darFormato(self.Preliquidacion);
+          if(response.data.Status=="200"){
+            self.Preliquidacion=response.data.Data
+          }else{
+            swal({
+              title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'Aceptar',
+              allowEscapeKey: false,
+              allowOutsideClick: false
+            }).then(function () {
+              $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+            })
+          }
         }
       ).catch(
         function (error) {
@@ -602,17 +395,13 @@ angular.module('contractualClienteApp')
     }
 
     self.agregarActividadEspecifica = function () {
-      //console.log("entro a agregarMeta")
-      // if (self.Informe.ActividadesEspecificas.length === self.actividades_especificas.length) {
-      //   //console.log("Maximo numero de actividades especificas")
-      //   return
-      // }
-      //self.Informe.Metas.push(Object.create(Meta))
       self.Informe.ActividadesEspecificas.push({
         "ActividadEspecifica": "",
         "Avance": 0,
+        "Activo":true,
         "ActividadesRealizadas": [{
           "Actividad": '',
+          "Activo":true,
           "ProductoAsociado": '',
           "Evidencia": '',
         }]
@@ -620,37 +409,29 @@ angular.module('contractualClienteApp')
     }
 
     self.agregarActividad = function (index_actividadEspecifica) {
-      //console.log("entro a agregar Actvidad", index_actividadEspecifica)
-      // if (self.Informe.ActividadesEspecificas.length === self.actividades_especificas.length) {
-      //   //console.log("Maximo numero de actividades_especificas")
-      //   return
-      // }
-      //self.Informe.Metas[index_Meta].Actividades.push(Object.create(Actividad))
       self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.push({
         "Actividad": '',
+        "Activo":true,
         "ProductoAsociado": '',
         "Evidencia": '',
       })
     }
 
     self.eliminarActividadEspecifica = function (index_actividadEspecifica) {
-      //console.log("entro a eliminar Actividad Especifica", index_actividadEspecifica)
+      //Se evita eliminar todas las actividades especificas
       if (self.Informe.ActividadesEspecificas.length === 1) {
-        //console.log("minimo numero de metas")
         return
       }
-      self.Informe.ActividadesEspecificas.splice(index_actividadEspecifica, 1);
+      self.Informe.ActividadesEspecificas[index_actividadEspecifica].Activo=false;
     }
 
     self.eliminarActividad = function (index_actividadEspecifica, index_Actividad) {
-      //console.log("entro a eliminaractividad")
-      //console.log("index_actividadEspecifica", index_actividadEspecifica)
-      //console.log("index_actividad", index_Actividad)
+      //Se evita eliminar todas las actividades
       if (self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.length === 1) {
-        //console.log("minimo numero de actividades")
         return
       }
-      self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.splice(index_Actividad, 1);
+      console.log(index_actividadEspecifica,index_Actividad)
+      self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas[index_Actividad].Activo=false;
     }
 
     self.guardar = function () {
@@ -675,7 +456,7 @@ angular.module('contractualClienteApp')
           //console.log(angular.toJson(self.Informe));
           if (self.nuevoInforme) {
             //endpoint para crear
-            cumplidosMidRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
+            cumplidosCrudRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
               //console.log("resultado post informe", response)
               if (response.status == 201) {
                 self.nuevoInforme = false;
@@ -704,7 +485,7 @@ angular.module('contractualClienteApp')
           } else {
             //endpoint para actualizar
             //console.log("Informe a actualizar:",self.Informe)
-            cumplidosMidRequest.put('informe', self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
+            cumplidosCrudRequest.put('informe', self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
               //console.log("resultado put informe", response)
               if (response.status == 200) {
                 self.nuevoInforme = false;
@@ -806,29 +587,6 @@ angular.module('contractualClienteApp')
       if (self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio != '') {
         fechasInicioAportes.push(self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio);
       }
-
-      // if (fechasInicioCumplido.find(element => element.getFullYear() == self.anio && element.getMonth() + 1 == self.mes)) {
-
-      //   var fechaInicioCump = fechasInicioCumplido.find(element => element.getFullYear() == self.anio && element.getMonth() + 1 == self.mes);
-
-      //   var fechaFinCump = new Date(fechaInicioCump.getFullYear(), fechaInicioCump.getMonth() == 1 ? 2 : fechaInicioCump.getMonth(), fechaInicioCump.getMonth() == 1 ? 0 : 30); //Día 30 para los demás meses o (28/29) para Febrero
-
-      //   if (fechaInicioCump.getDate() == 31) {
-      //     fechaInicioCump.setDate(fechaInicioCump.getDate() + 1)
-      //     fechaFinCump.setMonth(fechaFinCump.getMonth() + 1)
-      //   }//(fecha inicio contrato 31)
-
-      //   textoAportes = utils.formatoFecha(fechaInicioCump) + " hasta " + utils.formatoFecha(fechaFinCump).substring(1);
-
-      // } else if (fechasFinCumplido.find(element => element.getFullYear() == self.anio && element.getMonth() + 1 == self.mes)) {
-
-      //   var fechaFinCump = fechasFinCumplido.find(element => element.getFullYear() == self.anio && element.getMonth() + 1 == self.mes);
-      //   var fechaInicioCump = new Date(fechaFinCump.getFullYear(), fechaFinCump.getMonth(), 1);
-
-      //   textoAportes = utils.formatoFecha(fechaInicioCump) + " hasta " + utils.formatoFecha(fechaFinCump).substring(1);
-      // } else {
-      //   textoAportes = 'del mes de ' + self.mes_nombre + ' del año ' + self.anio;
-      // }
 
       //Modificacion para tomar dias de la preliquidacion de titan
       var periodotitan=self.Preliquidacion.Detalle[0].DiasEspecificos.split(' ');
@@ -948,7 +706,7 @@ angular.module('contractualClienteApp')
                   colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), ' + self.texto_aportes() + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
                 }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'VALOR DEL CONTRATO', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Ejecutado, alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Faltante, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Total), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Pagado), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: utils.formatoNumero(self.informacion_informe.ejecutadoDinero.Faltante), alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
+                [{ text: utils.formatoNumero(self.informacion_informe.ValorTotalContrato), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: utils.formatoNumero(self.informacion_informe.EjecutadoDinero.Pagado), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: utils.formatoNumero(self.informacion_informe.EjecutadoDinero.Faltante), alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{ colSpan: 8, text: 'Nota: Yo, ' + self.informacion_informe.InformacionContratista.Nombre + ' , autorizo a la Universidad Distrital para hacer el abono de mis pagos a la cuenta bancaria relacionada. Bajo gravedad del juramento, certifico que estoy realizando los aportes a seguridad social, de conformidad con lo establecido por la Ley. ', alignment: 'justify', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}]
               ]
             }

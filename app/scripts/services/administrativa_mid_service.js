@@ -8,7 +8,7 @@
  * Factory in the financieraClienteApp.
  */
 angular.module('adminMidService', [])
-    .factory('adminMidRequest', function($http, $q, requestRequest, token_service, CONF) {
+    .factory('adminMidRequest', function($http, $q, token_service, CONF) {
         // Service logic
         // ...
         var path = CONF.GENERAL.ADMINISTRATIVA_MID_SERVICE;

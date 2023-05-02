@@ -8,7 +8,7 @@
  * Factory in the contractualClienteApp.
  */
 angular.module('gestorDocumentalMidService', [])
-    .factory('gestorDocumentalMidRequest', function($http, $q, requestRequest, token_service, CONF) {
+    .factory('gestorDocumentalMidRequest', function($http, $q, token_service, CONF) {
         // Service logic
         // ...
         var path = CONF.GENERAL.GESTION_DOCUMENTAL_SERVICE;

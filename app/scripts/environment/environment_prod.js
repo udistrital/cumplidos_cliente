@@ -22,7 +22,7 @@ angular.module("contractualClienteApp").constant("CONF", {
     CUMPLIDOS_CRUD_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
     CUMPLIDOS_MID_SERVICE:
-      "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v2/",
     ADMINISTRATIVA_JBPM_V2:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/",
     ADMINISTRATIVA_PRUEBAS_SERVICE:
