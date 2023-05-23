@@ -388,7 +388,7 @@ angular.module('contractualClienteApp')
             allowEscapeKey: false,
             allowOutsideClick: false
           }).then(function () {
-            $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+            //$window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
           })
         }
       );
