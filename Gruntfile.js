@@ -11,6 +11,7 @@ module.exports = function(grunt) {
 
   // Test wich SonarQube
   grunt.loadNpmTasks('grunt-sonar-runner');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
@@ -54,7 +55,7 @@ module.exports = function(grunt) {
         tasks: ['newer:jshint:test', 'newer:jscs:test', 'karma']
       },
       styles: {
-        files: ['<%= yeoman.app %>/styles/**/*.css'],
+        files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['newer:copy:styles', 'postcss']
       },
       gruntfile: {
@@ -66,7 +67,7 @@ module.exports = function(grunt) {
         },
         files: [
           '<%= yeoman.app %>/**/*.html',
-          '.tmp/styles/**/*.css',
+          '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -189,7 +190,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '.tmp/styles/',
-          src: '**/*.css',
+          src: '{,*/}*.css',
           dest: '.tmp/styles/'
         }]
       },
@@ -197,7 +198,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '.tmp/styles/',
-          src: '**/*.css',
+          src: '{,*/}*.css',
           dest: '.tmp/styles/'
         }]
       }
@@ -232,7 +233,7 @@ module.exports = function(grunt) {
       dist: {
         src: [
           '<%= yeoman.dist %>/scripts/**/*.js',
-          '<%= yeoman.dist %>/styles/**/*.css',
+          '<%= yeoman.dist %>/styles/{,*/}*.css',
           '<%= yeoman.dist %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
           '<%= yeoman.dist %>/styles/fonts/*'
         ]
@@ -261,7 +262,7 @@ module.exports = function(grunt) {
     // Performs rewrites based on filerev and the useminPrepare configuration
     usemin: {
       html: ['<%= yeoman.dist %>/**/*.html'],
-      css: ['<%= yeoman.dist %>/styles/**/*.css'],
+      css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       js: ['<%= yeoman.dist %>/scripts/**/*.js'],
       options: {
         assetsDirs: [
@@ -285,7 +286,7 @@ module.exports = function(grunt) {
     //   dist: {
     //     files: {
     //       '<%= yeoman.dist %>/styles/main.css': [
-    //         '.tmp/styles/**/*.css'
+    //         '.tmp/styles/{,*/}*.css'
     //       ]
     //     }
     //   }
@@ -419,7 +420,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: '<%= yeoman.app %>/styles',
                 dest: '.tmp/styles/',
-                src: '**/*.css'
+                src: '{,*/}*.css'
             }
         },
 

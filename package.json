@@ -54,7 +54,6 @@
   },
   "dependencies": {
     "angular-cookies": "^1.6.9",
-    "native": "^0.3.3",
     "rimraf": "^2.2.8"
   }
 }
