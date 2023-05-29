@@ -172,22 +172,22 @@ angular.module('contractualClienteApp')
             //Crea la estructura base para un nuevo Informe
             self.Informe = {};
             //consulto la informacion del ultimo informe creado
-            cumplidosMidRequest.get('informe/' + self.contrato + '/' + self.vigencia + '/' + self.documento_contratista).then(function (response) {
+            cumplidosMidRequest.get('informe/ultimo_informe' + self.pago_mensual_id).then(function (response) {
               //console.log(response)
               if (response.status == 200) {
                 //No encontro un informe anterior
                 if (response.data.Data == null) {
                   //Crea la estructura base para un nuevo Informe
-                  self.Informe.PagoMensualId={
-                    "Id":parseInt(self.pago_mensual_id),
+                  self.Informe.PagoMensualId = {
+                    "Id": parseInt(self.pago_mensual_id),
                   }
                   self.Informe.ActividadesEspecificas = [{
                     "ActividadEspecifica": '',
                     "Avance": 0,
-                    "Activo":true,
+                    "Activo": true,
                     "ActividadesRealizadas": [{
                       "Actividad": '',
-                      "Activo":true,
+                      "Activo": true,
                       "ProductoAsociado": '',
                       "Evidencia": '',
                     }]
@@ -201,8 +201,8 @@ angular.module('contractualClienteApp')
                     var inf_aux = response.data.Data[0];
                     self.Informe.Proceso = inf_aux.Proceso;
                     self.Informe.ActividadesEspecificas = inf_aux.ActividadesEspecificas;
-                    self.Informe.PagoMensualId={
-                      "Id":parseInt(self.pago_mensual_id),
+                    self.Informe.PagoMensualId = {
+                      "Id": parseInt(self.pago_mensual_id),
                     }
                     //console.log(self.Informe)
                   } else {
@@ -242,10 +242,10 @@ angular.module('contractualClienteApp')
                   self.Informe.ActividadesEspecificas = [{
                     "ActividadEspecifica": '',
                     "Avance": 0,
-                    "Activo":true,
+                    "Activo": true,
                     "ActividadesRealizadas": [{
                       "Actividad": '',
-                      "Activo":true,
+                      "Activo": true,
                       "ProductoAsociado": '',
                       "Evidencia": '',
                     }]
@@ -259,12 +259,7 @@ angular.module('contractualClienteApp')
             //console.log("Informe obtenido del mid:", response);
             if (response.data.Data.length != 0) {
               var inf_aux = response.data.Data[0];
-              inf_aux.PeriodoInformeInicio = new Date(inf_aux.PeriodoInformeInicio.split('T')[0]);
-              inf_aux.PeriodoInformeInicio.setHours(inf_aux.PeriodoInformeInicio.getHours() + 5)
-              inf_aux.PeriodoInformeFin = new Date(inf_aux.PeriodoInformeFin.split('T')[0]);
-              inf_aux.PeriodoInformeFin.setHours(inf_aux.PeriodoInformeFin.getHours() + 5)
-              self.Informe = inf_aux;
-              self.nuevoInforme = false;
+              self.DarFormatoInformeExistente(inf_aux);
               //console.log(self.Informe)
             } else {
               swal(
@@ -360,9 +355,9 @@ angular.module('contractualClienteApp')
       //console.log('entro');
       cumplidosMidRequest.get('informacion_informe/preliquidacion/' + self.pago_mensual_id).then(
         function (response) {
-          if(response.data.Status=="200"){
-            self.Preliquidacion=response.data.Data
-          }else{
+          if (response.data.Status == "200") {
+            self.Preliquidacion = response.data.Data
+          } else {
             swal({
               title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
               type: 'error',
@@ -394,14 +389,24 @@ angular.module('contractualClienteApp')
       );
     }
 
+    // Funcion para dar formato a las fechas del informe
+    self.DarFormatoInformeExistente = function (informe_sin_formato) {
+      informe_sin_formato.PeriodoInformeInicio = new Date(informe_sin_formato.PeriodoInformeInicio.split('T')[0]);
+      informe_sin_formato.PeriodoInformeInicio.setHours(informe_sin_formato.PeriodoInformeInicio.getHours() + 5)
+      informe_sin_formato.PeriodoInformeFin = new Date(informe_sin_formato.PeriodoInformeFin.split('T')[0]);
+      informe_sin_formato.PeriodoInformeFin.setHours(informe_sin_formato.PeriodoInformeFin.getHours() + 5)
+      self.Informe = informe_sin_formato;
+      self.nuevoInforme = false;
+    }
+
     self.agregarActividadEspecifica = function () {
       self.Informe.ActividadesEspecificas.push({
         "ActividadEspecifica": "",
         "Avance": 0,
-        "Activo":true,
+        "Activo": true,
         "ActividadesRealizadas": [{
           "Actividad": '',
-          "Activo":true,
+          "Activo": true,
           "ProductoAsociado": '',
           "Evidencia": '',
         }]
@@ -411,7 +416,7 @@ angular.module('contractualClienteApp')
     self.agregarActividad = function (index_actividadEspecifica) {
       self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.push({
         "Actividad": '',
-        "Activo":true,
+        "Activo": true,
         "ProductoAsociado": '',
         "Evidencia": '',
       })
@@ -422,18 +427,20 @@ angular.module('contractualClienteApp')
       if (self.Informe.ActividadesEspecificas.length === 1) {
         return
       }
-      self.Informe.ActividadesEspecificas[index_actividadEspecifica].Activo=false;
+      self.Informe.ActividadesEspecificas[index_actividadEspecifica].Activo = false;
     }
+
 
     self.eliminarActividad = function (index_actividadEspecifica, index_Actividad) {
       //Se evita eliminar todas las actividades
       if (self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.length === 1) {
         return
       }
-      console.log(index_actividadEspecifica,index_Actividad)
-      self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas[index_Actividad].Activo=false;
+      console.log(index_actividadEspecifica, index_Actividad)
+      self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas[index_Actividad].Activo = false;
     }
 
+    // funcion del evento de guardar un informe
     self.guardar = function () {
       if (self.Informe.Proceso == '' || self.Informe.Proceso == null || self.Informe.Proceso == undefined || self.Informe.PeriodoInformeFin == undefined || self.Informe.PeriodoInformeFin == null || self.Informe.PeriodoInformeInicio == undefined || self.Informe.PeriodoInformeInicio == null) {
         swal({
@@ -454,58 +461,72 @@ angular.module('contractualClienteApp')
           confirmButtonText: 'Aceptar'
         }).then(function () {
           //console.log(angular.toJson(self.Informe));
-          if (self.nuevoInforme) {
-            //endpoint para crear
-            cumplidosCrudRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
-              //console.log("resultado post informe", response)
-              if (response.status == 201) {
-                self.nuevoInforme = false;
-                swal(
-                  'INFORME GUARDADO',
-                  'Su informe fue guardado con exito',
-                  'success'
-                )
-              } else {
-                swal(
-                  'ERROR AL GUARDAR INFORME',
-                  'Ocurrio un problema al guardar el informe',
-                  'error'
-                )
-              }
-            }).catch(
-              function (error) {
-                //console.log(error)
-                swal(
-                  'ERROR AL GUARDAR INFORME',
-                  'Ocurrio un problema al guardar el informe',
-                  'error'
-                )
-              }
-            )
-          } else {
-            //endpoint para actualizar
-            //console.log("Informe a actualizar:",self.Informe)
-            cumplidosCrudRequest.put('informe', self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
-              //console.log("resultado put informe", response)
-              if (response.status == 200) {
-                self.nuevoInforme = false;
-                swal(
-                  'INFORME GUARDADO',
-                  'Su informe fue guardado con exito',
-                  'success'
-                )
-              } else {
-                swal(
-                  'ERROR AL GUARDAR INFORME',
-                  'Ocurrio un problema al guardar el informe',
-                  'error'
-                )
-              }
-            })
-          }
+          self.guardar_informe();
         }).catch(function (error) {
 
         });
+      }
+    }
+
+    //funcion para guardar o actualizar un informe
+    self.guardar_informe = function () {
+      if (self.nuevoInforme) {
+        //endpoint para crear
+        cumplidosCrudRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
+          //console.log("resultado post informe", response)
+          if (response.status == 201) {
+            console.log("informe guardado:", response);
+            self.DarFormatoInformeExistente(response.data.Data);
+            swal(
+              'INFORME GUARDADO',
+              'Su informe fue guardado con exito',
+              'success'
+            )
+          } else {
+            swal(
+              'ERROR AL GUARDAR INFORME',
+              'Ocurrio un problema al guardar el informe',
+              'error'
+            )
+          }
+        }).catch(
+          function (error) {
+            //console.log(error)
+            swal(
+              'ERROR AL GUARDAR INFORME',
+              'Ocurrio un problema al guardar el informe',
+              'error'
+            )
+          }
+        )
+      } else {
+        //endpoint para actualizar
+        //console.log("Informe a actualizar:",self.Informe)
+        cumplidosCrudRequest.put('informe', self.Informe.Id, angular.toJson(self.Informe)).then(function (response) {
+          //console.log("resultado put informe", response)
+          if (response.status == 200) {
+            self.DarFormatoInformeExistente(response.data.Data);
+            console.log("bien")
+            swal(
+              'INFORME GUARDADO',
+              'Su informe fue guardado con exito',
+              'success'
+            )
+          } else {
+            swal(
+              'ERROR AL GUARDAR INFORME',
+              'Ocurrio un problema al guardar el informe',
+              'error'
+            )
+          }
+        }).catch(function (err) {
+          //console.log(err)
+          swal(
+            'ERROR AL GUARDAR INFORME',
+            'Ocurrio un problema al guardar el informe',
+            'error'
+          )
+        })
       }
     }
 
@@ -589,17 +610,17 @@ angular.module('contractualClienteApp')
       }
 
       //Modificacion para tomar dias de la preliquidacion de titan
-      var periodotitan=self.Preliquidacion.Detalle[0].DiasEspecificos.split(' ');
-      var diaInicio=parseInt(periodotitan[1]);
-      var diaFin=parseInt(periodotitan[3]);
-      var mes=parseInt(periodotitan[6])-1;
-      var anio=parseInt(periodotitan[9])
-      if(diaInicio==1 && diaFin==30){
-        textoAportes='del mes de ' + self.mes_nombre + ' del año ' + self.anio;
-      }else{
-        textoAportes=utils.formatoFecha(new Date(anio,mes,diaInicio)) + " hasta " + utils.formatoFecha(new Date(anio,mes,diaFin)).substring(1);
+      var periodotitan = self.Preliquidacion.Detalle[0].DiasEspecificos.split(' ');
+      var diaInicio = parseInt(periodotitan[1]);
+      var diaFin = parseInt(periodotitan[3]);
+      var mes = parseInt(periodotitan[6]) - 1;
+      var anio = parseInt(periodotitan[9])
+      if (diaInicio == 1 && diaFin == 30) {
+        textoAportes = 'del mes de ' + self.mes_nombre + ' del año ' + self.anio;
+      } else {
+        textoAportes = utils.formatoFecha(new Date(anio, mes, diaInicio)) + " hasta " + utils.formatoFecha(new Date(anio, mes, diaFin)).substring(1);
       }
-      if (!fechasInicioAportes.find(element => element.getFullYear() == self.anio && element.getMonth() + 1 == self.mes && element.getDate()==diaInicio)) {
+      if (!fechasInicioAportes.find(element => element.getFullYear() == self.anio && element.getMonth() + 1 == self.mes && element.getDate() == diaInicio)) {
         textoAportes += '; y con el pago reglamentario de los aportes al sistema de seguridad social correspondientes al mes de ' + utils.mesAnterior(self.mes, self.anio);
       }
       return textoAportes;
@@ -886,6 +907,7 @@ angular.module('contractualClienteApp')
                       type: 'success',
                       target: document.getElementById('modal_visualizar_documento')
                     });
+                    self.guardar_informe();
                     $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
                   });
               })
@@ -909,7 +931,6 @@ angular.module('contractualClienteApp')
           });
 
         }
-
       });
     }
 
