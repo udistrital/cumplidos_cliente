@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest, titanMidRequest, financieraJBPMRequest, amazonAdministrativaRequest, adminJbpmV2Request) {
+  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest) {
 
     var self = this;
 
@@ -143,7 +143,7 @@ angular.module('contractualClienteApp')
     }
 
     self.calcularPorcentajeTiempo = function () {
-      console.log(self.informacion_informe);
+      //(self.informacion_informe);
       var diasContrato = null
       var diasContratoEjecutado = null
       if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') { // Se suman los días ejecutados del contrato más los días ejecutados del otrosí
@@ -172,7 +172,7 @@ angular.module('contractualClienteApp')
             //Crea la estructura base para un nuevo Informe
             self.Informe = {};
             //consulto la informacion del ultimo informe creado
-            cumplidosMidRequest.get('informe/ultimo_informe' + self.pago_mensual_id).then(function (response) {
+            cumplidosMidRequest.get('informe/ultimo_informe/' + self.pago_mensual_id).then(function (response) {
               //console.log(response)
               if (response.status == 200) {
                 //No encontro un informe anterior
@@ -192,7 +192,7 @@ angular.module('contractualClienteApp')
                       "Evidencia": '',
                     }]
                   }]
-                  console.log(self.Informe);
+                  //console.log(self.Informe);
                 } else {
                   //Informe anterior encontrado
 
@@ -436,7 +436,7 @@ angular.module('contractualClienteApp')
       if (self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas.length === 1) {
         return
       }
-      console.log(index_actividadEspecifica, index_Actividad)
+      //console.log(index_actividadEspecifica, index_Actividad)
       self.Informe.ActividadesEspecificas[index_actividadEspecifica].ActividadesRealizadas[index_Actividad].Activo = false;
     }
 
@@ -475,7 +475,7 @@ angular.module('contractualClienteApp')
         cumplidosCrudRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
           //console.log("resultado post informe", response)
           if (response.status == 201) {
-            console.log("informe guardado:", response);
+            //console.log("informe guardado:", response);
             self.DarFormatoInformeExistente(response.data.Data);
             swal(
               'INFORME GUARDADO',
@@ -506,7 +506,7 @@ angular.module('contractualClienteApp')
           //console.log("resultado put informe", response)
           if (response.status == 200) {
             self.DarFormatoInformeExistente(response.data.Data);
-            console.log("bien")
+            //console.log("bien")
             swal(
               'INFORME GUARDADO',
               'Su informe fue guardado con exito',
@@ -833,7 +833,7 @@ angular.module('contractualClienteApp')
             $('#modal_visualizar_documento').modal('show');
           });
         } catch (error) {
-          console.log(error)
+          //console.log(error)
           swal({
             title: 'Error',
             text: 'Ocurrio un error al intentar generar el informe',

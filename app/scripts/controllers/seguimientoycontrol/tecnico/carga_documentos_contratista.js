@@ -911,7 +911,7 @@ angular.module('contractualClienteApp')
           if (response.data.dependencias.dependencia != undefined) {
             if (response.data.dependencias.dependencia.length != 0) {
               self.dependencia_supervisor = response.data.dependencias.dependencia[0];
-              console.log('Dependencia supervisor', self.dependencia_supervisor);
+              //console.log('Dependencia supervisor', self.dependencia_supervisor);
             } else {
               swal({
                 title: 'No se encontro dependencia asociada',
