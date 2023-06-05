@@ -79,9 +79,9 @@
 
                 <div class="panel panel-default"
                   ng-repeat="actividadEspecifica in InformeGyCertificadoC.Informe.ActividadesEspecificas"
-                  ng-init="index_actividadEspecifica=$index">
+                  ng-init="index_actividadEspecifica=$index" ng-if="actividadEspecifica.Activo">
                   
-                  <div class="row" ng-if="actividadEspecifica.Activo">
+                  <div class="row" >
 
                     <div class="panel panel-default col-lg-12 col-lg-offset-1">
                       <button type="button" class="btn pull-right btn-custom"
