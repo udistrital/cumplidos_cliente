@@ -200,7 +200,7 @@ angular.module('contractualClienteApp')
                   if (response.data.Data.length != 0) {
                     var inf_aux = response.data.Data[0];
                     self.Informe.Proceso = inf_aux.Proceso;
-                    self.Informe.ActividadesEspecificas = inf_aux.ActividadesEspecificas;
+                    self.Informe.ActividadesEspecificas = self.asignarActividadesUltimoInforme(inf_aux.ActividadesEspecificas);
                     self.Informe.PagoMensualId = {
                       "Id": parseInt(self.pago_mensual_id),
                     }
@@ -934,6 +934,22 @@ angular.module('contractualClienteApp')
       });
     }
 
+    self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme){
+      console.log(actividadesUltimoInforme)
+      var actividades=actividadesUltimoInforme
+      for (let index_act_esp = 0; index_act_esp <  actividades.length; index_act_esp++) {
+        delete  actividades[index_act_esp].FechaCreacion
+        delete  actividades[index_act_esp].FechaModificacion
+        delete  actividades[index_act_esp].Id
+        for (let index_act_rea = 0; index_act_rea <  actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
+          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
+          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
+          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
+        }
+      }
+      return actividades
+    }
+    
   });
 
 angular.module('contractualClienteApp').filter('excludeUsed', function () {

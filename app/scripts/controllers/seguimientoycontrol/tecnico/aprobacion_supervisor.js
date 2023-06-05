@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionSupervisorCtrl', function (token_service, cookie, $sessionStorage, $scope, $http, $translate, uiGridConstants, contratoRequest, gestorDocumentalMidRequest, $q, documentoRequest, $window, $sce, utils, $routeParams, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest, gestorDocumentalMidRequest, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
