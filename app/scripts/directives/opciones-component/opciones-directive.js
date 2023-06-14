@@ -27,11 +27,11 @@ angular.module('contractualClienteApp')
                     var path_sub = path.substring(0, 4);
                     switch (path_sub.toUpperCase()) {
                         case "HTTP":          
-                            $window.open(path, "_blank")
+                            $window.open(path, "_blank");
                             break;
                         default:
                             behaviorTheme.toogleCloseSideBar();
-                             $location.path(path)
+                             $location.path(path);
                             
                             
                             break;
@@ -44,13 +44,13 @@ angular.module('contractualClienteApp')
                         nivel.open=false;
                     }
 
-                    var sidebar = document.getElementById('menu-sidebar')
+                    var sidebar = document.getElementById('menu-sidebar');
                     if(sidebar.className.includes("sidebar_off")){
                         behaviorTheme.toogleOpenSideBar();                        
                     }
                     if (nivel.Opciones !== null) {   
                         var opcionAbierta = nivel.Opciones.filter(function (data) {
-                            return data.open
+                            return data.open;
                         });
                         if (opcionAbierta.length > 0 && nivel.open) {    
                         }else {
@@ -69,5 +69,5 @@ angular.module('contractualClienteApp')
                 };
 
             }
-        }
+        };
     });

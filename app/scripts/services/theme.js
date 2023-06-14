@@ -24,7 +24,7 @@ angular.module('themeService', [])
  * Permite gestionar workflow de notificaciones
  */
 
-.factory('behaviorTheme', function( CONF, configuracionRequest) {
+.factory('behaviorTheme', function() {
 
         var methods = {
             sidebar: {

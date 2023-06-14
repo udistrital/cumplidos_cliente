@@ -233,8 +233,6 @@ angular.module('contractualClienteApp')
             //Se envia la data a la tabla
             self.gridOptions1.data = self.informacion_contratos;
             //Contiene el numero de documento del Responsable
-            self.responsable = self.informacion_contratos[0].NumDocumentoSupervisor;
-            self.obtenerDependenciasSupervisor();
           } else {
             swal(
               'Error',
@@ -472,6 +470,9 @@ angular.module('contractualClienteApp')
       self.seleccionado = false;
       self.gridOptions2.data = [];
       self.contrato = contrato;
+      //consulta la dependencia del supervisor 
+      self.responsable = contrato.NumDocumentoSupervisor;
+      self.obtenerDependenciasSupervisor();
       self.anios_solicitud_pago(contrato);
       //console.log("contrato", self.contrato);
       //self.obtener_informacion_coordinador(self.contrato.IdDependencia);

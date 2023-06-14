@@ -24,7 +24,7 @@ angular.module('notificacionService', [])
      * Permite gestionar workflow de notificaciones
      */
 
-    .factory('notificacionRequest', function (CONF, token_service, $http, $interval) {
+    .factory('notificacionRequest', function (CONF, token_service, $http) {
         var TIME_PING = 50000;
         var self = this
         var path = CONF.GENERAL.NOTIFICACION_MID_SERVICE;
