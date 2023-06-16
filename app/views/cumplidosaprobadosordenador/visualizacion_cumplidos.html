@@ -92,8 +92,8 @@
               <md-card >
                 <md-card-title>
                   <md-card-title-text>
-                    <span class="md-headline"> {{iDoc.Metadatos.NombreArchivo}}</span>
-                    <span class="md-subhead">{{iDoc.Descripcion}}</span>
+                    <span class="md-headline"> {{iDoc.Documento.Metadatos.NombreArchivo}}</span>
+                    <span class="md-subhead">{{iDoc.Documento.Descripcion}}</span>
 
                   </md-card-title-text>
                   <md-card-title-media>
@@ -101,7 +101,7 @@
                   </md-card-title-media>
                 </md-card-title>
                 <md-card-actions layout="row" layout-align="end center">
-                  <md-button ng-if="iDoc.Metadatos.Tipo === 'Archivo'" ng-click="VisualizarCumplidos.getDocumento(iDoc.Enlace)" class="btn btn-primary btn-outline">{{'VER_DOC_BTN' | translate }}</md-button>
+                  <md-button ng-if="iDoc.Documento.Metadatos.Tipo === 'Archivo'" ng-click="VisualizarCumplidos.funcGen.getDocumento(iDoc.Archivo.file,'Soporte Cumplido')" class="btn btn-primary btn-outline">{{'VER_DOC_BTN' | translate }}</md-button>
                   <a id="download" href=""></a>
                 </md-card-actions>
               </md-card>
