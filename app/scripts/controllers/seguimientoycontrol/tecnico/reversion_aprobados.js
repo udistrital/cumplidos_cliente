@@ -92,7 +92,7 @@ angular.module('contractualClienteApp')
           width: "8%"
         },
         {
-          field: 'PagoMensual.Mes',
+          field: 'PagoMensual.NombreMes',
           displayName: $translate.instant('MES_SOLICITUD'),
           sort: {
             direction: uiGridConstants.ASC,
@@ -136,13 +136,12 @@ angular.module('contractualClienteApp')
       Función que permite optener los cumplidos aprobados por el ordenador
     */
     self.getCumplidosAprobadosPorOrdenador = function () {
-      var doc_ord = '19400342';
-      cumplidosMidRequest.get('solicitudes_ordenador_contratistas/cumplidos_revertibles/' + doc_ord).then(function (response) {
+      cumplidosMidRequest.get('solicitudes_ordenador_contratistas/cumplidos_revertibles/' + self.NumDocumentoOrdenador).then(function (response) {
         console.log(response)
         var cumplidos_aprobados=response.data.Data;
         for (let index = 0; index < cumplidos_aprobados.length; index++) {
           cumplidos_aprobados[index].PagoMensual.FechaModificacion=cumplidos_aprobados[index].PagoMensual.FechaModificacion.split('T')[0];
-          cumplidos_aprobados[index].PagoMensual.Mes=utils.nombreMes(cumplidos_aprobados[index].PagoMensual.Mes).Nombre
+          cumplidos_aprobados[index].PagoMensual.NombreMes=utils.nombreMes(cumplidos_aprobados[index].PagoMensual.Mes).Nombre
         }
         self.gridOptions.data = cumplidos_aprobados;
       }).catch(function(error){
