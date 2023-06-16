@@ -72,7 +72,7 @@ steps:
     - push
 
 - name: nodejs_release
-  image: node:10.7.0
+  image: node:12.22.1
   commands:
   - npm install -g grunt-cli bower
   - npm install natives
@@ -87,7 +87,7 @@ steps:
     - push
 
 - name: nodejs_master
-  image: node:10.7.0
+  image: node:12.22.1
   commands:
   - npm install -g grunt-cli bower
   - npm install natives
@@ -111,7 +111,7 @@ steps:
       from_secret: aws_secret_access_key
     region: us-east-1
     source: dist/**/*
-    target: /pruebas${DRONE_REPO_NAME%%_cliente}.portaloas.udistrital.edu.co
+    target: /${DRONE_REPO_NAME}
     strip_prefix: dist/
   when:
     branch:
@@ -129,7 +129,7 @@ steps:
       from_secret: aws_secret_access_key
     region: us-east-1
     source: dist/**/*
-    target: /${DRONE_REPO_NAME%%_cliente}.portaloas.udistrital.edu.co
+    target: /${DRONE_REPO_NAME}
     strip_prefix: dist/
   when:
     branch:

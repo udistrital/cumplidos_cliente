@@ -50,7 +50,6 @@ angular
         'administrativaService',
         'cumplidosCrudService',
         'cumplidosMidService',
-        'oikosService',
         'adminMidService',
         'gestorDocumentalMidService',
         'adminJbpmV2Service',

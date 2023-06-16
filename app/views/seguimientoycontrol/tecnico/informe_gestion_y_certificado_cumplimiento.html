@@ -61,13 +61,13 @@
                               style="padding-left: 0px;">Desde</label>
                             <div class="col-md-5">
                               <input type="date" id="id_fecha_inicio_actividades" class="form-control"
-                                ng-model="InformeGyCertificadoC.Informe.PeriodoInformeInicio" required>
+                                ng-model="InformeGyCertificadoC.Informe.PeriodoInformeInicio" required min="{{InformeGyCertificadoC.informacion_informe.FechaInicio.toISOString().split('T')[0]}}" max="{{InformeGyCertificadoC.informacion_informe.FechaFin.toISOString().split('T')[0]}}">
                             </div>
                             <label for="id_fecha_fin_actividades" class="col-md-1 control-label label-no-padding"
                               style="padding-left: 0px;">Hasta</label>
                             <div class="col-md-5">
                               <input type="date" class="form-control" id="id_fecha_fin_actividades"
-                                ng-model="InformeGyCertificadoC.Informe.PeriodoInformeFin" required>
+                                ng-model="InformeGyCertificadoC.Informe.PeriodoInformeFin" required min="{{InformeGyCertificadoC.informacion_informe.FechaInicio.toISOString().split('T')[0]}}" max="{{InformeGyCertificadoC.informacion_informe.FechaFin.toISOString().split('T')[0]}}">
                             </div>
                           </div>
                         </form>
@@ -79,9 +79,9 @@
 
                 <div class="panel panel-default"
                   ng-repeat="actividadEspecifica in InformeGyCertificadoC.Informe.ActividadesEspecificas"
-                  ng-init="index_actividadEspecifica=$index">
+                  ng-init="index_actividadEspecifica=$index" ng-if="actividadEspecifica.Activo">
                   
-                  <div class="row" ng-if="actividadEspecifica.Activo">
+                  <div class="row" >
 
                     <div class="panel panel-default col-lg-12 col-lg-offset-1">
                       <button type="button" class="btn pull-right btn-custom"
