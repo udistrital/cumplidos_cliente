@@ -137,7 +137,6 @@ angular.module('contractualClienteApp')
     */
     self.getCumplidosAprobadosPorOrdenador = function () {
       cumplidosMidRequest.get('solicitudes_ordenador_contratistas/cumplidos_revertibles/' + self.NumDocumentoOrdenador).then(function (response) {
-        console.log(response)
         var cumplidos_aprobados=response.data.Data;
         for (let index = 0; index < cumplidos_aprobados.length; index++) {
           cumplidos_aprobados[index].PagoMensual.FechaModificacion=cumplidos_aprobados[index].PagoMensual.FechaModificacion.split('T')[0];
@@ -206,7 +205,6 @@ angular.module('contractualClienteApp')
                 self.gridApi.core.refresh();
               })//Fin promesa then
               .catch(function (response) {
-                console.log(response)
                 swal(
                   'Error',
                   'No se ha podido registrar la reversion del pago',
@@ -217,7 +215,6 @@ angular.module('contractualClienteApp')
           })
         });
       }).catch(function() {
-        console.log("cancelar")
       })
     };
 
