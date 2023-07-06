@@ -138,11 +138,20 @@ angular.module('contractualClienteApp')
     self.getCumplidosAprobadosPorOrdenador = function () {
       cumplidosMidRequest.get('solicitudes_ordenador_contratistas/cumplidos_revertibles/' + self.NumDocumentoOrdenador).then(function (response) {
         var cumplidos_aprobados=response.data.Data;
-        for (let index = 0; index < cumplidos_aprobados.length; index++) {
-          cumplidos_aprobados[index].PagoMensual.FechaModificacion=cumplidos_aprobados[index].PagoMensual.FechaModificacion.split('T')[0];
-          cumplidos_aprobados[index].PagoMensual.NombreMes=utils.nombreMes(cumplidos_aprobados[index].PagoMensual.Mes).Nombre
+        if(cumplidos_aprobados!=null){
+          for (let index = 0; index < cumplidos_aprobados.length; index++) {
+            cumplidos_aprobados[index].PagoMensual.FechaModificacion=cumplidos_aprobados[index].PagoMensual.FechaModificacion.split('T')[0];
+            cumplidos_aprobados[index].PagoMensual.NombreMes=utils.nombreMes(cumplidos_aprobados[index].PagoMensual.Mes).Nombre
+          }
+          self.gridOptions.data = cumplidos_aprobados;
+        }else{
+          swal(
+            'Warning',
+            'No cuenta con cumplidos para reversar',
+            'warning'
+          )
         }
-        self.gridOptions.data = cumplidos_aprobados;
+        
       }).catch(function(error){
         swal(
           'Error',
