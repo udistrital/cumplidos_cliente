@@ -1,0 +1,63 @@
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel panel-primary panel-body">
+            <h2 class="page-header text-center">{{'REVERSION_CUMPLIDOS_ORDENADOR'|translate}}</h2>
+        </div>
+        <div class="panel" style="color: black;font-size: large;padding: 10px;padding-left: 20px;">
+          <p>En esta vista podrá revertir los cumplidos aprobados en los últimos 15 días y que no cuenten con orden de pago generada.</p>
+        </div>
+
+        <div class="panel panel-primary panel-body">
+            <div class="panel-body">
+                <div class="row margin-y">
+                    <div id="table_visualizar_aprobados" ui-grid="ReversionAprobados.gridOptions"
+                     ui-grid-pagination></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal de Visualizar los Soportes-->
+<div id="modal_ver_soportes" class="modal fade" role="dialog">
+  <div class="modal-content col-md-6 col-md-offset-3" style="margin-top: 5%" align="center">
+
+    <div class="modal-header">
+      <button type="button" class="btn btn-outline btn-danger btn-xs pull-right" data-dismiss="modal">&times</button>
+      <br>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{'VER_SOP' | translate}}</h3>
+        </div>
+        <div class="panel-body">
+
+          <div class="col-md-12">
+            <p>{{'PARRA_VER_SOP' | translate }}</p>
+          </div>
+
+          <div class="col-md-12" ng-model="ReversionAprobados.documentos"
+            ng-repeat="iDoc in ReversionAprobados.documentos">
+            <md-card>
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline"> {{iDoc.Documento.Metadatos.NombreArchivo}}</span>
+                  <span class="md-subhead">{{iDoc.Documento.Descripcion}}</span>
+
+                </md-card-title-text>
+              </md-card-title>
+              <md-card-actions layout="row" layout-align="end center">
+                <md-button ng-if="iDoc.Documento.Metadatos.Tipo === 'Archivo'"
+                  ng-click="ReversionAprobados.funcGen.getDocumento(iDoc.Archivo.file,'Soporte Cumplido')" class="btn btn-primary btn-outline">Ver
+                  documento</md-button>
+              </md-card-actions>
+            </md-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

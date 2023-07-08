@@ -923,6 +923,10 @@ var text_es = {
     AÑO:"Año",
     MES:"Mes",
     LIMPIAR:"Limpiar",
+
+    //Reversion cumplidos por ordenador
+    REVERSION_CUMPLIDOS_ORDENADOR:"REVERSION DE CUMPLIDOS APROBADOS",
+    FECHA_APROBACION:"FECHA APROBACION"
 };
 
 var text_en = {

@@ -11,7 +11,7 @@ angular.module('contratoService', [])
     .factory('contratoRequest', function($http, token_service, CONF) {
         // Service logic
         // ...
-        var path = CONF.GENERAL.CONTRATO_SERVICE;
+        var path = CONF.GENERAL.ADMINISTRATIVA_JBPM_V2;
 
         // Public API here
         return {

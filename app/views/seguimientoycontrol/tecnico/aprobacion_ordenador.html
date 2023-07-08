@@ -4,30 +4,32 @@
     <!--Cabecera del panel-->
     <h2 class="page-header text-center">APROBACIÓN PAGO ORDENADOR</h2>
 
-  <div class="panel-body">
-    <div class="row">
-      <div class="panel panel-default col-lg-12 col-lg-offset-1">
-        <div class="panel-body">
-          <form role="form">
+    <div class="panel-body">
+      <div class="row">
+        <div class="panel panel-default col-lg-12 col-lg-offset-1">
+          <div class="panel-body">
+            <form role="form">
 
-            <div class="row">
-              <div class="form-group col-lg-6">
-                <label class="col-lg-12">NOMBRE ORDENADOR</label>
-                <input type="text" class="form-control" ng-model="aprobacionOrdenador.ordenador.nombre" disabled>
+              <div class="row">
+                <div class="form-group col-lg-6">
+                  <label class="col-lg-12">NOMBRE ORDENADOR</label>
+                  <input type="text" class="form-control" ng-model="aprobacionOrdenador.ordenador.nombre" disabled>
+                </div>
+
+                <div class="form-group col-lg-6">
+                  <label>DEPENDENCIA SUPERVISIÓN</label>
+                  <select class="form-control" required="" ng-model="aprobacionOrdenador.dependencia"
+                    class="form-control">
+                    <option value="">---Seleccionar todas las dependencias---</option>
+                    <option ng-repeat="iDep in aprobacionOrdenador.dependencias_contratos.DependenciasSic.Dependencia"
+                      ng-value="iDep">{{iDep.ESFDEPENCARGADA}}</option>
+                  </select>
+                </div>
               </div>
 
-              <div class="form-group col-lg-6">
-                <label>DEPENDENCIA SUPERVISIÓN</label>
-                <select class="form-control" required="" ng-model="aprobacionOrdenador.dependencia" class="form-control">
-                  <option value="">---Seleccionar todas las dependencias---</option>
-                  <option ng-repeat="iDep in aprobacionOrdenador.dependencias_contratos.DependenciasSic.Dependencia" ng-value="iDep">{{iDep.ESFDEPENCARGADA}}</option>
-                </select>
-              </div>
-            </div>
 
 
-            
-  <!--
+              <!--
             <div class=row>
 
                     <div class="col-md-3">
@@ -54,62 +56,68 @@
 
           </div><!--div row-->
 
-          <br>
+              <br>
 
-        <div style="height: {{gridHeight}}px;" ui-grid="aprobacionOrdenador.gridOptions1" align='center'  ui-grid-selection ui-grid-pagination></div>
-        <button class="btn btn-warning" ng-click="aprobacionOrdenador.aprobar_multiples_pagos()">Aprobar</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-  </div>
-
-
-    <!--Modal de Visualizar los Soportes-->
-    <div id="modal_ver_soportes" class="modal fade" role="dialog">
-      <div class="modal-content col-md-6 col-md-offset-3" style="margin-top: 5%" align="center">
-  
-        <div class="modal-header">
-          <button type="button" class="btn btn-outline btn-danger btn-xs pull-right" data-dismiss="modal">&times</button>
-          <br>
-        </div>
-  
-        <div class="modal-body">
-  
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{'VER_SOP' | translate}}</h3>
-            </div>
-            <div class="panel-body">
-  
-              <div class="col-md-12">
-                <p>{{'PARRA_VER_SOP' | translate }}</p>
-              </div>
-  
-              <div class="col-md-12" ng-model="aprobacionOrdenador.documentos" ng-repeat="iDoc in aprobacionOrdenador.documentos">
-                <md-card >
-                  <md-card-title>
-                    <md-card-title-text>
-                      <span class="md-headline"> {{iDoc.Metadatos.NombreArchivo}}</span>
-                      <span class="md-subhead">{{iDoc.Descripcion}}</span>
-  
-                    </md-card-title-text>
-                    <md-card-title-media>
-                      <!-- <div class="md-media-sm card-media"><textarea ng-model="iDoc.Contenido.Observaciones"></textarea></div> -->
-                    <label layout="row" layout-align="start"  >Observaciones: </label> <textarea  layout="row" layout-align="start center" cols="30" ng-model="iDoc.Metadatos.Observaciones"></textarea>
-                    </md-card-title-media>
-                  </md-card-title>
-                  <md-card-actions layout="row" layout-align="end center">
-                    <md-button ng-if="iDoc.Metadatos.Tipo === 'Archivo'" ng-click="aprobacionOrdenador.getDocumento(iDoc.Enlace)" class="btn btn-primary btn-outline">Ver documento</md-button>
-                    <md-button class="btn btn-danger btn-outline" ng-click="aprobacionOrdenador.enviar_comentario(iDoc)">Enviar observaciones</md-button>
-                  </md-card-actions>
-                </md-card>
-              </div>
-            </div>
+              <div style="height: {{gridHeight}}px;" ui-grid="aprobacionOrdenador.gridOptions1" align='center'
+                ui-grid-selection ui-grid-pagination></div>
+              <button class="btn btn-warning" ng-click="aprobacionOrdenador.aprobar_multiples_pagos()">Aprobar</button>
+            </form>
           </div>
         </div>
       </div>
     </div>
+
+  </div>
+</div>
+
+
+<!--Modal de Visualizar los Soportes-->
+<div id="modal_ver_soportes" class="modal fade" role="dialog">
+  <div class="modal-content col-md-6 col-md-offset-3" style="margin-top: 5%" align="center">
+
+    <div class="modal-header">
+      <button type="button" class="btn btn-outline btn-danger btn-xs pull-right" data-dismiss="modal">&times</button>
+      <br>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{'VER_SOP' | translate}}</h3>
+        </div>
+        <div class="panel-body">
+
+          <div class="col-md-12">
+            <p>{{'PARRA_VER_SOP' | translate }}</p>
+          </div>
+
+          <div class="col-md-12" ng-model="aprobacionOrdenador.documentos"
+            ng-repeat="iDoc in aprobacionOrdenador.documentos">
+            <md-card>
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline"> {{iDoc.Documento.Metadatos.NombreArchivo}}</span>
+                  <span class="md-subhead">{{iDoc.Documento.Descripcion}}</span>
+
+                </md-card-title-text>
+                <md-card-title-media>
+                  <!-- <div class="md-media-sm card-media"><textarea ng-model="iDoc.Contenido.Observaciones"></textarea></div> -->
+                  <label layout="row" layout-align="start">Observaciones: </label> <textarea layout="row"
+                    layout-align="start center" cols="30" ng-model="iDoc.Documento.Metadatos.Observaciones"></textarea>
+                </md-card-title-media>
+              </md-card-title>
+              <md-card-actions layout="row" layout-align="end center">
+                <md-button ng-if="iDoc.Documento.Metadatos.Tipo === 'Archivo'"
+                  ng-click="aprobacionOrdenador.funcGen.getDocumento(iDoc.Archivo.file,'Soporte Cumplido')" class="btn btn-primary btn-outline">Ver
+                  documento</md-button>
+                <md-button class="btn btn-danger btn-outline"
+                  ng-click="aprobacionOrdenador.enviar_comentario(iDoc)">Enviar observaciones</md-button>
+              </md-card-actions>
+            </md-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
