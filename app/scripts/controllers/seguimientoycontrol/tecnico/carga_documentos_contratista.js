@@ -793,9 +793,9 @@ angular.module('contractualClienteApp')
       self.fila_sol_pago = fila;
       funcGen.obtener_doc(self.fila_sol_pago.Id).then(function (documentos) {
         self.documentos=documentos;
-        console.log(self.documentos);
+        //console.log(self.documentos);
       }).catch(function (error) {
-        console.log("error",error)
+        //console.log("error",error)
         self.documentos=undefined;
       })
     };
@@ -806,7 +806,6 @@ angular.module('contractualClienteApp')
     self.borrar_doc = function () {
 
       var documento = self.doc;
-      //console.log(documento)  
       gestorDocumentalMidRequest.delete('/document', documento.Enlace).then(function (response) {
         //console.log(response)
         swal({
@@ -831,8 +830,7 @@ angular.module('contractualClienteApp')
     }
 
     self.set_doc = function (doc) {
-
-      self.doc = doc;
+      self.doc = doc.Documento;
     };
 
 
