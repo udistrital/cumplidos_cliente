@@ -140,23 +140,34 @@ angular.module('contractualClienteApp')
         self.informacion_informe.Novedades.UltimaCesion.FechaCesion = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Cesion[0].FechaInicio))
       }
       //console.log("validacion")
+
+      //demas novedades
+      for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
+        self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
+        self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
+      }
+      for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
+        self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
+      }
     }
 
     self.calcularPorcentajeTiempo = function () {
       //(self.informacion_informe);
       var diasContrato = null
       var diasContratoEjecutado = null
-      if (self.informacion_informe.Novedades.UltimoOtrosi.Existe == 'X') { // Se suman los días ejecutados del contrato más los días ejecutados del otrosí
-        diasContrato = utils.diferenciaFechasDias(self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio, self.informacion_informe.Novedades.UltimoOtrosi.FechaFin);
-        diasContrato += utils.diferenciaFechasDias(self.informacion_informe.FechaInicio, self.informacion_informe.FechaFin);
-        diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio, self.Informe.PeriodoInformeFin);
-        diasContratoEjecutado += utils.diferenciaFechasDias(self.informacion_informe.FechaInicio, self.informacion_informe.FechaFin);
+      
+      diasContrato = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.informacion_informe.FechasConNovedades.FechaFin)
+      diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.Informe.PeriodoInformeFin)
+      
 
-      } else {
-        diasContrato = utils.diferenciaFechasDias(self.informacion_informe.FechaInicio, self.informacion_informe.FechaFin)
-        diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechaInicio, self.Informe.PeriodoInformeFin)
+      if(self.informacion_informe.Novedades.Suspencion.length!=0){
+        for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
+          const Sus = self.informacion_informe.Novedades.Suspencion[index];
+          if(self.Informe.PeriodoInformeInicio >self.informacion_informe.Novedades.Suspencion[index].FechaInicio ){
+            diasContrato=diasContrato+Sus.PlazoEjecucion
+          }
+        }
       }
-
       var porcentajeEjecutado = ((diasContratoEjecutado * 100) / diasContrato);
       var porcentajeFaltante = 100 - porcentajeEjecutado;
       return { Ejecutado: porcentajeEjecutado.toFixed(2), Faltante: porcentajeFaltante.toFixed(2) }
@@ -314,6 +325,8 @@ angular.module('contractualClienteApp')
             self.informacion_informe.RP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.RP.Fecha))
             self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.FechaInicio))
             self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.FechaFin))
+            self.informacion_informe.FechasConNovedades.FechaInicio= new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaInicio))
+            self.informacion_informe.FechasConNovedades.FechaFin= new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaFin))
 
             self.validarNovedades();
 
@@ -833,7 +846,7 @@ angular.module('contractualClienteApp')
             $('#modal_visualizar_documento').modal('show');
           });
         } catch (error) {
-          //console.log(error)
+          console.log(error)
           swal({
             title: 'Error',
             text: 'Ocurrio un error al intentar generar el informe',
