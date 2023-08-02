@@ -58,6 +58,7 @@ angular.module('contractualClienteApp')
             })
           }
         }).catch(function (error) {
+          //console.log(error)
           swal({
             title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
             type: 'error',
@@ -142,12 +143,16 @@ angular.module('contractualClienteApp')
       //console.log("validacion")
 
       //demas novedades
-      for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
-        self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
-        self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
+      if(self.informacion_informe.Novedades.Suspencion!=null){
+        for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
+          self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
+          self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
+        }
       }
-      for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
-        self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
+      if(self.informacion_informe.Novedades.Terminacion!=null){
+        for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
+          self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
+        }
       }
     }
 
@@ -240,7 +245,7 @@ angular.module('contractualClienteApp')
               //console.log("Informe inicial", self.Informe)
             }).catch(
               function (error) {
-                //console.log(error)
+                console.log(error)
                 swal({
                   title: 'Ocurrio un error al traer las ultimas actividades',
                   type: 'error',
@@ -329,10 +334,7 @@ angular.module('contractualClienteApp')
             self.informacion_informe.FechasConNovedades.FechaFin= new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaFin))
 
             self.validarNovedades();
-
-
           } else {
-
             swal({
               title: 'Ocurrio un error al traer la informacion, intente nuevamente mas tarde',
               type: 'error',
@@ -348,7 +350,7 @@ angular.module('contractualClienteApp')
         }
       }).catch(
         function (error) {
-          //console.log(error)
+          console.log(error)
           swal({
             title: 'Ocurrio un error al traer la informacion, intente nuevamente mas tarde',
             type: 'error',
@@ -948,7 +950,6 @@ angular.module('contractualClienteApp')
     }
 
     self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme){
-      console.log(actividadesUltimoInforme)
       var actividades=actividadesUltimoInforme
       for (let index_act_esp = 0; index_act_esp <  actividades.length; index_act_esp++) {
         delete  actividades[index_act_esp].FechaCreacion
