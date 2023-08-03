@@ -165,7 +165,7 @@ angular.module('contractualClienteApp')
       diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.Informe.PeriodoInformeFin)
       
 
-      if(self.informacion_informe.Novedades.Suspencion.length!=0){
+      if(self.informacion_informe.Novedades.Suspencion!=null){
         for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
           const Sus = self.informacion_informe.Novedades.Suspencion[index];
           if(self.Informe.PeriodoInformeInicio >self.informacion_informe.Novedades.Suspencion[index].FechaInicio ){
