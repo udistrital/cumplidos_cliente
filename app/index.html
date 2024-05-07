@@ -1,85 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Sistema de Gestión Administrativa</title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width" />
-    <script src="https://use.fontawesome.com/64b53ddd5b.js"></script>
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(.) styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/angular-ui-grid/ui-grid.css" />
-    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
-    <link rel="stylesheet" href="bower_components/angular-tree-control/css/tree-control.css" />
-    <link rel="stylesheet" href="bower_components/sweetalert2/dist/sweetalert2.css" />
-    <link rel="stylesheet" href="bower_components/vis/dist/vis.css" />
-    <link rel="stylesheet" href="bower_components/font-awesome-animation/dist/font-awesome-animation.css" />
-    <link rel="stylesheet" href="bower_components/font-awesome-animation/dist/font-awesome-animation.min.css" />
-    <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css" />
-    <link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.css" />
-    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
-    <link rel="stylesheet" href="bower_components/select2/select2.css" />
-    <link rel="stylesheet" href="bower_components/bootstrap-fileinput/css/fileinput.min.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/custom.css" />
-    <!-- <link rel="stylesheet" href="styles/table-demo.css" /> -->
-    <!-- <link rel="stylesheet" href="styles/timeline.css" /> -->
-    <link rel="stylesheet" href="styles/loading-bar.css" />
-    <link rel="stylesheet" href="styles/steeper.css" />
-    <link rel="stylesheet" href="styles/core.css" />
-    <link rel="stylesheet" href="styles/footer.css" />
-    <link rel="stylesheet" href="styles/header.css" />
-    <link rel="stylesheet" href="styles/menu-lateral.css" />
-    <link rel="stylesheet" href="styles/menu-aplicaciones.css" />
-    <link rel="stylesheet" href="styles/notificaciones.css" />
-    <link rel="stylesheet" href="styles/ui-grid.css" />
-    <!-- endbuild -->
-    <link
-      rel="stylesheet"
-      href="https://s3.amazonaws.com/assets-oas/oas-style.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://s3.amazonaws.com/assets-oas/sb-admin-2.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://s3.amazonaws.com/assets-oas/table-demo.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://pruebasassets.portaloas.udistrital.edu.co/gaia-style.css"
-    />
-    <!-- nix-style.css, gaia-style.css, athenea-style.css y urano-style.css -->
-    <link
-      rel="stylesheet"
-      href="https://pruebasassets.portaloas.udistrital.edu.co/oas-style.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://pruebasassets.portaloas.udistrital.edu.co/logo-stylus.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://pruebasassets.portaloas.udistrital.edu.co/logo-info.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://pruebasassets.portaloas.udistrital.edu.co/isotipo-header.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://pruebasassets.portaloas.udistrital.edu.co/logo-header.css"
-    />
-  </head>
 
-  <body ng-app="contractualClienteApp">
-    <div ng-controller="headerCtrl">
-      <!-- <div ng-if="!isLogin" id="nb-global-spinner" class="spinner">
+<head>
+  <meta charset="utf-8" />
+  <title>Sistema de Gestión Administrativa</title>
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width" />
+  <script src="https://use.fontawesome.com/64b53ddd5b.js"></script>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="bower_components/angular-ui-grid/ui-grid.css" />
+  <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+  <link rel="stylesheet" href="bower_components/angular-tree-control/css/tree-control.css" />
+  <link rel="stylesheet" href="bower_components/sweetalert2/dist/sweetalert2.css" />
+  <link rel="stylesheet" href="bower_components/vis/dist/vis.css" />
+  <link rel="stylesheet" href="bower_components/font-awesome-animation/dist/font-awesome-animation.css" />
+  <link rel="stylesheet" href="bower_components/font-awesome-animation/dist/font-awesome-animation.min.css" />
+  <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css" />
+  <link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.css" />
+  <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
+  <link rel="stylesheet" href="bower_components/select2/select2.css" />
+  <link rel="stylesheet" href="bower_components/bootstrap-fileinput/css/fileinput.min.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css(.tmp) styles/main.css -->
+  <link rel="stylesheet" href="styles/custom.css" />
+  <!-- <link rel="stylesheet" href="styles/table-demo.css" /> -->
+  <!-- <link rel="stylesheet" href="styles/timeline.css" /> -->
+  <link rel="stylesheet" href="styles/loading-bar.css" />
+  <link rel="stylesheet" href="styles/steeper.css" />
+  <link rel="stylesheet" href="styles/core.css" />
+  <link rel="stylesheet" href="styles/footer.css" />
+  <link rel="stylesheet" href="styles/header.css" />
+  <link rel="stylesheet" href="styles/menu-lateral.css" />
+  <link rel="stylesheet" href="styles/menu-aplicaciones.css" />
+  <link rel="stylesheet" href="styles/notificaciones.css" />
+  <link rel="stylesheet" href="styles/ui-grid.css" />
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://s3.amazonaws.com/assets-oas/oas-style.css">
+  <link rel="stylesheet" href="https://s3.amazonaws.com/assets-oas/sb-admin-2.css">
+  <link rel="stylesheet" href="https://s3.amazonaws.com/assets-oas/table-demo.css">
+  <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/gaia-style.css" />
+  <!-- nix-style.css, gaia-style.css, athenea-style.css y urano-style.css -->
+  <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/oas-style.css" />
+  <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-stylus.css" />
+  <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-info.css" />
+  <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/isotipo-header.css" />
+  <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-header.css" />
+</head>
+
+<body ng-app="contractualClienteApp">
+  <div ng-controller="headerCtrl">
+    <!-- <div ng-if="!isLogin" id="nb-global-spinner" class="spinner">
       <div class="blob blob-0"></div>
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
@@ -87,203 +61,160 @@
       <div class="blob blob-4"></div>
       <div class="blob blob-5"></div>
     </div> -->
-      <div ng-include="'views/header.html'" ng-controller="headerCtrl"></div>
-      <div
-        ng-if="isLogin"
-        class="body-container-menuaplicaciones"
-        ng-include="'views/menu-aplicaciones.html'"
-        ng-controller="menuaplicacionesCtrl"
-      ></div>
-      <div
-        ng-if="isLogin"
-        class="body-container-notificaciones"
-        ng-include="'views/notificaciones.html'"
-        ng-controller="notificacionesCtrl"
-      ></div>
-      <div
-        ng-if="!isLogin"
-        class="container-app"
-        style="justify-content: center; align-items: center"
-      >
-        <div class="welcome-panel">
-          <h1 class="welcome-title text-center">
-            Bienvenido al módulo de cumplidos
-          </h1>
-          <p class="welcome-info">
-            Se han implementado nuevas funcionalidades para el sistema, que
-            afectan el flujo de carga de cumplidos de los Contratistas. Los
-            invitamos a revisar los Videotutoriales:
-          </p>
-          <ul class="welcome-info">
-            <li>
-              <a
-                href="https://drive.google.com/file/d/11RRvC8FypH5-YerL7Zdtav8FFqX3aePV/view?usp=share_link"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Informe de gestión y certificado de cumplimiento</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://drive.google.com/file/d/1UyqLhMjsTVddPZSv_JtNyiia9bJNbanV/view?usp=sharing
-            "
-                target="_blank"
-                rel="noopener noreferrer"
-                >Notificaciones</a
-              >
-            </li>
-          </ul>
-        </div>
+    <div ng-include="'views/header.html'" ng-controller="headerCtrl"></div>
+    <div ng-if="isLogin" class="body-container-menuaplicaciones" ng-include="'views/menu-aplicaciones.html'"
+      ng-controller="menuaplicacionesCtrl"></div>
+    <div ng-if="isLogin" class="body-container-notificaciones" ng-include="'views/notificaciones.html'"
+      ng-controller="notificacionesCtrl"></div>
+    <div ng-if="!isLogin" class="container-app" style="justify-content: center;
+    align-items: center;">
+      <div class="welcome-panel">
+        <h1 class="welcome-title text-center">Bienvenido al módulo de cumplidos</h1>
+        <p class="welcome-info">Se han implementado nuevas funcionalidades para el sistema, que afectan el flujo de
+          carga de cumplidos de los Contratistas. Los invitamos a revisar los Videotutoriales:</p>
+        <ul class="welcome-info">
+          <li>
+            <a href="https://drive.google.com/file/d/11RRvC8FypH5-YerL7Zdtav8FFqX3aePV/view?usp=share_link"
+              target="_blank" rel="noopener noreferrer">Informe de gestión y certificado de cumplimiento</a>
+          </li>
+          <li>
+            <a href="https://drive.google.com/file/d/1UyqLhMjsTVddPZSv_JtNyiia9bJNbanV/view?usp=sharing
+            " target="_blank" rel="noopener noreferrer">Notificaciones</a>
+          </li>
+        </ul>
       </div>
-      <div ng-if="isLogin" class="container-app">
-        <div
-          id="menu-sidebar-container"
-          ng-class="sidebarClases.sidebarContainerClase"
-          ng-controller="headerCtrl"
-        >
-          <div
-            id="menu-sidebar"
-            ng-include="'views/menu-lateral.html'"
-            ng-controller="menuLateralCtrl"
-            ng-class="sidebarClases.sidebarDivClase"
-          ></div>
-        </div>
-        <div
-          ng-class="sidebarClases.containerBodyClase"
-          ng-controller="headerCtrl"
-        >
-          <div
-            ng-view=""
-            ng-class="sidebarClases.containerDivClase"
-            ng-controller="headerCtrl"
-          ></div>
-        </div>
-      </div>
-      <div
-        class="container-footer"
-        ng-include="'views/footer.html'"
-        ng-controller="footerCtrl"
-      ></div>
     </div>
+    <div ng-if="isLogin" class="container-app">
+      <div id="menu-sidebar-container" ng-class="sidebarClases.sidebarContainerClase" ng-controller="headerCtrl">
+        <div id="menu-sidebar" ng-include="'views/menu-lateral.html'" ng-controller="menuLateralCtrl"
+          ng-class="sidebarClases.sidebarDivClase"></div>
+      </div>
+      <div ng-class="sidebarClases.containerBodyClase" ng-controller="headerCtrl">
+        <div ng-view="" ng-class="sidebarClases.containerDivClase" ng-controller="headerCtrl"></div>
+      </div>
+    </div>
+    <div class="container-footer" ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
+  </div>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-    <script>
-      !(function (A, n, g, u, l, a, r) {
-        (A.GoogleAnalyticsObject = l),
-          (A[l] =
-            A[l] ||
-            function () {
-              (A[l].q = A[l].q || []).push(arguments);
-            }),
-          (A[l].l = +new Date()),
-          (a = n.createElement(g)),
-          (r = n.getElementsByTagName(g)[0]),
-          (a.src = u),
-          r.parentNode.insertBefore(a, r);
-      })(
-        window,
-        document,
-        "script",
-        "https://www.google-analytics.com/analytics.js",
-        "ga"
-      );
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+  <script>
+    !(function (A, n, g, u, l, a, r) {
+      (A.GoogleAnalyticsObject = l),
+        (A[l] =
+          A[l] ||
+          function () {
+            (A[l].q = A[l].q || []).push(arguments);
+          }),
+        (A[l].l = +new Date()),
+        (a = n.createElement(g)),
+        (r = n.getElementsByTagName(g)[0]),
+        (a.src = u),
+        r.parentNode.insertBefore(a, r);
+    })(
+      window,
+      document,
+      "script",
+      "https://www.google-analytics.com/analytics.js",
+      "ga"
+    );
 
-      ga("create", "UA-XXXXX-X");
-      ga("send", "pageview");
-    </script>
+    ga("create", "UA-XXXXX-X");
+    ga("send", "pageview");
+  </script>
 
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="bower_components/angular-touch/angular-touch.js"></script>
-    <script src="bower_components/angular-ui-grid/ui-grid.js"></script>
-    <script src="bower_components/angular-md5/angular-md5.js"></script>
-    <script src="bower_components/AngularJS-OAuth2/dist/angularJsOAuth2.js"></script>
-    <script src="bower_components/angular-aria/angular-aria.js"></script>
-    <script src="bower_components/angular-messages/angular-messages.js"></script>
-    <script src="bower_components/angular-material/angular-material.js"></script>
-    <script src="bower_components/angular-tree-control/angular-tree-control.js"></script>
-    <script src="bower_components/pdfmakeoas/build/pdfmake.js"></script>
-    <script src="bower_components/pdfmakeoas/build/vfs_fonts.js"></script>
-    <script src="bower_components/ngstorage/ngStorage.js"></script>
-    <script src="bower_components/angular-websocket/dist/angular-websocket.js"></script>
-    <script src="bower_components/angular-input-masks/angular-input-masks-standalone.js"></script>
-    <script src="bower_components/moment/moment.js"></script>
-    <script src="bower_components/angular-moment/angular-moment.js"></script>
-    <script src="bower_components/angular-translate/angular-translate.js"></script>
-    <script src="bower_components/sweetalert2/dist/sweetalert2.js"></script>
-    <script src="bower_components/chart.js/dist/Chart.js"></script>
-    <script src="bower_components/vis/dist/vis.js"></script>
-    <script src="bower_components/d3/d3.js"></script>
-    <script src="bower_components/nvd3/build/nv.d3.js"></script>
-    <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
-    <script src="bower_components/ng-knob/dist/ng-knob.js"></script>
-    <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
-    <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
-    <script src="bower_components/select2/select2.js"></script>
-    <script src="bower_components/angular-file-model/angular-file-model.js"></script>
-    <script src="bower_components/bootstrap-fileinput/js/fileinput.min.js"></script>
-    <script src="bower_components/angular-bootstrap-fileinput/angular-bootstrap-fileinput.js"></script>
-    <script src="bower_components/nuxeo/dist/nuxeo.js"></script>
-    <script src="bower_components/colombia-holidays/js/holidays.js"></script>
-    <script src="bower_components/lodash/lodash.js"></script>
-    <script src="bower_components/jszip/dist/jszip.js"></script>
-    <script src="bower_components/excel-builder-js/dist/excel-builder.dist.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="scripts/app.js"></script>
-    <script src="scripts/controllers/main.js"></script>
-    <!-- endbuild -->
-  </body>
-
-  <!-- build:js({.tmp,app}) scripts/extras.js -->
-  <script src="scripts/environment/environment.js"></script>
-  <script src="scripts/services/implicit_token.js"></script>
-  <script src="scripts/services/notificacion.js"></script>
-  <script src="scripts/services/theme.js"></script>
-  <script src="scripts/services/administrativa_service.js"></script>
-  <script src="scripts/services/administrativa_mid_service.js"></script>
-  <script src="scripts/services/autenticacion_mid_service.js"></script>
-  <script src="scripts/services/cumplidos_crud_service.js"></script>
-  <script src="scripts/services/cumplidos_mid_service.js"></script>
-  <script src="scripts/services/utilidades.js"></script>
-  <script src="scripts/services/titan_mid_service.js"></script>
-  <script src="scripts/services/gestor_documental_mid_service.js"></script>
-  <script src="scripts/services/administrstiva_jbpm_v2_service.js"></script>
-  <script src="scripts/services/core_service.js"></script>
-  <script src="scripts/services/documento_crud_service.js"></script>
-  <script src="scripts/services/amazon_administrativa.js"></script>
-  <script src="scripts/services/contrato_service.js"></script>
-  <script src="scripts/services/financiera_jbpm_service.js"></script>
-  <script src="scripts/services/configuracion_service.js"></script>
-  <script src="scripts/services/grid/gridapi_service.js"></script>
-  <script src="scripts/services/utils/colombia_holidays.js"></script>
-  <script src="scripts/services/funcionalidades_generales.js"></script>
-  <script src="scripts/controllers/header.js"></script>
-  <script src="scripts/controllers/menu-aplicaciones.js"></script>
-  <script src="scripts/controllers/menu-lateral.js"></script>
-  <script src="scripts/controllers/notificaciones.js"></script>
-  <script src="scripts/controllers/footer.js"></script>
-  <script src="scripts/controllers/about.js"></script>
-  <script src="scripts/controllers/seguimientoycontrol/tecnico/carga_documentos_contratista.js"></script>
-  <script src="scripts/controllers/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.js"></script>
-  <script src="scripts/controllers/cumplidosaprobadosordenador/visualizacion_cumplidos.js"></script>
-  <script src="scripts/controllers/parametrizacionfechas/parametrizacion_fechas.js"></script>
-  <script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_supervisor.js"></script>
-  <script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_ordenador.js"></script>
-  <script src="scripts/controllers/seguimientoycontrol/tecnico/reversion_aprobados.js"></script>
-  <script src="scripts/decorators/text_translate.js"></script>
-  <script src="scripts/directives/opciones-component/opciones-directive.js"></script>
-  <script src="scripts/controllers/seguimientoycontrol/tecnico/historico_pagos.js"></script>
-  <script src="scripts/controllers/seguimientoycontrol/tecnico/historico_pagos.js"></script>
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-touch/angular-touch.js"></script>
+  <script src="bower_components/angular-ui-grid/ui-grid.js"></script>
+  <script src="bower_components/angular-md5/angular-md5.js"></script>
+  <script src="bower_components/AngularJS-OAuth2/dist/angularJsOAuth2.js"></script>
+  <script src="bower_components/angular-aria/angular-aria.js"></script>
+  <script src="bower_components/angular-messages/angular-messages.js"></script>
+  <script src="bower_components/angular-material/angular-material.js"></script>
+  <script src="bower_components/angular-tree-control/angular-tree-control.js"></script>
+  <script src="bower_components/pdfmakeoas/build/pdfmake.js"></script>
+  <script src="bower_components/pdfmakeoas/build/vfs_fonts.js"></script>
+  <script src="bower_components/ngstorage/ngStorage.js"></script>
+  <script src="bower_components/angular-websocket/dist/angular-websocket.js"></script>
+  <script src="bower_components/angular-input-masks/angular-input-masks-standalone.js"></script>
+  <script src="bower_components/moment/moment.js"></script>
+  <script src="bower_components/angular-moment/angular-moment.js"></script>
+  <script src="bower_components/angular-translate/angular-translate.js"></script>
+  <script src="bower_components/sweetalert2/dist/sweetalert2.js"></script>
+  <script src="bower_components/chart.js/dist/Chart.js"></script>
+  <script src="bower_components/vis/dist/vis.js"></script>
+  <script src="bower_components/d3/d3.js"></script>
+  <script src="bower_components/nvd3/build/nv.d3.js"></script>
+  <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
+  <script src="bower_components/ng-knob/dist/ng-knob.js"></script>
+  <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
+  <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+  <script src="bower_components/select2/select2.js"></script>
+  <script src="bower_components/angular-file-model/angular-file-model.js"></script>
+  <script src="bower_components/bootstrap-fileinput/js/fileinput.min.js"></script>
+  <script src="bower_components/angular-bootstrap-fileinput/angular-bootstrap-fileinput.js"></script>
+  <script src="bower_components/nuxeo/dist/nuxeo.js"></script>
+  <script src="bower_components/colombia-holidays/js/holidays.js"></script>
+  <script src="bower_components/lodash/lodash.js"></script>
+  <script src="bower_components/jszip/dist/jszip.js"></script>
+  <script src="bower_components/excel-builder-js/dist/excel-builder.dist.js"></script>
+  <!-- endbower -->
   <!-- endbuild -->
-  <!-- <script src="./core/scripts/angular-material.min.js"></script> -->
+
+  <!-- build:js({.tmp,app}) scripts/scripts.js -->
+  <script src="scripts/app.js"></script>
+  <script src="scripts/controllers/main.js"></script>
+  <!-- endbuild -->
+</body>
+
+<!-- build:js({.tmp,app}) scripts/extras.js -->
+<script src="scripts/environment/environment.js"></script>
+<script src="scripts/services/implicit_token.js"></script>
+<script src="scripts/services/notificacion.js"></script>
+<script src="scripts/services/theme.js"></script>
+<script src="scripts/services/administrativa_service.js"></script>
+<script src="scripts/services/administrativa_mid_service.js"></script>
+<script src="scripts/services/autenticacion_mid_service.js"></script>
+<script src="scripts/services/cumplidos_crud_service.js"></script>
+<script src="scripts/services/cumplidos_mid_service.js"></script>
+<script src="scripts/services/utilidades.js"></script>
+<script src="scripts/services/titan_mid_service.js"></script>
+<script src="scripts/services/gestor_documental_mid_service.js"></script>
+<script src="scripts/services/administrstiva_jbpm_v2_service.js"></script>
+<script src="scripts/services/core_service.js"></script>
+<script src="scripts/services/documento_crud_service.js"></script>
+<script src="scripts/services/amazon_administrativa.js"></script>
+<script src="scripts/services/contrato_service.js"></script>
+<script src="scripts/services/financiera_jbpm_service.js"></script>
+<script src="scripts/services/configuracion_service.js"></script>
+<script src="scripts/services/grid/gridapi_service.js"></script>
+<script src="scripts/services/utils/colombia_holidays.js"></script>
+<script src="scripts/services/funcionalidades_generales.js"></script>
+<script src="scripts/controllers/header.js"></script>
+<script src="scripts/controllers/menu-aplicaciones.js"></script>
+<script src="scripts/controllers/menu-lateral.js"></script>
+<script src="scripts/controllers/notificaciones.js"></script>
+<script src="scripts/controllers/footer.js"></script>
+<script src="scripts/controllers/about.js"></script>
+<script src="scripts/controllers/seguimientoycontrol/tecnico/carga_documentos_contratista.js"></script>
+<script src="scripts/controllers/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.js"></script>
+<script src="scripts/controllers/cumplidosaprobadosordenador/visualizacion_cumplidos.js"></script>
+<script src="scripts/controllers/parametrizacionfechas/parametrizacion_fechas.js"></script>
+<script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_supervisor.js"></script>
+<script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_ordenador.js"></script>
+<script src="scripts/controllers/seguimientoycontrol/tecnico/reversion_aprobados.js"></script>
+<script src="scripts/decorators/text_translate.js"></script>
+<script src="scripts/directives/opciones-component/opciones-directive.js"></script>
+<script src="scripts/controllers/seguimientoycontrol/tecnico/historico_cumplidos.js"></script>
+
+<!-- endbuild -->
+<!-- <script src="./core/scripts/angular-material.min.js"></script> -->
+
 </html>

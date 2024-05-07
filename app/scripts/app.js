@@ -152,7 +152,8 @@ angular
           controllerAs: "ReversionAprobados",
         })
         .when("/seguimientoycontrol/tecnico/historico_pagos", {
-          templateUrl: "views/seguimientoycontrol/tecnico/historico_pagos.html",
+          templateUrl:
+            "views/seguimientoycontrol/tecnico/historico_cumplidos.html",
           controller: "HistoricoPagosCtrl",
           controllerAs: "HistoricoPagos",
         })
