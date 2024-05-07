@@ -926,7 +926,10 @@ var text_es = {
 
     //Reversion cumplidos por ordenador
     REVERSION_CUMPLIDOS_ORDENADOR:"REVERSION DE CUMPLIDOS APROBADOS",
-    FECHA_APROBACION:"FECHA APROBACION"
+    FECHA_APROBACION:"FECHA APROBACION",
+
+      //Historico Cumplidos
+     HISTORICO_CUMPLIDOS: "HISTORICO DE CUMPLIDOS",
 };
 
 var text_en = {
