@@ -1,21 +1,69 @@
-<div class="container-fluid">
+<div class="container-fluid mt-3">
+  <!-- Agregar margen superior al contenedor -->
   <div class="panel panel-default">
-    <div class="panel panel-primary panel-body">
-      <h2 class="page-header text-center">
-        {{'HISTORICO_CUMPLIDOS'|translate}}  
-      </h2>
+    <!-- Agregar margen inferior al panel -->
+    <div class="page-header text-center">
+      <h2>{{'HISTORICO_CUMPLIDOS'|translate}}</h2>
     </div>
-  </div class="panel-body">
-<form role="form"> 
-    <div class="row" col-lg-6>
-<div class="form-group">
-    <label class="col-lg-12">Año </label>
-    <input type="text" class="form-control" ng-model="aprobacionOrdenador.ordenador.nombre" disabled>
-</div>
-
+    <div class="panel-body panel mb-4 pb-4">
+      <form role="form ">
+        <div class="row">
+          <div class="form-group col-md-2">
+            <label for="anio">Año</label>
+            <select
+              class="form-control col-md-2"
+              id="anio"
+              ng-model="HistoricoCumplidos.selectAnio"
+              ng-options="anio  for anio in HistoricoCumplidos.anios"
+            >
+              <option value="">Selecciona un mes</option>
+            </select>
+          </div>
+          <div class="form-group col-md-2">
+            <label for="mes">Mes</label>
+            <select
+              class="form-control"
+              id="mes"
+              ng-model="HistoricoCumplidos.selectedMonth"
+              ng-options="mes.Id as mes.Nombre for mes in HistoricoCumplidos.meses"
+            >
+              <option value="">Selecciona un mes</option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="vigencia">Vigencia</label>
+            <input type="text" class="form-control" id="vigencia" />
+          </div>
+          <div class="form-group col-md-3">
+            <label for="documento">Numero de Documento</label>
+            <input type="text" class="form-control" id="documento" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-4">
+            <label for="estado">Estado</label>
+            <select
+              class="form-control"
+              id="estado"
+              ng-model="HistoricoCumplidos.selectEstado"
+              ng-options="estado.Nombre  for estado in HistoricoCumplidos.estados"
+            >
+              <option value="">Selecciona un estado</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="dependencia">Dependencia</label>
+            <input type="text" class="form-control" id="dependencia" />
+          </div>
+          <div class="form-group col-md-4">
+            <label for="noContrato">Numero de Contrato</label>
+            <input type="text" class="form-control" id="noContrato" />
+          </div>
+        </div>
+        <div class="form-group col-md-12 text-right">
+          <button type="submit" class="btn btn-success">Consultar</button>
+        </div>
+      </form>
     </div>
-
-</form>
-</div>
   </div>
 </div>

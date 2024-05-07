@@ -154,8 +154,8 @@ angular
         .when("/seguimientoycontrol/tecnico/historico_pagos", {
           templateUrl:
             "views/seguimientoycontrol/tecnico/historico_cumplidos.html",
-          controller: "HistoricoPagosCtrl",
-          controllerAs: "HistoricoPagos",
+          controller: "HistoricoCumplidosCtrl",
+          controllerAs: "HistoricoCumplidos",
         })
         .otherwise({
           redirectTo: "/",
