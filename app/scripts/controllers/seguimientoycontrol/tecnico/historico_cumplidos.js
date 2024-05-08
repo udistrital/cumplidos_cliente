@@ -2,9 +2,19 @@
 
 angular
   .module("contractualClienteApp")
-  .controller("HistoricoCumplidosCtrl", function ($translate) {
+  .controller("HistoricoCumplidosCtrl", function ($translate, $scope) {
     self = this;
     self.mesSelecionado;
+
+    self.filtro = {
+      anio: "",
+      mes: "",
+      vigencia: "",
+      documentos: [],
+      estado: "",
+      dependencia: "",
+      noContratos: [],
+    };
 
     //Meses del año
 
@@ -43,19 +53,19 @@ angular
       },
       {
         Id: 9,
-        Nombre: $translate.instant("SEPTIEMBRE"),
+        Nombre: $translate.instant("SEPT"),
       },
       {
         Id: 10,
-        Nombre: $translate.instant("OCTUBRE"),
+        Nombre: $translate.instant("OCTU"),
       },
       {
         Id: 11,
-        Nombre: $translate.instant("NOVIEMBRE"),
+        Nombre: $translate.instant("NOV"),
       },
       {
         Id: 12,
-        Nombre: $translate.instant("DICIEMBRE"),
+        Nombre: $translate.instant("DIC"),
       },
     ];
 
@@ -82,4 +92,18 @@ angular
         Nombre: $translate.instant("REVISON ORDENADOR"),
       },
     ];
+
+    ///Submit Filtro
+    self.submitFiltro = function () {
+      if ($scope.filtro.$invalid) {
+        swal({
+          title: "Verifica el formulario",
+          type: "warning",
+          showCancelButton: false,
+          confirmButtonColor: "#d33",
+          confirmButtonText: "Aceptar",
+        });
+        return;
+      }
+    };
   });

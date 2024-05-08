@@ -6,14 +6,18 @@
       <h2>{{'HISTORICO_CUMPLIDOS'|translate}}</h2>
     </div>
     <div class="panel-body panel mb-4 pb-4">
-      <form role="form ">
+      <form
+        name="filtro"
+        ng-submit="HistoricoCumplidos.submitFiltro()"
+        novalidate
+      >
         <div class="row">
           <div class="form-group col-md-2">
             <label for="anio">Año</label>
             <select
               class="form-control col-md-2"
               id="anio"
-              ng-model="HistoricoCumplidos.selectAnio"
+              ng-model="HistoricoCumplidos.filtro.anio"
               ng-options="anio  for anio in HistoricoCumplidos.anios"
             >
               <option value="">Selecciona un mes</option>
@@ -24,7 +28,7 @@
             <select
               class="form-control"
               id="mes"
-              ng-model="HistoricoCumplidos.selectedMonth"
+              ng-model="HistoricoCumplidos.filtro.mes"
               ng-options="mes.Id as mes.Nombre for mes in HistoricoCumplidos.meses"
             >
               <option value="">Selecciona un mes</option>
@@ -32,11 +36,35 @@
           </div>
           <div class="form-group col-md-3">
             <label for="vigencia">Vigencia</label>
-            <input type="text" class="form-control" id="vigencia" />
+            <select
+              class="form-control col-md-2"
+              id="vigencia"
+              ng-model="HistoricoCumplidos.filtro.vigencia"
+              ng-options="vigencia  for vigencia in HistoricoCumplidos.anios"
+            >
+              <option value="">Selecciona un mes</option>
+            </select>
           </div>
           <div class="form-group col-md-3">
             <label for="documento">Numero de Documento</label>
-            <input type="text" class="form-control" id="documento" />
+            <input
+              type="text"
+              class="form-control"
+              id="documento"
+              name="documento"
+              ng-model="HistoricoCumplidos.filtro.documento"
+              ng-pattern="/^\d+(,\d+)*$/"
+              ng-mouseover="docMessage = true"
+              ng-mouseleave="docMessage = false"
+            />
+            <span
+              class="text-danger"
+              ng-show="filtro.documento.$error.pattern && filtro.documento.$dirty"
+              >Utiliza valores numéricos</span
+            >
+            <div class="text-warning" ng-show="docMessage">
+              puedes ingresar varias opciones separando con ,
+            </div>
           </div>
         </div>
         <div class="row">
@@ -45,19 +73,52 @@
             <select
               class="form-control"
               id="estado"
-              ng-model="HistoricoCumplidos.selectEstado"
+              ng-model="HistoricoCumplidos.filtro.estado"
               ng-options="estado.Nombre  for estado in HistoricoCumplidos.estados"
             >
               <option value="">Selecciona un estado</option>
             </select>
           </div>
+
           <div class="form-group col-md-4">
             <label for="dependencia">Dependencia</label>
-            <input type="text" class="form-control" id="dependencia" />
+            <select
+              class="form-control"
+              id="dependencia"
+              name="dependencia"
+              ng-model="HistoricoCumplidos.filtro.dependencia"
+              ng-options="estado.Nombre  for estado in HistoricoCumplidos.estados"
+              required
+            >
+              <option value="">Selecciona un estado</option>
+            </select>
+            <span
+              class="text-danger"
+              ng-show="(filtro.dependencia.$error.required && filtro.$submitted) || (filtro.dependencia.$error.required && filtro.dependencia.$dirty)"
+              >Por favor selecciona una dependencia</span
+            >
           </div>
+
           <div class="form-group col-md-4">
             <label for="noContrato">Numero de Contrato</label>
-            <input type="text" class="form-control" id="noContrato" />
+            <input
+              type="text"
+              class="form-control"
+              id="noContrato"
+              name="noContrato"
+              ng-model="HistoricoCumplidos.filtro.noContratos"
+              ng-mouseover="contratoMessage = true"
+              ng-mouseleave="contratoMessage = false"
+              ng-pattern="/^\d+(,\d+)*$/"
+            />
+            <span
+              class="text-danger"
+              ng-show="filtro.noContrato.$error.pattern && filtro.noContrato.$dirty"
+              >Utiliza valores numéricos</span
+            >
+            <div class="text-warning" ng-show="contratoMessage">
+              puedes ingresar varias opciones separando con ,
+            </div>
           </div>
         </div>
         <div class="form-group col-md-12 text-right">
