@@ -89,7 +89,7 @@
               class="form-control"
               id="estado"
               ng-model="HistoricoCumplidos.filtro.estado"
-              ng-options="estado.Nombre  for estado in HistoricoCumplidos.estados"
+              ng-options="estado.Id as estado.Nombre  for estado in HistoricoCumplidos.estados"
             >
               <option value="">{{'SELECION_OPCION'|translate}}</option>
             </select>
@@ -102,7 +102,7 @@
               id="dependencia"
               name="dependencia"
               ng-model="HistoricoCumplidos.filtro.dependencia"
-              ng-options="estado.Nombre  for estado in HistoricoCumplidos.estados"
+              ng-options="estado.Id as estado.Nombre   for estado in HistoricoCumplidos.estados"
               required
             >
               <
