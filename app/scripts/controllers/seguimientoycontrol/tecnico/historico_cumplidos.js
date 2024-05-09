@@ -7,8 +7,8 @@ angular
     self.mesSelecionado;
 
     self.filtro = {
-      anio: "",
-      mes: "",
+      anios: "",
+      meses: "",
       vigencia: "",
       documentos: [],
       estado: "",
@@ -93,11 +93,20 @@ angular
       },
     ];
 
+    //Regresar array de numeros
+    self.getArray = (numbers) => {
+      let numeros = numbers.split(",");
+      let arrayNumber = numeros.map(function (numero) {
+        return numero.trim();
+      });
+      return arrayNumber;
+    };
+
     ///Submit Filtro
     self.submitFiltro = function () {
       if ($scope.filtro.$invalid) {
         swal({
-          title: "Verifica el formulario",
+          title: $translate.instant("TITULO_ERROR"),
           type: "warning",
           showCancelButton: false,
           confirmButtonColor: "#d33",
@@ -105,5 +114,14 @@ angular
         });
         return;
       }
+
+      if (self.filtro.documento) {
+        self.filtro.documentos = self.getArray(self.filtro.documento);
+      }
+
+      if (self.filtro.noContrato) {
+        self.filtro.noContratos = self.getArray(self.filtro.noContratos);
+      }
+      console.log(self.filtro);
     };
   });

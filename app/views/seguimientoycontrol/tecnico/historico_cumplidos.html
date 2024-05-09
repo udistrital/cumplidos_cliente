@@ -1,7 +1,5 @@
 <div class="container-fluid mt-3">
-  <!-- Agregar margen superior al contenedor -->
   <div class="panel panel-default">
-    <!-- Agregar margen inferior al panel -->
     <div class="page-header text-center">
       <h2>{{'HISTORICO_CUMPLIDOS'|translate}}</h2>
     </div>
@@ -13,40 +11,57 @@
       >
         <div class="row">
           <div class="form-group col-md-2">
-            <label for="anio">Año</label>
+            <label>{{'AÑO'|translate}}</label><br />
             <select
-              class="form-control col-md-2"
+              class="form-control selectpicker"
               id="anio"
-              ng-model="HistoricoCumplidos.filtro.anio"
-              ng-options="anio  for anio in HistoricoCumplidos.anios"
+              ng-model="HistoricoCumplidos.filtro.anios"
+              multiple
+              data-none-selected-text="{{'SELECION_OPCION'|translate}}"
             >
-              <option value="">Selecciona un mes</option>
+              <option
+                ng-repeat="anio in HistoricoCumplidos.anios"
+                ng-value="anio"
+              >
+                {{ anio }}
+              </option>
             </select>
           </div>
+
           <div class="form-group col-md-2">
-            <label for="mes">Mes</label>
+            <label for="mes">{{'MES'|translate}}</label>
             <select
-              class="form-control"
+              class="form-control selectpicker"
               id="mes"
               ng-model="HistoricoCumplidos.filtro.mes"
-              ng-options="mes.Id as mes.Nombre for mes in HistoricoCumplidos.meses"
+              multiple
+              data-none-selected-text="{{'SELECION_OPCION'|translate}}"
             >
-              <option value="">Selecciona un mes</option>
+              <option
+                ng-repeat="mes in HistoricoCumplidos.meses"
+                value="{{mes.Id}}"
+              >
+                {{mes.Nombre}}
+              </option>
             </select>
           </div>
           <div class="form-group col-md-3">
-            <label for="vigencia">Vigencia</label>
+            <label for="vigencia">{{'VIGENCIA_CONTRATO'|translate}}</label>
             <select
-              class="form-control col-md-2"
+              class="form-control selectpicker"
               id="vigencia"
               ng-model="HistoricoCumplidos.filtro.vigencia"
               ng-options="vigencia  for vigencia in HistoricoCumplidos.anios"
+              data-none-selected-text="{{'SELECION_OPCION'|translate}}"
+              multiple
             >
-              <option value="">Selecciona un mes</option>
+              <option ng-repeat="anio in HistoricoCumplidos.anios" value="">
+                {{anio}}
+              </option>
             </select>
           </div>
           <div class="form-group col-md-3">
-            <label for="documento">Numero de Documento</label>
+            <label for="documento">{{'NUMERO_DOCUMENTO'|translate}}</label>
             <input
               type="text"
               class="form-control"
@@ -60,28 +75,28 @@
             <span
               class="text-danger"
               ng-show="filtro.documento.$error.pattern && filtro.documento.$dirty"
-              >Utiliza valores numéricos</span
+              >{{"SOLO_NUMEROS"|translate}}</span
             >
             <div class="text-warning" ng-show="docMessage">
-              puedes ingresar varias opciones separando con ,
+              {{"MULTIPLES_OPCCIONES"|translate}}
             </div>
           </div>
         </div>
         <div class="row">
           <div class="form-group col-md-4">
-            <label for="estado">Estado</label>
+            <label for="estado">{{'ESTADO'|translate}}</label>
             <select
               class="form-control"
               id="estado"
               ng-model="HistoricoCumplidos.filtro.estado"
               ng-options="estado.Nombre  for estado in HistoricoCumplidos.estados"
             >
-              <option value="">Selecciona un estado</option>
+              <option value="">{{'SELECION_OPCION'|translate}}</option>
             </select>
           </div>
 
           <div class="form-group col-md-4">
-            <label for="dependencia">Dependencia</label>
+            <label for="dependencia">{{"DEPENDENCIA"|translate}}</label>
             <select
               class="form-control"
               id="dependencia"
@@ -90,17 +105,18 @@
               ng-options="estado.Nombre  for estado in HistoricoCumplidos.estados"
               required
             >
-              <option value="">Selecciona un estado</option>
+              <
+              <option value="">{{'SELECION_OPCION'|translate}}</option>
             </select>
             <span
               class="text-danger"
               ng-show="(filtro.dependencia.$error.required && filtro.$submitted) || (filtro.dependencia.$error.required && filtro.dependencia.$dirty)"
-              >Por favor selecciona una dependencia</span
+              >{{"CAMPO_REQUERIDO"|translate}}</span
             >
           </div>
 
           <div class="form-group col-md-4">
-            <label for="noContrato">Numero de Contrato</label>
+            <label for="noContrato">{{'NUM_CONTRAC'|translate}}</label>
             <input
               type="text"
               class="form-control"
@@ -114,15 +130,17 @@
             <span
               class="text-danger"
               ng-show="filtro.noContrato.$error.pattern && filtro.noContrato.$dirty"
-              >Utiliza valores numéricos</span
+              >{{"SOLO_NUMEROS"|translate}}</span
             >
             <div class="text-warning" ng-show="contratoMessage">
-              puedes ingresar varias opciones separando con ,
+              {{"MULTIPLES_OPCCIONES"|translate}}
             </div>
           </div>
         </div>
-        <div class="form-group col-md-12 text-right">
-          <button type="submit" class="btn btn-success">Consultar</button>
+        <div class="form-group col-md-12 text-center">
+          <button type="submit" class="btn btn-success">
+            {{"BUSCAR"|translate}}
+          </button>
         </div>
       </form>
     </div>
