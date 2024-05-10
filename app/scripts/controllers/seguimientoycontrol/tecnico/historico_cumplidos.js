@@ -4,9 +4,17 @@ angular
   .module("contractualClienteApp")
   .controller(
     "HistoricoCumplidosCtrl",
-    function ($translate, $scope, cumplidosCrudRequest, CONF) {
+    function (
+      $translate,
+      $scope,
+      cumplidosCrudRequest,
+      CONF,
+      token_service,
+      contratoRequest
+    ) {
       self = this;
       self.mesSelecionado;
+      self.playLoad = token_service.getPayload();
 
       self.filtro = {
         anios: "",
@@ -71,7 +79,7 @@ angular
         },
       ];
 
-      //año del 2017 al actual
+      //año del 2017 al actual7230282
       self.obtenerAnios = () => {
         const anioActual = new Date().getFullYear();
         let anios = [];
@@ -81,16 +89,28 @@ angular
         return anios;
       };
       self.anios = self.obtenerAnios();
-
       //estados
       self.estados = cumplidosCrudRequest
         .get("/estado_pago_mensual", "")
         .then(function (response) {
           self.estados = response.data.Data;
         })
+
         .catch(function (error) {
           console.error("Error al obtener datos:", error);
         });
+
+      //dependencia
+      self.dependencia = contratoRequest
+        .get("dependencias_supervisor", self.playLoad.documento)
+        .then(function (response) {
+          self.dependencia = response.data;
+        })
+        .catch(function (error) {
+          console.error("Error al obtener datos:", error);
+        });
+
+      //
       //Regresar array de numeros
       self.getArray = (numbers) => {
         let numeros = numbers.split(",");
@@ -102,7 +122,6 @@ angular
 
       ///Submit Filtro
       self.submitFiltro = function () {
-        console.log(self.estados);
         if ($scope.filtro.$invalid) {
           swal({
             title: $translate.instant("TITULO_ERROR"),
