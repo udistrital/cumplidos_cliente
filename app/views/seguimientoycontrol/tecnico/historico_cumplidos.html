@@ -1,0 +1,148 @@
+<div class="container-fluid mt-3">
+  <div class="panel panel-default">
+    <div class="page-header text-center">
+      <h2>{{'HISTORICO_CUMPLIDOS'|translate}}</h2>
+    </div>
+    <div class="panel-body panel mb-4 pb-4">
+      <form
+        name="filtro"
+        ng-submit="HistoricoCumplidos.submitFiltro()"
+        novalidate
+      >
+        <div class="row">
+          <div class="form-group col-md-2">
+            <label>{{'AÑO'|translate}}</label><br />
+            <select
+              class="form-control selectpicker"
+              id="anio"
+              ng-model="HistoricoCumplidos.filtro.anios"
+              multiple
+              data-none-selected-text="{{'SELECION_OPCION'|translate}}"
+            >
+              <option
+                ng-repeat="anio in HistoricoCumplidos.anios"
+                ng-value="anio"
+              >
+                {{ anio }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-2">
+            <label for="mes">{{'MES'|translate}}</label>
+            <select
+              class="form-control selectpicker"
+              id="mes"
+              ng-model="HistoricoCumplidos.filtro.mes"
+              multiple
+              data-none-selected-text="{{'SELECION_OPCION'|translate}}"
+            >
+              <option
+                ng-repeat="mes in HistoricoCumplidos.meses"
+                value="{{mes.Id}}"
+              >
+                {{mes.Nombre}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="vigencia">{{'VIGENCIA_CONTRATO'|translate}}</label>
+            <select
+              class="form-control selectpicker"
+              id="vigencia"
+              ng-model="HistoricoCumplidos.filtro.vigencia"
+              ng-options="vigencia  for vigencia in HistoricoCumplidos.anios"
+              data-none-selected-text="{{'SELECION_OPCION'|translate}}"
+              multiple
+            >
+              <option ng-repeat="anio in HistoricoCumplidos.anios" value="">
+                {{anio}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="documento">{{'NUMERO_DOCUMENTO'|translate}}</label>
+            <input
+              type="text"
+              class="form-control"
+              id="documento"
+              name="documento"
+              ng-model="HistoricoCumplidos.filtro.documento"
+              ng-pattern="/^\d+(,\d+)*$/"
+              ng-mouseover="docMessage = true"
+              ng-mouseleave="docMessage = false"
+            />
+            <span
+              class="text-danger"
+              ng-show="filtro.documento.$error.pattern && filtro.documento.$dirty"
+              >{{"SOLO_NUMEROS"|translate}}</span
+            >
+            <div class="text-warning" ng-show="docMessage">
+              {{"MULTIPLES_OPCCIONES"|translate}}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-4">
+            <label for="estado">{{'ESTADO'|translate}}</label>
+            <select
+              class="form-control"
+              id="estado"
+              ng-model="HistoricoCumplidos.filtro.estado"
+              ng-options="estado.Id as estado.Nombre  for estado in HistoricoCumplidos.estados"
+            >
+              <option value="">{{'SELECION_OPCION'|translate}}</option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-4">
+            <label for="dependencia">{{"DEPENDENCIA"|translate}}</label>
+            <select
+              class="form-control"
+              id="dependencia"
+              name="dependencia"
+              ng-model="HistoricoCumplidos.filtro.dependencia"
+              ng-options="estado.Id as estado.Nombre   for estado in HistoricoCumplidos.estados"
+              required
+            >
+              <
+              <option value="">{{'SELECION_OPCION'|translate}}</option>
+            </select>
+            <span
+              class="text-danger"
+              ng-show="(filtro.dependencia.$error.required && filtro.$submitted) || (filtro.dependencia.$error.required && filtro.dependencia.$dirty)"
+              >{{"CAMPO_REQUERIDO"|translate}}</span
+            >
+          </div>
+
+          <div class="form-group col-md-4">
+            <label for="noContrato">{{'NUM_CONTRAC'|translate}}</label>
+            <input
+              type="text"
+              class="form-control"
+              id="noContrato"
+              name="noContrato"
+              ng-model="HistoricoCumplidos.filtro.noContratos"
+              ng-mouseover="contratoMessage = true"
+              ng-mouseleave="contratoMessage = false"
+              ng-pattern="/^\d+(,\d+)*$/"
+            />
+            <span
+              class="text-danger"
+              ng-show="filtro.noContrato.$error.pattern && filtro.noContrato.$dirty"
+              >{{"SOLO_NUMEROS"|translate}}</span
+            >
+            <div class="text-warning" ng-show="contratoMessage">
+              {{"MULTIPLES_OPCCIONES"|translate}}
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-12 text-center">
+          <button type="submit" class="btn btn-success">
+            {{"BUSCAR"|translate}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
