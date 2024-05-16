@@ -184,11 +184,6 @@ angular.module('contractualClienteApp')
         {
           field: 'Acciones',
           displayName: $translate.instant('ACC'),
-          cellTemplate: '<a type="button" title="Ver soportes" type="button" class="fa fa-eye fa-lg  faa-shake animated-hover"' +
-            'ng-click="grid.appScope.aprobacionOrdenador.obtener_doc(row.entity.PagoMensual)" data-toggle="modal" data-target="#modal_ver_soportes"</a>&nbsp;' +
-            ' <a type="button" title="Aprobar pago" type="button" class="fa fa-check fa-lg  faa-shake animated-hover"  ng-click="grid.appScope.aprobacionOrdenador.aprobarPago(row.entity.PagoMensual)">' +
-            '<a type="button" title="Rechazar" type="button" class="fa fa-close fa-lg  faa-shake animated-hover"' +
-            'ng-click="grid.appScope.aprobacionOrdenador.rechazarPago(row.entity.PagoMensual)"></a>',
           width: "7%"
         }
       ]
@@ -305,7 +300,7 @@ angular.module('contractualClienteApp')
 
     self.aprobarPago = function (pago_mensual) {
       //console.log(pago_mensual);
-      
+
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
@@ -427,7 +422,7 @@ angular.module('contractualClienteApp')
         confirmButtonText: 'Aceptar'
       }).then(function () {
 
-        
+
 
         self.solicitudes_seleccionadas = self.gridApi.selection.getSelectedRows();
         //console.info(self.solicitudes_seleccionadas)
@@ -459,7 +454,7 @@ angular.module('contractualClienteApp')
                 'No se han podido aprobar los pagos de las solicitudes seleccionadas',
                 'error'
               );
-  
+
             }
           }).catch(function (response) { // en caso de nulos
             //if (response.data === 'OK'){
@@ -537,7 +532,7 @@ angular.module('contractualClienteApp')
               target: document.getElementById('modal_ver_soportes')
             });
             self.obtener_doc(self.fila_sol_pago);
-            
+
 
           })
 
