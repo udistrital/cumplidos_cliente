@@ -14,7 +14,7 @@ angular
       uiGridConstants,
       gridApiService,
       funcGen,
-      $http
+      cumplidosMidRequest
     ) {
 
       var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -284,9 +284,9 @@ angular
       var datos;
       if ((self.filtro.dependencia) && self.filtro.dependencia != ""){
         datos = {
-          "dependencias": "'DEP12','DEP626'",  //self.filtro.dependencia,
-          "vigencias": "2017", //self.filtro.vigencia,
-          "documentos_persona_id": "",//self.filtro.documentos.length != 0 ?  self.filtro.documentos.join(",") : "" ,
+          "dependencias": self.filtro.dependencia,
+          "vigencias": self.filtro.vigencia,
+          "documentos_persona_id": self.filtro.documentos.length != 0 ?  self.filtro.documentos.join(",") : "" ,
           "numeros_contratos": self.filtro.noContratos.length != 0 ?  self.filtro.noContratos.join(",") : "" ,
           "meses": self.filtro.meses,
           "anios": self.filtro.anios,
@@ -295,12 +295,7 @@ angular
 
         // Realizar la peticion post con los datos del objeto datos
 
-        //cumplidosCrudRequest.post('solicitudes_pagos', datos).then(function (response) {
-          $http({
-            method: 'POST',
-            url: "http://localhost:8080/v1/solicitudes_pagos",
-            data: datos
-          }).then(function(response){
+        cumplidosMidRequest.post('solicitudes_pagos', datos).then(function (response) {
           if(Object.keys(response.data.Data[0]).length === 0 ){
             swal({
               title: '',
@@ -311,7 +306,6 @@ angular
             //self.agregarNombreMeses(response.data.Data)
             self.gridOptions1.paginationCurrentPage = 1;
             self.agregarNombreMeses(response.data.Data)
-            console.log(response.data.Data)
             self.gridOptions1.data=response.data.Data;
             self.offset;
           }
@@ -321,7 +315,6 @@ angular
             text: 'Ocurrio un error al solicitar los registros',
             type: 'error',
           });
-          console.log(error)
         })
 
       }
