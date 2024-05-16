@@ -10,7 +10,8 @@ angular
       cumplidosCrudRequest,
       CONF,
       token_service,
-      contratoRequest
+      contratoRequest,
+      $timeout
     ) {
       self = this;
       self.mesSelecionado;
@@ -26,8 +27,12 @@ angular
         noContratos: [],
       };
 
+      function refreshSelectPicker() {
+        $timeout(function () {
+          $(".selectpicker").selectpicker("refresh");
+        });
+      }
       //Meses del año
-
       self.meses = [
         {
           Id: 1,
@@ -89,27 +94,28 @@ angular
         return anios;
       };
       self.anios = self.obtenerAnios();
+
+      //dependencia
+      self.dependencias = contratoRequest
+        .get("dependencias_supervisor/", self.playLoad.documento)
+        .then(function (response) {
+          self.dependencias = response.data;
+          refreshSelectPicker();
+        })
+        .catch(function (error) {
+          console.error("Error al obtener datos:", error);
+        });
       //estados
       self.estados = cumplidosCrudRequest
         .get("/estado_pago_mensual", "")
         .then(function (response) {
           self.estados = response.data.Data;
+          refreshSelectPicker();
         })
 
         .catch(function (error) {
           console.error("Error al obtener datos:", error);
         });
-
-      //dependencia
-      self.dependencia = contratoRequest
-        .get("dependencias_supervisor", self.playLoad.documento)
-        .then(function (response) {
-          self.dependencia = response.data;
-        })
-        .catch(function (error) {
-          console.error("Error al obtener datos:", error);
-        });
-
       //
       //Regresar array de numeros
       self.getArray = (numbers) => {
@@ -122,6 +128,7 @@ angular
 
       ///Submit Filtro
       self.submitFiltro = function () {
+        console.log(self.dependencias);
         if ($scope.filtro.$invalid) {
           swal({
             title: $translate.instant("TITULO_ERROR"),
