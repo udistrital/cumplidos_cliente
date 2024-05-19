@@ -106,25 +106,48 @@ angular
       self.anios = self.obtenerAnios();
 
       //dependencia
-      self.dependencias = contratoRequest
-        .get("/dependencias_supervisor", self.playLoad.documento)
+      self.dependencias = cumplidosMidRequest
+        .get("historicos/dependencias/12550145", "")
         .then(function (response) {
-          self.dependencias = response.data;
+          let Ordenador = response.data.Data["Dependencias Ordenador"] || [];
+          let Supervisor = response.data.Data["Dependencias Supervisor"] || [];
+          self.dependencias = Ordenador.concat(Supervisor);
+
+          for (var i = 0; i < self.dependencias.length; i++) {
+            self.dependenciaString += "'" + self.dependencias[i].Codigo + "'"; //
+            if (i < self.dependencias.length - 1) {
+              self.dependenciaString += ",";
+            }
+          }
           refreshSelectPicker();
         })
         .catch(function (error) {
-          console.error("Error al obtener datos:", error);
+          console.error("Error al obtener dependencias:", error);
         });
+
+      //Depenencias en string
+      self.dependenciasString = function () {
+        let dependenciaString = "";
+
+        for (var i = 0; i < self.filtro.dependencia.length; i++) {
+          dependenciaString += "'" + self.filtro.dependencia[i] + "'";
+          if (i < self.filtro.dependencia - 1) {
+            dependenciaString += ",";
+          }
+        }
+        console.log(dependenciaString);
+        return dependenciaString;
+      };
       //estados
       self.estados = cumplidosCrudRequest
-        .get("/estado_pago_mensual", "")
+        .get("estado_pago_mensual", "")
         .then(function (response) {
           self.estados = response.data.Data;
           refreshSelectPicker();
         })
 
         .catch(function (error) {
-          console.error("Error al obtener datos:", error);
+          console.error("Error al obtener estados:", error);
         });
       //
       //Regresar array de numeros
@@ -138,7 +161,6 @@ angular
 
       ///Submit Filtro
       self.submitFiltro = function () {
-        console.log(self.dependencias);
         if ($scope.filtro.$invalid) {
           swal({
             title: $translate.instant("TITULO_ERROR"),
@@ -157,7 +179,8 @@ angular
         if (self.filtro.noContrato) {
           self.filtro.noContratos = self.getArray(self.filtro.noContratos);
         }
-        console.log(self.filtro);
+        console.log(self.filtro.anios);
+        self.obtener_solicitudes_pagos();
       };
 
       /*
@@ -284,11 +307,10 @@ angular
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
         var datos;
-        self.filtro.dependencia = "'DEP12','DEP626'";
-        self.filtro.anios = "2017,2022";
+        console.log();
         if (self.filtro.dependencia && self.filtro.dependencia != "") {
           datos = {
-            dependencias: self.filtro.dependencia,
+            dependencias: self.dependenciasString(),
             vigencias: self.filtro.vigencia,
             documentos_persona_id:
               self.filtro.documentos.length != 0
@@ -304,8 +326,6 @@ angular
           };
 
           // Realizar la peticion post con los datos del objeto datos
-          console.log("------");
-          console.log(datos);
           cumplidosMidRequest.post("solicitudes_pagos", datos).then(
             function (response) {
               if (Object.keys(response.data.Data[0]).length === 0) {
@@ -341,8 +361,6 @@ angular
         });
         return data_modificada;
       };
-
-      self.obtener_solicitudes_pagos();
 
       self.getLineaTiempoEstados = function (idPago) {
         console.warn(idPago);
