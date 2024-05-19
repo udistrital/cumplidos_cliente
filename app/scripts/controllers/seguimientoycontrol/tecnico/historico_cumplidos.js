@@ -14,18 +14,16 @@ angular
       uiGridConstants,
       gridApiService,
       funcGen,
-      cumplidosMidRequest
+      cumplidosMidRequest,
       $timeout
     ) {
-
-      var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
+      var tmpl =
+        '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
       self = this;
-      self.funcGen=funcGen;
+      self.funcGen = funcGen;
       self.mesSelecionado;
       self.playLoad = token_service.getPayload();
       self.offset = 0;
-
-
 
       self.filtro = {
         anios: "",
@@ -36,6 +34,8 @@ angular
         dependencia: "",
         noContratos: [],
       };
+      self.estadosDelPago;
+      self.Documentospago;
 
       function refreshSelectPicker() {
         $timeout(function () {
@@ -107,7 +107,7 @@ angular
 
       //dependencia
       self.dependencias = contratoRequest
-        .get("dependencias_supervisor/", self.playLoad.documento)
+        .get("/dependencias_supervisor", self.playLoad.documento)
         .then(function (response) {
           self.dependencias = response.data;
           refreshSelectPicker();
@@ -160,186 +160,217 @@ angular
         console.log(self.filtro);
       };
 
-    /*
+      /*
       Creación tabla que tendrá todos las solicitudes de pagos de acuerdo a los filtros
     */
-    self.gridOptions1 = {
-      paginationPageSizes: [10, 15, 20],
-      paginationPageSize: 10,
-      enableSorting: true,
-      enableFiltering: true,
-      resizable: true,
-      rowHeight: 40,
-      useExternalPagination: true,
-      columnDefs: [
-        {
-          field: 'NombreDependencia',
-          cellTemplate: tmpl,
-          displayName: 'DEPENDENCIA',
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+      self.gridOptions1 = {
+        paginationPageSizes: [10, 15, 20],
+        paginationPageSize: 10,
+        enableSorting: true,
+        enableFiltering: true,
+        resizable: true,
+        rowHeight: 40,
+        useExternalPagination: true,
+        columnDefs: [
+          {
+            field: "NombreDependencia",
+            cellTemplate: tmpl,
+            displayName: "DEPENDENCIA",
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "18%",
           },
-          width: "18%"
-        },
-        {
-          field: 'Rubro',
-          cellTemplate: tmpl,
-          displayName: 'RUBRO',
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+          {
+            field: "Rubro",
+            cellTemplate: tmpl,
+            displayName: "RUBRO",
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "12%",
           },
-          width: "12%"
-        },
-        {
-          field: 'DocumentoContratista',
-          cellTemplate: tmpl,
-          displayName: $translate.instant('DOCUMENTO'),
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+          {
+            field: "DocumentoContratista",
+            cellTemplate: tmpl,
+            displayName: $translate.instant("DOCUMENTO"),
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "10%",
           },
-          width: "10%"
-        },
-        {
-          field: 'NombreContratista',
-          cellTemplate: tmpl,
-          displayName: 'NOMBRE PERSONA',
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+          {
+            field: "NombreContratista",
+            cellTemplate: tmpl,
+            displayName: "NOMBRE PERSONA",
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "18%",
           },
-          width: "18%"
-        },
 
-        {
-          field: 'Vigencia',
-          cellTemplate: tmpl,
-          cellRenderer: null,
-          displayName: 'VIGENCIA',
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+          {
+            field: "Vigencia",
+            cellTemplate: tmpl,
+            cellRenderer: null,
+            displayName: "VIGENCIA",
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "7%",
           },
-          width: "7%"
-        },
-        {
-          field: 'Ano',
-          cellTemplate: tmpl,
-          displayName: 'AÑO',
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+          {
+            field: "Ano",
+            cellTemplate: tmpl,
+            displayName: "AÑO",
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "7%",
           },
-          width: "7%"
-        },
-        {
-          field: 'mesNombre',
-          cellTemplate: tmpl,
-          displayName: $translate.instant('MES'),
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+          {
+            field: "mesNombre",
+            cellTemplate: tmpl,
+            displayName: $translate.instant("MES"),
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "9%",
           },
-          width: "9%"
-        },
-        {
-          field: 'Estado',
-          cellTemplate: tmpl,
-          displayName: $translate.instant('ESTADO'),
-          sort: {
-            direction: uiGridConstants.ASC,
-            priority: 1
+          {
+            field: "Estado",
+            cellTemplate: tmpl,
+            displayName: $translate.instant("ESTADO"),
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "9%",
           },
-          width: "9%"
+          {
+            field: "Acciones",
+            displayName: $translate.instant("ACC"),
+            cellTemplate:
+              '<div style="text-align: center;">' +
+              '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal"    ng-click="grid.appScope.HistoricoCumplidos.getLineaTiempoEstados(row.entity.Id)"   ></a>' +
+              '<a type="button" title="Ver soportes" class="fa fa-cube fa-lg faa-shake animated-hover" style="margin-left: 5px;"  data-toggle="modal" data-target="#modal_ver_soportes"></a>' +
+              "</div>",
+            width: "7%",
+          },
+        ],
+      };
+
+      self.gridOptions1.onRegisterApi = function (gridApi) {
+        self.gridApi = gridApi;
+
+        gridApi.selection.on.rowSelectionChanged($scope, function (row) {
+          self.solicitudes_seleccionadas = gridApi.selection.getSelectedRows();
+        });
+
+        self.gridApi = gridApiService.pagination(
+          self.gridApi,
+          self.obtener_solicitudes_pagos,
+          $scope
+        );
+      };
+
+      self.obtener_solicitudes_pagos = function () {
+        self.gridOptions1.data = [];
+        var datos;
+        self.filtro.dependencia = "'DEP12','DEP626'";
+        self.filtro.anios = "2017,2022";
+        if (self.filtro.dependencia && self.filtro.dependencia != "") {
+          datos = {
+            dependencias: self.filtro.dependencia,
+            vigencias: self.filtro.vigencia,
+            documentos_persona_id:
+              self.filtro.documentos.length != 0
+                ? self.filtro.documentos.join(",")
+                : "",
+            numeros_contratos:
+              self.filtro.noContratos.length != 0
+                ? self.filtro.noContratos.join(",")
+                : "",
+            meses: self.filtro.meses,
+            anios: self.filtro.anios,
+            estados_pagos: self.filtro.estado,
+          };
+
+          // Realizar la peticion post con los datos del objeto datos
+          console.log("------");
+          console.log(datos);
+          cumplidosMidRequest.post("solicitudes_pagos", datos).then(
+            function (response) {
+              if (Object.keys(response.data.Data[0]).length === 0) {
+                swal({
+                  title: "",
+                  text: "No se encontraron solicitudes de pagos asociados a los valores de busqueda",
+                  type: "warning",
+                });
+              } else {
+                //self.agregarNombreMeses(response.data.Data)
+                self.gridOptions1.paginationCurrentPage = 1;
+                self.agregarNombreMeses(response.data.Data);
+                self.gridOptions1.data = response.data.Data;
+                self.offset;
+              }
+            },
+            function (error) {
+              swal({
+                title: "Error",
+                text: "Ocurrio un error al solicitar los registros",
+                type: "error",
+              });
+            }
+          );
         }
-        ,
-        {
-          field: 'Acciones',
-          displayName: $translate.instant('ACC'),
-          cellTemplate: '<div style="text-align: center;">' +
-                          '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal" data-target="#modal_ver_detalles"></a>' +
-                          '<a type="button" title="Ver soportes" class="fa fa-cube fa-lg faa-shake animated-hover" style="margin-left: 5px;"  data-toggle="modal" data-target="#modal_ver_soportes"></a>' +
-                        '</div>',
-          width: "7%"
-        }
-      ]
-    };
+      };
 
-    self.gridOptions1.onRegisterApi = function (gridApi) {
-      self.gridApi = gridApi;
+      self.agregarNombreMeses = function (data) {
+        var data_modificada = data.map(function (item) {
+          var nombreMes = self.meses[item.Mes - 1].Nombre;
+          item.mesNombre = nombreMes;
+          return item;
+        });
+        return data_modificada;
+      };
 
-      gridApi.selection.on.rowSelectionChanged($scope, function (row) {
+      self.obtener_solicitudes_pagos();
 
-
-        self.solicitudes_seleccionadas = gridApi.selection.getSelectedRows();
-
-
-      });
-
-
-      self.gridApi = gridApiService.pagination(self.gridApi, self.obtener_solicitudes_pagos, $scope);
-
-    };
-
-
-
-    self.obtener_solicitudes_pagos = function() {
-
-      self.gridOptions1.data = [];
-      var datos;
-      if ((self.filtro.dependencia) && self.filtro.dependencia != ""){
-        datos = {
-          "dependencias": self.filtro.dependencia,
-          "vigencias": self.filtro.vigencia,
-          "documentos_persona_id": self.filtro.documentos.length != 0 ?  self.filtro.documentos.join(",") : "" ,
-          "numeros_contratos": self.filtro.noContratos.length != 0 ?  self.filtro.noContratos.join(",") : "" ,
-          "meses": self.filtro.meses,
-          "anios": self.filtro.anios,
-          "estados_pagos": self.filtro.estado
-        }
-
-        // Realizar la peticion post con los datos del objeto datos
-
-        cumplidosMidRequest.post('solicitudes_pagos', datos).then(function (response) {
-          if(Object.keys(response.data.Data[0]).length === 0 ){
-            swal({
-              title: '',
-              text: 'No se encontraron solicitudes de pagos asociados a los valores de busqueda',
-              type: 'warning',
-            });
-          }else{
-            //self.agregarNombreMeses(response.data.Data)
-            self.gridOptions1.paginationCurrentPage = 1;
-            self.agregarNombreMeses(response.data.Data)
-            self.gridOptions1.data=response.data.Data;
-            self.offset;
-          }
-        }, function (error){
-          swal({
-            title: 'Error',
-            text: 'Ocurrio un error al solicitar los registros',
-            type: 'error',
+      self.getLineaTiempoEstados = function (idPago) {
+        console.warn(idPago);
+        cumplidosCrudRequest
+          .get("historicos/cambio_estado_pago", idPago)
+          .then(function (response) {
+            self.estadosDelPago = response.data.Data;
+            console.log(self.estadosDelPago);
+            refreshSelectPicker();
+            $("#modal_ver_linea_tiempo").modal("show");
+          })
+          .catch(function (error) {
+            console.error("Error al obtener datos:", error);
           });
-        })
 
-      }
+        self.Documentospago = funcGen
+          .obtener_doc(idPago)
+          .then(function (documentos) {
+            self.Documentospago = documentos;
+            /// console.log(self.Documentospago);
+          })
+          .catch(function (error) {
+            console.error("Error al obtener documentos:", error);
+          });
+      };
 
-    };
-
-
-    self.agregarNombreMeses = function(data) {
-      var data_modificada = data.map(function(item) {
-        var nombreMes = self.meses[item.Mes - 1].Nombre;
-        item.mesNombre = nombreMes;
-        return item;
-      });
-      return data_modificada;
-    };
-
-
-    self.obtener_solicitudes_pagos();
-
+      self.verDocumento = function (file_base64, nameWindow) {
+        funcGen.getDocumento(file_base64, nameWindow);
+      };
     }
   );
