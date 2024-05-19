@@ -117,9 +117,9 @@
             >
               <option
                 ng-repeat="dependencia in HistoricoCumplidos.dependencias"
-                ng-value="dependencia.Id"
+                ng-value="dependencia.Codigo"
               >
-                {{ dependencia.Nombre }}
+                {{ dependencia.Codigo + ": "+ dependencia.Nombre}}
               </option>
             </select>
             <span
