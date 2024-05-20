@@ -21,7 +21,7 @@ angular.module('cumplidosCrudService', [])
                 if(angular.isUndefined(params)){
                     return $http.get(path + tabla, token_service.getHeader());
                 }else{
-                    return $http.get(path + tabla + "/" + params, token_service.getHeader());
+                    return $http.get(path + tabla + "/?" + params, token_service.getHeader());
                 }
             },
             post: function(tabla, elemento) {
