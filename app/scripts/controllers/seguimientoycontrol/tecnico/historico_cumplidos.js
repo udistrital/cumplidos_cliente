@@ -107,7 +107,7 @@ angular
 
       //dependencia
       self.dependencias = cumplidosMidRequest
-        .get("historicos/dependencias/12550145", "")
+        .get("historicos/dependencias/" + playLoad.documento, "")
         .then(function (response) {
           let Ordenador = response.data.Data["Dependencias Ordenador"] || [];
           let Supervisor = response.data.Data["Dependencias Supervisor"] || [];
