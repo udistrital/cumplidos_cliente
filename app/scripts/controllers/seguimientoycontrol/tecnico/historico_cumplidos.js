@@ -308,10 +308,6 @@ angular
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
         var datos;
-        self.filtro.dependencia = ["DEP12"];
-        self.filtro.anios = "2020,2021";
-        self.filtro.mes = "8";
-        self.filtro.documento = "1018458364";
 
         console.log(self.filtro);
         datos = {
