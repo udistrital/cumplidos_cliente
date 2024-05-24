@@ -412,10 +412,18 @@ angular
       };
 
       self.descargarDocumentos = function (idPago) {
+        swal({
+          title: "¡Iniciando descarga!",
+          text: "Espera  un momento",
+          type: "info",
+          showConfirmButton: false,
+          timer: 3000,
+        });
         let file = cumplidosMidRequest
           .get("download_documents/" + idPago, "")
           .then(function (response) {
             file = response.data.Data;
+
             funcGen.getZip(file);
           })
           .catch(function (error) {
