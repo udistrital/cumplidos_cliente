@@ -66,7 +66,7 @@ angular
       },
 
       //Funcion para decargar rar con documentos de un pago
-      getRar: function (fileJson) {
+      getZip: function (fileJson) {
         let file = new Blob([utils.base64ToArrayBuffer(fileJson.file)], {
           type: "application/zip",
         });
