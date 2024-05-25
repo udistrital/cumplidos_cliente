@@ -30,10 +30,10 @@ angular
         anios: "",
         meses: "",
         vigencia: "",
-        documentos: [],
-        estado: "",
+        documentos: "",
+        estados: "",
         dependencia: "",
-        noContratos: [],
+        noContratos: "",
       };
       self.estadosDelPago;
       self.Documentospago;
@@ -136,7 +136,6 @@ angular
             dependenciaString += ",";
           }
         }
-        console.log(dependenciaString);
         return dependenciaString;
       };
       //estados
@@ -152,12 +151,12 @@ angular
         });
       //
       //Regresar array de numeros
-      self.getArray = (numbers) => {
-        let numeros = numbers.split(",");
-        let arrayNumber = numeros.map(function (numero) {
-          return numero.trim();
-        });
-        return arrayNumber;
+      self.getString = (array) => {
+        if (array.length !== 0) {
+          return array.join(",");
+        } else {
+          return "";
+        }
       };
 
       ///Submit Filtro
@@ -171,17 +170,15 @@ angular
             confirmButtonText: "Aceptar",
           });
           return;
+        } else {
+          swal({
+            title: "¡Buscando!",
+            text: "Espera  un momento",
+            type: "info",
+            showConfirmButton: false,
+          });
+          self.obtener_solicitudes_pagos();
         }
-
-        if (self.filtro.documento) {
-          self.filtro.documentos = self.getArray(self.filtro.documento);
-        }
-
-        if (self.filtro.noContrato) {
-          self.filtro.noContratos = self.getArray(self.filtro.noContratos);
-        }
-        console.log(self.filtro.anios);
-        self.obtener_solicitudes_pagos();
       };
 
       /*
@@ -309,43 +306,23 @@ angular
         self.gridOptions1.data = [];
         var datos;
 
-        console.log(self.filtro);
-        datos = {
-          dependencias: self.filtro.dependencia,
-          vigencias: self.filtro.vigencia,
-          documentos_persona_id:
-            self.filtro.documentos.length != 0
-              ? self.filtro.documentos.join(",")
-              : "",
-          numeros_contratos:
-            self.filtro.noContratos.length != 0
-              ? self.filtro.noContratos.join(",")
-              : "",
-          meses: self.filtro.meses,
-          anios: self.filtro.anios,
-          estados_pagos: self.filtro.estado,
-        };
         if (self.filtro.dependencia && self.filtro.dependencia != "") {
           datos = {
             dependencias: self.dependenciasString(),
-            vigencias: self.filtro.vigencia,
-            documentos_persona_id:
-              self.filtro.documentos.length != 0
-                ? self.filtro.documentos.join(",")
-                : "",
-            numeros_contratos:
-              self.filtro.noContratos.length != 0
-                ? self.filtro.noContratos.join(",")
-                : "",
-            meses: self.filtro.meses,
-            anios: self.filtro.anios,
-            estados_pagos: self.filtro.estado,
+            vigencias: self.getString(self.filtro.vigencia),
+            documentos_persona_id: self.filtro.documentos,
+            numeros_contratos: self.filtro.noContratos,
+            meses: self.getString(self.filtro.meses),
+            anios: self.getString(self.filtro.anios),
+            estados_pagos: self.getString(self.filtro.estados),
           };
 
           // Realizar la peticion post con los datos del objeto datos
           cumplidosMidRequest.post("solicitudes_pagos", datos).then(
             function (response) {
-              if (Object.keys(response.data.Data[0]).length === 0) {
+              swal.close();
+              console.log(response);
+              if (response.data.Data == null) {
                 swal({
                   title: "",
                   text: "No se encontraron solicitudes de pagos asociados a los valores de busqueda",
@@ -381,7 +358,7 @@ angular
 
       self.getLineaTiempoEstados = function (idPago) {
         self.idPagoActual = idPago;
-        cumplidosCrudRequest
+        cumplidosMidRequest
           .get("historicos/cambio_estado_pago/" + "89499")
           .then(function (response) {
             self.estadosDelPago = response.data.Data;
@@ -413,14 +390,13 @@ angular
           text: "Espera  un momento",
           type: "info",
           showConfirmButton: false,
-          timer: 3000,
         });
         let file = cumplidosMidRequest
           .get("download_documents/" + idPago, "")
           .then(function (response) {
             file = response.data.Data;
-
             funcGen.getZip(file);
+            swal.close();
           })
           .catch(function (error) {
             swal({

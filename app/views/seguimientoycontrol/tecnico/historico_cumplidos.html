@@ -75,7 +75,7 @@
               class="form-control"
               id="documento"
               name="documento"
-              ng-model="HistoricoCumplidos.filtro.documento"
+              ng-model="HistoricoCumplidos.filtro.documentos"
               ng-pattern="/^\d+(,\d+)*$/"
               ng-mouseover="docMessage = true"
               ng-mouseleave="docMessage = false"
@@ -119,7 +119,7 @@
                 ng-repeat="dependencia in HistoricoCumplidos.dependencias"
                 ng-value="dependencia.Codigo"
               >
-                {{ dependencia.Codigo + ": "+ dependencia.Nombre}}
+                {{dependencia.Nombre}}
               </option>
             </select>
             <span
