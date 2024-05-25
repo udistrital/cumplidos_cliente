@@ -24,15 +24,16 @@ angular
       self.mesSelecionado;
       self.playLoad = token_service.getPayload();
       self.offset = 0;
+      self.idPagoActual;
 
       self.filtro = {
         anios: "",
         meses: "",
         vigencia: "",
-        documentos: [],
-        estado: "",
+        documentos: "",
+        estados: "",
         dependencia: "",
-        noContratos: [],
+        noContratos: "",
       };
       self.estadosDelPago;
       self.Documentospago;
@@ -107,7 +108,7 @@ angular
 
       //dependencia
       self.dependencias = cumplidosMidRequest
-        .get("historicos/dependencias/" + playLoad.documento, "")
+        .get("historicos/dependencias/" + self.playLoad.documento, "")
         .then(function (response) {
           let Ordenador = response.data.Data["Dependencias Ordenador"] || [];
           let Supervisor = response.data.Data["Dependencias Supervisor"] || [];
@@ -131,11 +132,10 @@ angular
 
         for (var i = 0; i < self.filtro.dependencia.length; i++) {
           dependenciaString += "'" + self.filtro.dependencia[i] + "'";
-          if (i < self.filtro.dependencia - 1) {
+          if (i < self.filtro.dependencia.length - 1) {
             dependenciaString += ",";
           }
         }
-        console.log(dependenciaString);
         return dependenciaString;
       };
       //estados
@@ -151,12 +151,12 @@ angular
         });
       //
       //Regresar array de numeros
-      self.getArray = (numbers) => {
-        let numeros = numbers.split(",");
-        let arrayNumber = numeros.map(function (numero) {
-          return numero.trim();
-        });
-        return arrayNumber;
+      self.getString = (array) => {
+        if (array.length !== 0) {
+          return array.join(",");
+        } else {
+          return "";
+        }
       };
 
       ///Submit Filtro
@@ -170,17 +170,15 @@ angular
             confirmButtonText: "Aceptar",
           });
           return;
+        } else {
+          swal({
+            title: "¡Buscando!",
+            text: "Espera  un momento",
+            type: "info",
+            showConfirmButton: false,
+          });
+          self.obtener_solicitudes_pagos();
         }
-
-        if (self.filtro.documento) {
-          self.filtro.documentos = self.getArray(self.filtro.documento);
-        }
-
-        if (self.filtro.noContrato) {
-          self.filtro.noContratos = self.getArray(self.filtro.noContratos);
-        }
-        console.log(self.filtro.anios);
-        self.obtener_solicitudes_pagos();
       };
 
       /*
@@ -282,8 +280,8 @@ angular
             displayName: $translate.instant("ACC"),
             cellTemplate:
               '<div style="text-align: center;">' +
-              '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal"    ng-click="grid.appScope.HistoricoCumplidos.getLineaTiempoEstados(row.entity.Id)"   ></a>' +
-              '<a type="button" title="Ver soportes" class="fa fa-cube fa-lg faa-shake animated-hover" style="margin-left: 5px;"  data-toggle="modal" data-target="#modal_ver_soportes"></a>' +
+              '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal"    ng-click="grid.appScope.HistoricoCumplidos.getLineaTiempoEstados(row.entity.IdPagoMensual)"   ></a>' +
+              '<a type="button" title="Descargar soportes" class="fa fa-cube fa-lg faa-shake animated-hover" style="margin-left: 5px;"  data-toggle="modal" ng-click="grid.appScope.HistoricoCumplidos.descargarDocumentos(row.entity.IdPagoMensual)"></a>' +
               "</div>",
             width: "7%",
           },
@@ -307,28 +305,24 @@ angular
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
         var datos;
-        console.log();
+
         if (self.filtro.dependencia && self.filtro.dependencia != "") {
           datos = {
             dependencias: self.dependenciasString(),
-            vigencias: self.filtro.vigencia,
-            documentos_persona_id:
-              self.filtro.documentos.length != 0
-                ? self.filtro.documentos.join(",")
-                : "",
-            numeros_contratos:
-              self.filtro.noContratos.length != 0
-                ? self.filtro.noContratos.join(",")
-                : "",
-            meses: self.filtro.meses,
-            anios: self.filtro.anios,
-            estados_pagos: self.filtro.estado,
+            vigencias: self.getString(self.filtro.vigencia),
+            documentos_persona_id: self.filtro.documentos,
+            numeros_contratos: self.filtro.noContratos,
+            meses: self.getString(self.filtro.meses),
+            anios: self.getString(self.filtro.anios),
+            estados_pagos: self.getString(self.filtro.estados),
           };
 
           // Realizar la peticion post con los datos del objeto datos
           cumplidosMidRequest.post("solicitudes_pagos", datos).then(
             function (response) {
-              if (Object.keys(response.data.Data[0]).length === 0) {
+              swal.close();
+              console.log(response);
+              if (response.data.Data == null) {
                 swal({
                   title: "",
                   text: "No se encontraron solicitudes de pagos asociados a los valores de busqueda",
@@ -363,12 +357,11 @@ angular
       };
 
       self.getLineaTiempoEstados = function (idPago) {
-        console.warn(idPago);
-        cumplidosCrudRequest
-          .get("historicos/cambio_estado_pago", idPago)
+        self.idPagoActual = idPago;
+        cumplidosMidRequest
+          .get("historicos/cambio_estado_pago/" + "89499")
           .then(function (response) {
             self.estadosDelPago = response.data.Data;
-            console.log(self.estadosDelPago);
             refreshSelectPicker();
             $("#modal_ver_linea_tiempo").modal("show");
           })
@@ -389,6 +382,29 @@ angular
 
       self.verDocumento = function (file_base64, nameWindow) {
         funcGen.getDocumento(file_base64, nameWindow);
+      };
+
+      self.descargarDocumentos = function (idPago) {
+        swal({
+          title: "¡Iniciando descarga!",
+          text: "Espera  un momento",
+          type: "info",
+          showConfirmButton: false,
+        });
+        let file = cumplidosMidRequest
+          .get("download_documents/" + idPago, "")
+          .then(function (response) {
+            file = response.data.Data;
+            funcGen.getZip(file);
+            swal.close();
+          })
+          .catch(function (error) {
+            swal({
+              title: "Error",
+              text: "Ocurrio un error al descargar los archivos",
+              type: "error",
+            });
+          });
       };
     }
   );
