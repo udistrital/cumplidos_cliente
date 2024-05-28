@@ -15,7 +15,7 @@ angular
       gridApiService,
       funcGen,
       cumplidosMidRequest,
-      $timeout
+      $timeout,
     ) {
       var tmpl =
         '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -185,13 +185,14 @@ angular
       Creación tabla que tendrá todos las solicitudes de pagos de acuerdo a los filtros
     */
       self.gridOptions1 = {
+        enablePaginationControls: true,
         paginationPageSizes: [10, 15, 20],
         paginationPageSize: 10,
         enableSorting: true,
         enableFiltering: true,
         resizable: true,
         rowHeight: 40,
-        useExternalPagination: true,
+        enableColumnResizing: true,
         columnDefs: [
           {
             field: "NombreDependencia",
@@ -302,6 +303,7 @@ angular
         );
       };
 
+
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
         var datos;
@@ -346,6 +348,7 @@ angular
           );
         }
       };
+
 
       self.agregarNombreMeses = function (data) {
         var data_modificada = data.map(function (item) {
