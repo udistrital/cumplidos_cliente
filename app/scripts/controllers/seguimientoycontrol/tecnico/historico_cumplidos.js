@@ -359,7 +359,7 @@ angular
       self.getLineaTiempoEstados = function (idPago) {
         self.idPagoActual = idPago;
         cumplidosMidRequest
-          .get("historicos/cambio_estado_pago/" + "89499")
+          .get("historicos/cambio_estado_pago/" + idPago)
           .then(function (response) {
             self.estadosDelPago = response.data.Data;
             refreshSelectPicker();
