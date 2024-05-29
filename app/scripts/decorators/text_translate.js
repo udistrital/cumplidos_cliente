@@ -932,8 +932,9 @@ var text_es = {
      HISTORICO_CUMPLIDOS: "HISTORICO DE CUMPLIDOS",
      SELECION_OPCION : "Selecciona una opccion",
      SOLO_NUMEROS: "Ingresa solo valores numéricos",
-    MULTIPLES_OPCCIONES: "Puedes ingresar varias opciones separadas por comas."
-     
+    MULTIPLES_OPCCIONES: "Puedes ingresar varias opciones separadas por comas.",
+    ERROR_SIN_ESTADOS_PAGO: "No hay registros de cambio de estado.",
+    ERROR_SIN_DOCUEMENTOS_PAGO: "No hay documentos cargados"
 };
 
 var text_en = {

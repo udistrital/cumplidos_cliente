@@ -25,6 +25,7 @@ angular
       self.playLoad = token_service.getPayload();
       self.offset = 0;
       self.idPagoActual;
+      self.MostrarCargando;
 
       self.filtro = {
         anios: "",
@@ -36,7 +37,7 @@ angular
         noContratos: "",
       };
       self.estadosDelPago;
-      self.Documentospago;
+      self.Documentospago = [];
 
       function refreshSelectPicker() {
         $timeout(function () {
@@ -189,10 +190,10 @@ angular
         paginationPageSizes: [10, 15, 20],
         paginationPageSize: 10,
         enableSorting: true,
+        enableColumnResizing: true,
         enableFiltering: true,
         resizable: true,
         rowHeight: 40,
-        enableColumnResizing: true,
         columnDefs: [
           {
             field: "NombreDependencia",
@@ -234,6 +235,16 @@ angular
             },
             width: "18%",
           },
+          {
+            field: "NumeroContrato",
+            cellTemplate: tmpl,
+            displayName: "Nº CONTRATO",
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "*",
+          },
 
           {
             field: "Vigencia",
@@ -244,7 +255,7 @@ angular
               direction: uiGridConstants.ASC,
               priority: 1,
             },
-            width: "7%",
+            width: "5%",
           },
           {
             field: "Ano",
@@ -254,7 +265,7 @@ angular
               direction: uiGridConstants.ASC,
               priority: 1,
             },
-            width: "7%",
+            width: "5%",
           },
           {
             field: "mesNombre",
@@ -323,7 +334,6 @@ angular
           cumplidosMidRequest.post("solicitudes_pagos", datos).then(
             function (response) {
               swal.close();
-              console.log(response);
               if (response.data.Data == null) {
                 swal({
                   title: "",
@@ -360,22 +370,29 @@ angular
       };
 
       self.getLineaTiempoEstados = function (idPago) {
+        self.MostrarCargando = true;
+        self.Documentospago = [];
         self.idPagoActual = idPago;
         cumplidosMidRequest
-          .get("historicos/cambio_estado_pago/" + "89499")
+          .get("historicos/cambio_estado_pago/" + idPago)
           .then(function (response) {
             self.estadosDelPago = response.data.Data;
+
             refreshSelectPicker();
             $("#modal_ver_linea_tiempo").modal("show");
           })
           .catch(function (error) {
             console.error("Error al obtener datos:", error);
           });
+        console;
 
-        self.Documentospago = funcGen
+        funcGen
           .obtener_doc(idPago)
           .then(function (documentos) {
-            self.Documentospago = documentos;
+
+            self.Documentospago = documentos != null ? documentos : null;
+            self.MostrarCargando = false;
+            //console.log(self.Documentospago);
             /// console.log(self.Documentospago);
           })
           .catch(function (error) {
@@ -388,18 +405,27 @@ angular
       };
 
       self.descargarDocumentos = function (idPago) {
-        swal({
-          title: "¡Iniciando descarga!",
-          text: "Espera  un momento",
-          type: "info",
-          showConfirmButton: false,
-        });
         let file = cumplidosMidRequest
           .get("download_documents/" + idPago, "")
           .then(function (response) {
             file = response.data.Data;
-            funcGen.getZip(file);
-            swal.close();
+            if (file.nombre != "") {
+              swal({
+                title: "¡Iniciando descarga!",
+                text: "Espera  un momento",
+                type: "info",
+                showConfirmButton: false,
+              });
+              funcGen.getZip(file);
+              swal.close();
+            } else {
+              swal({
+                title: "¡No hay documentos!",
+                text: "No hay documentos para el pago",
+                type: "warning",
+                showConfirmButton: true,
+              });
+            }
           })
           .catch(function (error) {
             swal({
@@ -408,6 +434,10 @@ angular
               type: "error",
             });
           });
+      };
+
+      self.limpiarListaDocs = function () {
+        self.Documentospago = [];
       };
     }
   );

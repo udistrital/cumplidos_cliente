@@ -142,7 +142,6 @@
 .title-card {
   font-size: 20px;
 }
-
 .card-wrapper-horizontal {
   position: relative;
 }
@@ -151,21 +150,30 @@
   content: "";
   position: absolute;
   top: 50%;
-  left: 100%;
+  left: 97%;
   transform: translateY(-50%);
-  width: 20px;
-  height: 2px;
-  background-color: #302e2e;
+  width: 18px;
+  height: 15px;
+  background: #731514;
   clip-path: polygon(
-    0% 50%,
-    90% 0%,
-    90% 25%,
+    0 4px,
+    calc(100% - 6px) 4px,
+    calc(100% - 6px) 0,
     100% 50%,
-    90% 75%,
-    90% 100%,
-    0% 50%
+    calc(100% - 6px) 100%,
+    calc(100% - 6px) calc(100% - 4px),
+    0 calc(100% - 4px)
   );
-  border-radius: 1px;
+  animation: a5 1s infinite linear;
+}
+
+@keyframes a5 {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 md-card {
