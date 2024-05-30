@@ -15,7 +15,7 @@ angular
       gridApiService,
       funcGen,
       cumplidosMidRequest,
-      $timeout
+      $timeout,
     ) {
       var tmpl =
         '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -314,6 +314,7 @@ angular
         );
       };
 
+
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
         var datos;
@@ -357,6 +358,7 @@ angular
           );
         }
       };
+
 
       self.agregarNombreMeses = function (data) {
         var data_modificada = data.map(function (item) {
