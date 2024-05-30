@@ -292,7 +292,7 @@ angular
             displayName: $translate.instant("ACC"),
             cellTemplate:
               '<div style="text-align: center;">' +
-              '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal"    ng-click="grid.appScope.HistoricoCumplidos.getLineaTiempoEstados(row.entity.IdPagoMensual)"   ></a>' +
+              '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal"    ng-click="grid.appScope.HistoricoCumplidos.getLineaTiempoEstados(row.entity)"   ></a>' +
               '<a type="button" title="Descargar soportes" class="fa fa-cube fa-lg faa-shake animated-hover" style="margin-left: 5px;"  data-toggle="modal" ng-click="grid.appScope.HistoricoCumplidos.descargarDocumentos(row.entity.IdPagoMensual)"></a>' +
               "</div>",
             width: "7%",
@@ -369,15 +369,15 @@ angular
         return data_modificada;
       };
 
-      self.getLineaTiempoEstados = function (idPago) {
+      self.getLineaTiempoEstados = function (entity) {
+        self.detallesPago = entity;
         self.MostrarCargando = true;
         self.Documentospago = [];
-        self.idPagoActual = idPago;
+        self.idPagoActual = entity.IdPagoMensual;
         cumplidosMidRequest
-          .get("historicos/cambio_estado_pago/" + idPago)
+          .get("historicos/cambio_estado_pago/" + entity.IdPagoMensual)
           .then(function (response) {
             self.estadosDelPago = response.data.Data;
-
             refreshSelectPicker();
             $("#modal_ver_linea_tiempo").modal("show");
           })
@@ -387,9 +387,8 @@ angular
         console;
 
         funcGen
-          .obtener_doc(idPago)
+          .obtener_doc(entity.IdPagoMensual)
           .then(function (documentos) {
-
             self.Documentospago = documentos != null ? documentos : null;
             self.MostrarCargando = false;
             //console.log(self.Documentospago);
