@@ -184,3 +184,6 @@ md-card {
   display: block;
   white-space: normal;
 }
+.title-modal {
+  font-size: 30px;
+}

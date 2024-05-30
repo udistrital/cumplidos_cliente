@@ -267,6 +267,16 @@
     </div>
 
     <div class="modal-body col-sm-12">
+      <div class="modal-header">
+        <h1 class="title-modal page-header" style="color: black">
+          Detalle de solicitud de pago CPS
+          {{HistoricoCumplidos.detallesPago.NumeroContrato}} de
+          {{HistoricoCumplidos.detallesPago.mesNombre}} de
+          {{HistoricoCumplidos.detallesPago.Ano}} Documento Contratista:
+          {{HistoricoCumplidos.detallesPago.DocumentoContratista}}
+        </h1>
+      </div>
+
       <div class="panel panel-default">
         <div class="panel-heading">
           <h2 class="panel-title title-card">
@@ -297,7 +307,7 @@
           </div>
           <div
             class="col-md-12"
-            ng-if="HistoricoCumplidos.estadosDelPago.length < 1"
+            ng-if="HistoricoCumplidos.estadosDelPago==null"
           >
             <md-card>
               <md-card-title>
@@ -356,7 +366,9 @@
             <md-card>
               <md-card-title>
                 <md-card-title-text>
-                  <h2 class="warning">Buscando</h2>
+                  <div class="text-center">
+                    <h2 class="text-card">Buscando</h2>
+                  </div>
                 </md-card-title-text>
               </md-card-title>
             </md-card>
