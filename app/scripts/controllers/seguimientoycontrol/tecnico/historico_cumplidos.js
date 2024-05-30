@@ -15,7 +15,7 @@ angular
       gridApiService,
       funcGen,
       cumplidosMidRequest,
-      $timeout,
+      $timeout
     ) {
       var tmpl =
         '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -314,7 +314,6 @@ angular
         );
       };
 
-
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
         var datos;
@@ -359,7 +358,6 @@ angular
         }
       };
 
-
       self.agregarNombreMeses = function (data) {
         var data_modificada = data.map(function (item) {
           var nombreMes = self.meses[item.Mes - 1].Nombre;
@@ -371,7 +369,6 @@ angular
 
       self.getLineaTiempoEstados = function (entity) {
         self.detallesPago = entity;
-        console.error(entity);
         self.MostrarCargando = true;
         self.Documentospago = [];
         self.idPagoActual = entity.IdPagoMensual;
@@ -385,7 +382,6 @@ angular
           .catch(function (error) {
             console.error("Error al obtener datos:", error);
           });
-        console;
 
         funcGen
           .obtener_doc(entity.IdPagoMensual)
