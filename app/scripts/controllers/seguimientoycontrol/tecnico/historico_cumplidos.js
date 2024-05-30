@@ -371,7 +371,6 @@ angular
 
       self.getLineaTiempoEstados = function (entity) {
         self.detallesPago = entity;
-        console.error(entity);
         self.MostrarCargando = true;
         self.Documentospago = [];
         self.idPagoActual = entity.IdPagoMensual;
