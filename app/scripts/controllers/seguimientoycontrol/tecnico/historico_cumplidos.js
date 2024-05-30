@@ -270,7 +270,7 @@ angular
           {
             field: "mesNombre",
             cellTemplate: tmpl,
-            displayName: $translate.instant("MES"),
+            displayName: "MES",
             sort: {
               direction: uiGridConstants.ASC,
               priority: 1,
@@ -280,7 +280,7 @@ angular
           {
             field: "Estado",
             cellTemplate: tmpl,
-            displayName: $translate.instant("ESTADO"),
+            displayName: "ESTADO",
             sort: {
               direction: uiGridConstants.ASC,
               priority: 1,
@@ -301,18 +301,8 @@ angular
       };
 
       self.gridOptions1.onRegisterApi = function (gridApi) {
-        self.gridApi = gridApi;
-
-        gridApi.selection.on.rowSelectionChanged($scope, function (row) {
-          self.solicitudes_seleccionadas = gridApi.selection.getSelectedRows();
-        });
-
-        self.gridApi = gridApiService.pagination(
-          self.gridApi,
-          self.obtener_solicitudes_pagos,
-          $scope
-        );
-      };
+        self.gridApi1 = gridApi;
+      }
 
 
       self.obtener_solicitudes_pagos = function () {
