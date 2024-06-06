@@ -27,6 +27,9 @@ angular
       self.idPagoActual;
       self.MostrarCargando;
 
+      self.MostrarCargando;
+      self.desabilitarBotonBusqueda = false;
+
       self.filtro = {
         anios: "",
         meses: "",
@@ -126,6 +129,15 @@ angular
         .catch(function (error) {
           console.error("Error al obtener dependencias:", error);
         });
+
+        self.isDisableButton = function() {
+          if ((self.filtro.noContratos && self.filtro.noContratos.slice(-1) === ",") || (self.filtro.documentos && self.filtro.documentos.slice(-1) === ",")) {
+            self.desabilitarBotonBusqueda = true;
+          } else {
+            self.desabilitarBotonBusqueda = false;
+          }
+        };
+
 
       //Depenencias en string
       self.dependenciasString = function () {

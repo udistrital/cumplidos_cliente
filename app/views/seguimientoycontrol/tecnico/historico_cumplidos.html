@@ -76,7 +76,7 @@
               id="documento"
               name="documento"
               ng-model="HistoricoCumplidos.filtro.documentos"
-              ng-pattern="/^\d+(,\d+)*$/"
+              ng-change="HistoricoCumplidos.isDisableButton()"
               ng-mouseover="docMessage = true"
               ng-mouseleave="docMessage = false"
             />
@@ -137,9 +137,9 @@
               id="noContrato"
               name="noContrato"
               ng-model="HistoricoCumplidos.filtro.noContratos"
+              ng-change="HistoricoCumplidos.isDisableButton()"
               ng-mouseover="contratoMessage = true"
               ng-mouseleave="contratoMessage = false"
-              ng-pattern="/^\d+(,\d+)*$/"
             />
             <span
               class="text-danger"
@@ -154,6 +154,7 @@
         <div class="form-group col-md-12 text-center">
           <button
             type="submit"
+            ng-disabled="HistoricoCumplidos.desabilitarBotonBusqueda"
             class="btn btn-success"
             ng-click="HistoricoCumplidos.obtener_solicitudes_pagos()"
           >
@@ -163,13 +164,9 @@
       </form>
     </div>
     <br />
-    <div
-      style="height: {{gridHeight}}px;"
-      ui-grid="HistoricoCumplidos.gridOptions1"
-      align="center"
-      ui-grid-selection
-      ui-grid-pagination
-    ></div>
+    <div style="height: {{gridHeight}}px;" align="center">
+      <div ui-grid="HistoricoCumplidos.gridOptions1" ui-grid-selection ui-grid-pagination></div>
+    </div>
   </div>
 </div>
 
@@ -393,3 +390,4 @@
     </div>
   </div>
 </div>
+
