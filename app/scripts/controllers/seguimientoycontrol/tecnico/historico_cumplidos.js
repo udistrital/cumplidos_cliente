@@ -26,6 +26,9 @@ angular
       self.offset = 0;
       self.idPagoActual;
       self.MostrarCargando;
+      self.MostrarCargando;
+      self.desabilitarBotonBusqueda = false;
+      self.dependencias;
 
       self.filtro = {
         anios: "",
@@ -108,25 +111,49 @@ angular
       self.anios = self.obtenerAnios();
 
       //dependencia
-      self.dependencias = cumplidosMidRequest
-        .get("historicos/dependencias/" + self.playLoad.documento, "")
-        .then(function (response) {
-          let Ordenador = response.data.Data["Dependencias Ordenador"] || [];
-          let Supervisor = response.data.Data["Dependencias Supervisor"] || [];
-          self.dependencias = Ordenador.concat(Supervisor);
+      self.getDependecias  = function(){
+        
+        let roles= self.playLoad.role;
+       
+        if(roles!=null && roles.includes("CONTROL_INTERNO")){
+        cumplidosMidRequest
+          .get("historicos/dependencias_generales/")
+          .then(function(response){
+       self.dependencias= response.data.Data; 
+       self.dependencias.sort(function(a, b) {
+        var nameA = a.Nombre.toUpperCase(); 
+        var nameB = b.Nombre.toUpperCase();
 
-          for (var i = 0; i < self.dependencias.length; i++) {
-            self.dependenciaString += "'" + self.dependencias[i].Codigo + "'"; //
-            if (i < self.dependencias.length - 1) {
-              self.dependenciaString += ",";
-            }
-          }
-          refreshSelectPicker();
-        })
-        .catch(function (error) {
-          console.error("Error al obtener dependencias:", error);
-        });
-
+        if (nameA < nameB) {
+            return -1; 
+        }
+        if (nameA > nameB) {
+            return 1; 
+        }
+        return 0;
+    });
+       refreshSelectPicker();
+          })
+          .catch(function(error){
+            console.error("Error al obtener dependencias:", error);
+          });
+        }
+        else{
+          cumplidosMidRequest
+          .get("historicos/dependencias/" + self.playLoad.documento, "")
+          .then(function (response) {
+            let Ordenador = response.data.Data["Dependencias Ordenador"] || [];
+            let Supervisor = response.data.Data["Dependencias Supervisor"] || [];
+           self.dependencias=  Ordenador.concat(Supervisor);
+            refreshSelectPicker();
+          })
+          .catch(function (error) {
+            console.error("Error al obtener dependencias:", error);
+          });
+        }
+        
+      }
+      self.getDependecias();
       //Depenencias en string
       self.dependenciasString = function () {
         let dependenciaString = "";
@@ -300,6 +327,14 @@ angular
         ],
       };
 
+      self.isDisableButton = function() {
+        if ((self.filtro.noContratos && self.filtro.noContratos.slice(-1) === ",") || (self.filtro.documentos && self.filtro.documentos.slice(-1) === ",")) {
+          self.desabilitarBotonBusqueda = true;
+        } else {
+          self.desabilitarBotonBusqueda = false;
+        }
+      };
+        
       self.gridOptions1.onRegisterApi = function (gridApi) {
         self.gridApi1 = gridApi;
       }
