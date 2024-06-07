@@ -116,7 +116,7 @@ angular
         
         let roles= self.playLoad.role;
        
-        if(roles!=null && roles.includes("SUPERVISOR")){
+        if(roles!=null && roles.includes("CONTROL_INTERNO")){
         cumplidosMidRequest
           .get("historicos/dependencias_generales/")
           .then(function(response){
