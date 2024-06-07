@@ -15,7 +15,7 @@ angular
       gridApiService,
       funcGen,
       cumplidosMidRequest,
-      $timeout
+      $timeout,
     ) {
       var tmpl =
         '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -25,7 +25,6 @@ angular
       self.playLoad = token_service.getPayload();
       self.offset = 0;
       self.idPagoActual;
-
       self.MostrarCargando;
       self.desabilitarBotonBusqueda = false;
 
@@ -39,7 +38,7 @@ angular
         noContratos: "",
       };
       self.estadosDelPago;
-      self.Documentospago;
+      self.Documentospago = [];
 
       function refreshSelectPicker() {
         $timeout(function () {
@@ -129,15 +128,6 @@ angular
           console.error("Error al obtener dependencias:", error);
         });
 
-        self.isDisableButton = function() {
-          if ((self.filtro.noContratos && self.filtro.noContratos.slice(-1) === ",") || (self.filtro.documentos && self.filtro.documentos.slice(-1) === ",")) {
-            self.desabilitarBotonBusqueda = true;
-          } else {
-            self.desabilitarBotonBusqueda = false;
-          }
-        };
-
-
       //Depenencias en string
       self.dependenciasString = function () {
         let dependenciaString = "";
@@ -197,13 +187,14 @@ angular
       Creación tabla que tendrá todos las solicitudes de pagos de acuerdo a los filtros
     */
       self.gridOptions1 = {
+        enablePaginationControls: true,
         paginationPageSizes: [10, 15, 20],
         paginationPageSize: 10,
         enableSorting: true,
+        enableColumnResizing: true,
         enableFiltering: true,
         resizable: true,
         rowHeight: 40,
-        useExternalPagination: true,
         columnDefs: [
           {
             field: "NombreDependencia",
@@ -245,6 +236,16 @@ angular
             },
             width: "18%",
           },
+          {
+            field: "NumeroContrato",
+            cellTemplate: tmpl,
+            displayName: "Nº CONTRATO",
+            sort: {
+              direction: uiGridConstants.ASC,
+              priority: 1,
+            },
+            width: "*",
+          },
 
           {
             field: "Vigencia",
@@ -255,7 +256,7 @@ angular
               direction: uiGridConstants.ASC,
               priority: 1,
             },
-            width: "7%",
+            width: "5%",
           },
           {
             field: "Ano",
@@ -265,12 +266,12 @@ angular
               direction: uiGridConstants.ASC,
               priority: 1,
             },
-            width: "7%",
+            width: "5%",
           },
           {
             field: "mesNombre",
             cellTemplate: tmpl,
-            displayName: $translate.instant("MES"),
+            displayName: "MES",
             sort: {
               direction: uiGridConstants.ASC,
               priority: 1,
@@ -280,7 +281,7 @@ angular
           {
             field: "Estado",
             cellTemplate: tmpl,
-            displayName: $translate.instant("ESTADO"),
+            displayName: "ESTADO",
             sort: {
               direction: uiGridConstants.ASC,
               priority: 1,
@@ -292,7 +293,7 @@ angular
             displayName: $translate.instant("ACC"),
             cellTemplate:
               '<div style="text-align: center;">' +
-              '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal"    ng-click="grid.appScope.HistoricoCumplidos.getLineaTiempoEstados(row.entity.IdPagoMensual)"   ></a>' +
+              '<a type="button" title="Ver detalles" class="fa fa-eye fa-lg faa-shake animated-hover" style="margin-right: 5px;"  data-toggle="modal"    ng-click="grid.appScope.HistoricoCumplidos.getLineaTiempoEstados(row.entity)"   ></a>' +
               '<a type="button" title="Descargar soportes" class="fa fa-cube fa-lg faa-shake animated-hover" style="margin-left: 5px;"  data-toggle="modal" ng-click="grid.appScope.HistoricoCumplidos.descargarDocumentos(row.entity.IdPagoMensual)"></a>' +
               "</div>",
             width: "7%",
@@ -300,19 +301,18 @@ angular
         ],
       };
 
-      self.gridOptions1.onRegisterApi = function (gridApi) {
-        self.gridApi = gridApi;
-
-        gridApi.selection.on.rowSelectionChanged($scope, function (row) {
-          self.solicitudes_seleccionadas = gridApi.selection.getSelectedRows();
-        });
-
-        self.gridApi = gridApiService.pagination(
-          self.gridApi,
-          self.obtener_solicitudes_pagos,
-          $scope
-        );
+      self.isDisableButton = function() {
+        if ((self.filtro.noContratos && self.filtro.noContratos.slice(-1) === ",") || (self.filtro.documentos && self.filtro.documentos.slice(-1) === ",")) {
+          self.desabilitarBotonBusqueda = true;
+        } else {
+          self.desabilitarBotonBusqueda = false;
+        }
       };
+
+      self.gridOptions1.onRegisterApi = function (gridApi) {
+        self.gridApi1 = gridApi;
+      }
+
 
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
@@ -333,7 +333,6 @@ angular
           cumplidosMidRequest.post("solicitudes_pagos", datos).then(
             function (response) {
               swal.close();
-              console.log(response);
               if (response.data.Data == null) {
                 swal({
                   title: "",
@@ -359,6 +358,7 @@ angular
         }
       };
 
+
       self.agregarNombreMeses = function (data) {
         var data_modificada = data.map(function (item) {
           var nombreMes = self.meses[item.Mes - 1].Nombre;
@@ -368,10 +368,13 @@ angular
         return data_modificada;
       };
 
-      self.getLineaTiempoEstados = function (idPago) {
-        self.idPagoActual = idPago;
+      self.getLineaTiempoEstados = function (entity) {
+        self.detallesPago = entity;
+        self.MostrarCargando = true;
+        self.Documentospago = [];
+        self.idPagoActual = entity.IdPagoMensual;
         cumplidosMidRequest
-          .get("historicos/cambio_estado_pago/" + "89499")
+          .get("historicos/cambio_estado_pago/" + entity.IdPagoMensual)
           .then(function (response) {
             self.estadosDelPago = response.data.Data;
             refreshSelectPicker();
@@ -380,11 +383,14 @@ angular
           .catch(function (error) {
             console.error("Error al obtener datos:", error);
           });
+        console;
 
-        self.Documentospago = funcGen
-          .obtener_doc(idPago)
+        funcGen
+          .obtener_doc(entity.IdPagoMensual)
           .then(function (documentos) {
-            self.Documentospago = documentos;
+            self.Documentospago = documentos != null ? documentos : null;
+            self.MostrarCargando = false;
+            //console.log(self.Documentospago);
             /// console.log(self.Documentospago);
           })
           .catch(function (error) {
@@ -397,18 +403,27 @@ angular
       };
 
       self.descargarDocumentos = function (idPago) {
-        swal({
-          title: "¡Iniciando descarga!",
-          text: "Espera  un momento",
-          type: "info",
-          showConfirmButton: false,
-        });
         let file = cumplidosMidRequest
           .get("download_documents/" + idPago, "")
           .then(function (response) {
             file = response.data.Data;
-            funcGen.getZip(file);
-            swal.close();
+            if (file.nombre != "") {
+              swal({
+                title: "¡Iniciando descarga!",
+                text: "Espera  un momento",
+                type: "info",
+                showConfirmButton: false,
+              });
+              funcGen.getZip(file);
+              swal.close();
+            } else {
+              swal({
+                title: "¡No hay documentos!",
+                text: "No hay documentos para el pago",
+                type: "warning",
+                showConfirmButton: true,
+              });
+            }
           })
           .catch(function (error) {
             swal({
@@ -417,6 +432,10 @@ angular
               type: "error",
             });
           });
+      };
+
+      self.limpiarListaDocs = function () {
+        self.Documentospago = [];
       };
     }
   );
