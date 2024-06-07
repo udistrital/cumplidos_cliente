@@ -334,7 +334,7 @@ angular
           self.desabilitarBotonBusqueda = false;
         }
       };
-
+        
       self.gridOptions1.onRegisterApi = function (gridApi) {
         self.gridApi1 = gridApi;
       }
