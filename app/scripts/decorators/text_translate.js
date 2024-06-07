@@ -934,7 +934,9 @@ var text_es = {
      SOLO_NUMEROS: "Ingresa solo valores numéricos",
     MULTIPLES_OPCCIONES: "Puedes ingresar varias opciones separadas por comas.",
     ERROR_SIN_ESTADOS_PAGO: "No hay registros de cambio de estado.",
-    ERROR_SIN_DOCUEMENTOS_PAGO: "No hay documentos cargados"
+    ERROR_SIN_DOCUEMENTOS_PAGO: "No hay documentos cargados",
+    TEMIRNACION_COMA : "no pude terminar en coma"
+    
 };
 
 var text_en = {
@@ -1406,7 +1408,8 @@ var text_en = {
 HISTORICO_CUMPLIDOS: "COMPLIANCE HISTORY",
 SELECION_OPCION: "Select an option",
 SOLO_NUMEROS: "Enter only numeric values",
-MULTIPLES_OPCCIONES: "You can enter multiple options separated by commas."
+MULTIPLES_OPCCIONES: "You can enter multiple options separated by commas.",
+TEMIRNACION_COMA: "cannot end with a comma"
 };
 
 angular.module('contractualClienteApp')

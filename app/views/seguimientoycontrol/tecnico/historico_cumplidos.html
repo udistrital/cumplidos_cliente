@@ -82,8 +82,8 @@
             />
             <span
               class="text-danger"
-              ng-show="filtro.documento.$error.pattern && filtro.documento.$dirty"
-              >{{"SOLO_NUMEROS"|translate}}</span
+              ng-show="HistoricoCumplidos.messageErrorDocumento"
+              >{{"TEMIRNACION_COMA"|translate}}</span
             >
             <div class="text-warning" ng-show="docMessage">
               {{"MULTIPLES_OPCCIONES"|translate}}
@@ -143,8 +143,8 @@
             />
             <span
               class="text-danger"
-              ng-show="filtro.noContrato.$error.pattern && filtro.noContrato.$dirty"
-              >{{"SOLO_NUMEROS"|translate}}</span
+              ng-show="HistoricoCumplidos.messageErrorContrato"
+              >{{"TEMIRNACION_COMA"|translate}}</span
             >
             <div class="text-warning" ng-show="contratoMessage">
               {{"MULTIPLES_OPCCIONES"|translate}}
@@ -156,7 +156,6 @@
             type="submit"
             ng-disabled="HistoricoCumplidos.desabilitarBotonBusqueda"
             class="btn btn-success"
-            ng-click="HistoricoCumplidos.obtener_solicitudes_pagos()"
           >
             {{"BUSCAR"|translate}}
           </button>
@@ -390,4 +389,3 @@
     </div>
   </div>
 </div>
-

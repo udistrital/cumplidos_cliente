@@ -15,7 +15,7 @@ angular
       gridApiService,
       funcGen,
       cumplidosMidRequest,
-      $timeout
+      $timeout,
     ) {
       var tmpl =
         '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -26,7 +26,6 @@ angular
       self.offset = 0;
       self.idPagoActual;
       self.MostrarCargando;
-
       self.MostrarCargando;
       self.desabilitarBotonBusqueda = false;
       self.dependencias;
@@ -121,7 +120,19 @@ angular
           .get("historicos/dependencias_generales/")
           .then(function(response){
        self.dependencias= response.data.Data; 
-          return self.dependencias;
+       self.dependencias.sort(function(a, b) {
+        var nameA = a.Nombre.toUpperCase(); 
+        var nameB = b.Nombre.toUpperCase();
+
+        if (nameA < nameB) {
+            return -1; 
+        }
+        if (nameA > nameB) {
+            return 1; 
+        }
+        return 0;
+    });
+       refreshSelectPicker();
           })
           .catch(function(error){
             console.error("Error al obtener dependencias:", error);
@@ -134,12 +145,6 @@ angular
             let Ordenador = response.data.Data["Dependencias Ordenador"] || [];
             let Supervisor = response.data.Data["Dependencias Supervisor"] || [];
            self.dependencias=  Ordenador.concat(Supervisor);
-            for (var i = 0; i < self.dependencias.length; i++) {
-              self.dependenciaString += "'" + self.dependencias[i].Codigo + "'"; //
-              if (i < self.dependencias.length - 1) {
-                self.dependenciaString += ",";
-              }
-            }
             refreshSelectPicker();
           })
           .catch(function (error) {
@@ -292,7 +297,7 @@ angular
           {
             field: "mesNombre",
             cellTemplate: tmpl,
-            displayName: $translate.instant("MES"),
+            displayName: "MES",
             sort: {
               direction: uiGridConstants.ASC,
               priority: 1,
@@ -302,7 +307,7 @@ angular
           {
             field: "Estado",
             cellTemplate: tmpl,
-            displayName: $translate.instant("ESTADO"),
+            displayName: "ESTADO",
             sort: {
               direction: uiGridConstants.ASC,
               priority: 1,
@@ -322,19 +327,18 @@ angular
         ],
       };
 
-      self.gridOptions1.onRegisterApi = function (gridApi) {
-        self.gridApi = gridApi;
-
-        gridApi.selection.on.rowSelectionChanged($scope, function (row) {
-          self.solicitudes_seleccionadas = gridApi.selection.getSelectedRows();
-        });
-
-        self.gridApi = gridApiService.pagination(
-          self.gridApi,
-          self.obtener_solicitudes_pagos,
-          $scope
-        );
+      self.isDisableButton = function() {
+        if ((self.filtro.noContratos && self.filtro.noContratos.slice(-1) === ",") || (self.filtro.documentos && self.filtro.documentos.slice(-1) === ",")) {
+          self.desabilitarBotonBusqueda = true;
+        } else {
+          self.desabilitarBotonBusqueda = false;
+        }
       };
+
+      self.gridOptions1.onRegisterApi = function (gridApi) {
+        self.gridApi1 = gridApi;
+      }
+
 
       self.obtener_solicitudes_pagos = function () {
         self.gridOptions1.data = [];
@@ -380,6 +384,7 @@ angular
         }
       };
 
+
       self.agregarNombreMeses = function (data) {
         var data_modificada = data.map(function (item) {
           var nombreMes = self.meses[item.Mes - 1].Nombre;
@@ -404,6 +409,7 @@ angular
           .catch(function (error) {
             console.error("Error al obtener datos:", error);
           });
+        console;
 
         funcGen
           .obtener_doc(entity.IdPagoMensual)
