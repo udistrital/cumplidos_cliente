@@ -45,9 +45,6 @@ angular.module("contractualClienteApp").constant("CONF", {
     CONTRATO_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
     FINANCIERA_JBPM_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_jbpm/v1/",
-    NUXEO_SERVICE: "https://documental.portaloas.udistrital.edu.co/nuxeo/",
-    NUXEO_MID:
-      "https://autenticacion.portaloas.udistrital.edu.co/apioas/nuxeo_mid/v1/",
     GESTION_DOCUMENTAL_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1",
     TITAN_MID_SERVICE:'https://autenticacion.portaloas.udistrital.edu.co/apioas/titan_api_mid/v2/',
     AUTENTICATION_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/autenticacion_mid/v1/",
