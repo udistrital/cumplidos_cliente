@@ -21,7 +21,7 @@ if (window.localStorage.getItem('access_token') === null ||
   var req = new XMLHttpRequest();
   // consider using POST so query isn't logged
   var query = 'https://' + window.location.host + '?' + queryString;
-  // 
+  //
   req.open('GET', query, true);
   if (params.id_token !== null && params.id_token !== undefined) {
     var expires_at = new Date();
@@ -40,9 +40,9 @@ if (window.localStorage.getItem('access_token') === null ||
       if (req.status === 200) {
         //
       } else if (req.status === 400) {
-        
+
       } else {
-        
+
       }
     }
   };
@@ -82,8 +82,8 @@ angular.module('implicitToken', [])
               })
               .then(function(respuestaAutenticacion) {
                 appUserDocument = respuestaAutenticacion.data.documento;
-                
-                appUserRole = respuestaAutenticacion.data.role;        
+
+                appUserRole = respuestaAutenticacion.data.role;
                 //console.log('respuesta autenticacion',appUserDocument,appUserRole)
                 window.location.reload();
                 window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
@@ -204,7 +204,7 @@ angular.module('implicitToken', [])
       timer: function () {
         if (!angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null || window.localStorage.getItem('expires_at') === 'Invalid Date') {
           var mostrado=false
-          $interval(function () {            
+          $interval(function () {
             var restante = new Date()
             restante.setMinutes(restante.getMinutes()+5)
             if (window.localStorage.getItem('expires_at') !== null && new Date(window.localStorage.getItem('expires_at')) < restante && !mostrado){
@@ -235,7 +235,7 @@ angular.module('implicitToken', [])
 
       logoutValid: function () {
         var state;
-        var valid = true;
+        var valid;
         var queryString = location.search.substring(1);
         var regex = /([^&=]+)=([^&]*)/g;
         var m;

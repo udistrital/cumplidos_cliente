@@ -9,7 +9,6 @@
  */
 angular.module('contractualClienteApp')
   .controller('ReversionAprobadosCtrl', function (token_service, funcGen, $translate, uiGridConstants, contratoRequest,  utils, notificacionRequest, cumplidosMidRequest, cumplidosCrudRequest) {
-    var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
     var self = this;
     //Obtener la cedula del ordenador
@@ -151,7 +150,7 @@ angular.module('contractualClienteApp')
             'warning'
           )
         }
-        
+
       }).catch(function(error){
         swal(
           'Error',
@@ -161,7 +160,7 @@ angular.module('contractualClienteApp')
       })
     };
 
-    /* 
+    /*
       Función para revertir un cumplido
     */
     self.revertirAprobado= function(pago_mensual){
@@ -176,17 +175,17 @@ angular.module('contractualClienteApp')
       }).then(function () {
         contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato).then(function (response) {
           self.aux_pago_mensual = pago_mensual;
-  
+
           self.enviar_notificacion('[RECHAZADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por ordenador del gasto',self.NumDocumentoOrdenador)
-  
+
           cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
             query: 'CodigoAbreviacion:RO'
           })).then(function (responseCod) {
-  
+
             var sig_estado = responseCod.data.Data;
             self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
-  
+
             var pago_mensual_auditoria = {
               Pago: {
                 CargoResponsable: "CONTRATISTA",
@@ -202,7 +201,7 @@ angular.module('contractualClienteApp')
               CargoEjecutor: (response.data.contrato.ordenador_gasto.rol_ordenador).substring(0, 69),
               DocumentoEjecutor: self.NumDocumentoOrdenador
             }
-  
+
             cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
               .then(function (response) {
                 swal(
@@ -220,7 +219,7 @@ angular.module('contractualClienteApp')
                   'error'
                 );
               }); //Fin catch
-  
+
           })
         });
       }).catch(function() {
@@ -249,12 +248,12 @@ angular.module('contractualClienteApp')
         console.log("error",error)
         self.documentos=undefined;
       })
-    
+
     }
 
 
     self.getCumplidosAprobadosPorOrdenador();
 
-    
+
 
   });
