@@ -9,7 +9,7 @@
  */
 angular.module('contractualClienteApp')
   .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest, funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
-    
+
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -457,9 +457,7 @@ angular.module('contractualClienteApp')
             // self.facultad = responseHom.data[0];
 
             var date = new Date()
-            var dia = moment(date).format('D');
             var mes = moment(date).format('M');
-            var mes_ss = self.mes.Id - 1;
             var anio = moment(date).format('YYYY');
 
             var mes_ss = 0;
@@ -517,7 +515,7 @@ angular.module('contractualClienteApp')
               contenidoInv.push({ text: '' + self.nombre_supervisor, style: 'bottom_space' });
               contenidoInv.push({ text: 'JEFE DE', style: 'bottom_space' });
               contenidoInv.push({ text: self.dependencia.nombre, style: 'bottom_space' });
-              //contenido.push({pageBreak: 'after'}); 
+              //contenido.push({pageBreak: 'after'});
             }
             if (funcionamiento.length > 0) {
               contenidoFun.push({ text: 'EL JEFE DE LA DEPENDENCIA ' + self.dependencia.nombre + ' DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS', bold: true, alignment: 'center', style: 'top_space' }, '\n\n\n\n');
@@ -548,8 +546,8 @@ angular.module('contractualClienteApp')
                  contenido.push(tabla);
                 }else{
                 contenido.push({text:'Ninguno de los contratos de prestación de servicios bajo esta supervisión cumplió con las actividades del objeto establecido en el contrato o con el pago reglamentario de los aportes al sistema de seguridad social del Mes de '  +self.mes.Nombre+ ' de ' +self.anio+ '.', style:'general_font'}, '\n\n')
-  
-                  
+
+
                 }
                 //contenido.push( );
                 contenido.push('\n',{text:'Se expide para el trámite de pago ante la DIVISIÓN DE RECURSOS FINANCIEROS al mes de ' + self.meses[mes-1].Nombre + ' de ' + anio +'.',  style:'general_font'}, '\n\n\n\n\n\n');
@@ -662,7 +660,6 @@ angular.module('contractualClienteApp')
             // self.facultad = responseHom.data[0];
 
             var date = new Date()
-            var dia = moment(date).format('D');
             var mes = moment(date).format('M');
             var anio = moment(date).format('YYYY');
             var contenido = [];

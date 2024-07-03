@@ -92,7 +92,7 @@
   .social {
     width: 15%;
   }
-  
+
   .text-container {
     display: none;
   }
@@ -110,7 +110,7 @@
   .footer-logos{
     width: 60%
   }
-  
+
   .text-container {
     display: none;
   }
@@ -124,7 +124,7 @@
   .footer-logos{
     width: 70%
   }
-  
+
   .text-container {
     display: none;
   }
@@ -165,7 +165,7 @@
   .text-container:hover {
     display: contents;
   }
-  
+
 }
 
 
@@ -189,5 +189,5 @@
   .footer-title {
     display: none;
   }
-  
+
 }

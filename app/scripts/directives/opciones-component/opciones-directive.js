@@ -25,20 +25,15 @@ angular.module('contractualClienteApp')
                 $scope.app_large = (CONF.APP.toLowerCase()).trim() + "-header";
                 $scope.redirect_url = function (path) {
                     var path_sub = path.substring(0, 4);
-                    switch (path_sub.toUpperCase()) {
-                        case "HTTP":          
+                        if (path_sub.toUpperCase() == "HTTP"){
                             $window.open(path, "_blank");
-                            break;
-                        default:
-                            behaviorTheme.toogleCloseSideBar();
-                             $location.path(path);
-                            
-                            
-                            break;
-                    }
+                        } else {
+                          behaviorTheme.toogleCloseSideBar();
+                          $location.path(path);
+                        }
                 };
                 $scope.toogle = function (nivel) {
-                    
+
 
                     if(nivel.open==="null" || nivel.open===undefined){
                         nivel.open=false;
@@ -46,26 +41,25 @@ angular.module('contractualClienteApp')
 
                     var sidebar = document.getElementById('menu-sidebar');
                     if(sidebar.className.includes("sidebar_off")){
-                        behaviorTheme.toogleOpenSideBar();                        
+                        behaviorTheme.toogleOpenSideBar();
                     }
-                    if (nivel.Opciones !== null) {   
+                    if (nivel.Opciones !== null) {
                         var opcionAbierta = nivel.Opciones.filter(function (data) {
                             return data.open;
                         });
-                        if (opcionAbierta.length > 0 && nivel.open) {    
-                        }else {
+                        if (!(opcionAbierta.length > 0 && nivel.open)) {
                             nivel.open = !nivel.open;
                         }
                         if (!nivel.open ) {
                             nivel.clase = 'content-menu-off';
                             nivel.style_icon = 'opcion-down';
-                            
+
                         } else {
                             nivel.clase = 'content-menu';
                             nivel.style_icon = 'opcion-up';
                         }
                     }
-                    
+
                 };
 
             }

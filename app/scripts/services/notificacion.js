@@ -25,18 +25,9 @@ angular.module('notificacionService', [])
      */
 
     .factory('notificacionRequest', function (CONF, token_service, $http) {
-        var TIME_PING = 50000;
         var self = this
         var path = CONF.GENERAL.NOTIFICACION_MID_SERVICE;
         var arm = CONF.GENERAL.ARM_AWS_NOTIFICACIONES;
-        var log = [];
-        var payload = {};
-        var notificacion_estado_usuario = [];
-        var no_vistos = 0;
-        var addMessage = function (message) {
-            methods.log = [message].concat(methods.log)
-        };
-        var user = "";
 
         if (token_service.live_token()) {
             token_service.getLoginData()
