@@ -156,6 +156,14 @@ angular
             "views/seguimientoycontrol/tecnico/historico_cumplidos.html",
           controller: "HistoricoCumplidosCtrl",
           controllerAs: "HistoricoCumplidos",
+          resolve: {
+            checkNavigation: ['NavigationService', '$location', function(NavigationService, $location) {
+              if (!NavigationService.checkNavigation()) {
+                $location.path('/');
+              }
+            }]
+          }
+       
         })
         .otherwise({
           redirectTo: "/",
