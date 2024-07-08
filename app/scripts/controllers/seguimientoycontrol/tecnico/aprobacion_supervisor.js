@@ -9,13 +9,13 @@
  */
 angular.module('contractualClienteApp')
   .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest, funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
-    
+
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
     //Se utiliza la variable self estandarizada
     var self = this;
-    self.funcGen=funcGen;
+    self.funcGen = funcGen;
     self.Documento = token_service.getAppPayload().documento;
     self.objeto_docente = [];
     self.nombres_docentes_incumplidos = '';
@@ -361,55 +361,70 @@ angular.module('contractualClienteApp')
 
     };
 
-    self.obtener_doc= function (fila) {
+    self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
       funcGen.obtener_doc(self.fila_sol_pago.Id).then(function (documentos) {
-        self.documentos=documentos;
+        self.documentos = documentos;
         console.log(self.documentos);
       }).catch(function (error) {
-        console.log("error",error)
-        self.documentos=undefined;
+        console.log("error", error)
+        self.documentos = undefined;
       })
     };
 
 
     /*
       Función para enviar un comentario en el soporte    */
-    self.enviar_comentario = function (documento) {
-      swal({
-        title: '¿Está seguro(a) de enviar la observación?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Aceptar'
-      }).then(function () {
-        documento.Metadatos = JSON.stringify(documento.Metadatos);
-        documentoRequest.put('documento', documento.Id, documento).
-          then(function (response) {
-            swal({
-              title: 'Comentario guardado',
-              text: 'Se ha guardado el comentario del documento',
-              type: 'success',
-              target: document.getElementById('modal_ver_soportes')
+    self.enviar_comentario = function (doc) {
+      var metadatos = doc.Documento.Metadatos;
+      var idDoc = doc.Documento.Id;
+      documentoRequest.get('documento/' + idDoc, "").then(function (response) {
+        var documentoPut = response.data;
+        swal({
+          title: '¿Está seguro(a) de enviar la observación?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          cancelButtonText: 'Cancelar',
+          confirmButtonText: 'Aceptar'
+        }).then(function () {
+          documentoPut.Metadatos = JSON.stringify(metadatos);
+          documentoRequest.put('documento', idDoc, documentoPut).
+            then(function (response) {
+              swal({
+                title: 'Comentario guardado',
+                text: 'Se ha guardado el comentario del documento',
+                type: 'success',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+
+              }).then(function () {
+                self.obtener_doc(self.fila_sol_pago)
+              }
+              );;
+            })
+            //Manejo de error
+            .catch(function (response) {
+              swal({
+                title: 'Error',
+                text: 'No se ha podido guardar el comentario',
+                type: 'error',
+                target: document.getElementById('modal_ver_soportes')
+              });
             });
-            self.obtener_doc(self.fila_sol_pago);
-          })
-
-          //Manejo de error
-          .catch(function (response) {
-            swal({
-              title: 'Error',
-              text: 'No se ha podido guardar el comentario',
-              type: 'error',
-              target: document.getElementById('modal_ver_soportes')
-            });
-
-
-          });
-
+        });
+      }).catch(function (response) {
+        console.log("error", response)
+        // Manejo de error
+        swal({
+          title: 'Error',
+          text: 'No se ha podido obtener información del documento',
+          type: 'error',
+          target: document.getElementById('modal_ver_soportes')
+        })
       });
+
     };
 
     /*
