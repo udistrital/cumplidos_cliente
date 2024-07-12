@@ -210,37 +210,37 @@ angular.module('utilsService', [])
 
                 amount += '';
                 amount = parseFloat(amount.replace(/[^0-9\.]/g, ''));
-    
+
                 decimals = decimals || 0;
-    
+
                 if (isNaN(amount) || amount === 0) {
                     return parseFloat(0).toFixed(decimals);
                 }
-    
+
                 amount = '' + amount.toFixed(decimals);
-    
+
                 var amount_parts = amount.split('.'),
                     regexp = /(\d+)(\d{3})/;
-    
+
                 while (regexp.test(amount_parts[0])) {
                     amount_parts[0] = amount_parts[0].replace(regexp, '$1' + ',' + '$2');
                 }
-    
+
                 return amount_parts.join('.');
             },
             numeroALetras: function (num) {
                 var data = {
                     numero: num,
                     enteros: Math.floor(num),
-                    centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
+                    centavos: ((Math.round(num * 100)) - (Math.floor(num) * 100)),
                     letrasCentavos: "",
                     letrasMonedaPlural: 'Pesos',//“PESOS”, 'Dólares', 'Bolívares', 'etcs'
                     letrasMonedaSingular: 'Peso', //“PESO”, 'Dólar', 'Bolivar', 'etc'
-    
+
                     letrasMonedaCentavoPlural: "Centavos",
                     letrasMonedaCentavoSingular: "Centavo"
                 };
-    
+
                 if (data.centavos > 0) {
                     data.letrasCentavos = "Con " + (function () {
                         if (data.centavos == 1)
@@ -248,8 +248,8 @@ angular.module('utilsService', [])
                         else
                             return Millones(data.centavos) + " " + data.letrasMonedaCentavoPlural;
                     })();
-                };
-    
+                }
+
                 if (data.enteros == 0)
                     return "Cero " + data.letrasMonedaPlural + " " + data.letrasCentavos;
                 if (data.enteros == 1)
@@ -282,30 +282,30 @@ angular.module('utilsService', [])
                 if (number == null || !isFinite(number)) {
                     throw new TypeError("number is not valid");
                 }
-        
+
                 if (!decimals) {
                     var len = number.toString().split('.').length;
                     decimals = len > 1 ? len : 0;
                 }
-        
+
                 if (!dec_point) {
                     dec_point = '.';
                 }
-        
+
                 if (!thousands_point) {
                     thousands_point = ',';
                 }
-        
+
                 number = parseFloat(number).toFixed(decimals);
-        
+
                 number = number.replace(".", dec_point);
-        
+
                 var splitNum = number.split(dec_point);
                 splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands_point);
                 number = splitNum.join(dec_point);
-        
+
                 number='$'+number
-                
+
                 return number;
             },
             diferenciaFechasDias(fechaInicio, fechaFin){

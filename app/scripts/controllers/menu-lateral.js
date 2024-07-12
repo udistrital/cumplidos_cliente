@@ -34,7 +34,7 @@ angular.module('contractualClienteApp')
                         if ($scope.token.role[index].indexOf(",") < 0) {
                             if($scope.token.role[index]!='Internal/everyone' && $scope.token.role[index]!='Internal/selfsignup'){
                                 rl.push($scope.token.role[index]);
-                            }   
+                            }
                         }
                     }
                     roles = rl.toString();
@@ -60,18 +60,15 @@ angular.module('contractualClienteApp')
         });
             }
 
-            
+
 
             $scope.redirect_url = function (path) {
                 var path_sub = path.substring(0, 4);
-                switch (path_sub.toUpperCase()) {
-                    case "HTTP":
-                        $window.open(path, "_blank");
-                        break;
-                    default:
-                        $location.path(path);
-                        break;
-                }
+                    if  (path_sub.toUpperCase() == "HTTP") {
+                      $window.open(path, "_blank");
+                    } else {
+                      $location.path(path);
+                    }
             };
 
             $scope.$on('$routeChangeStart', function ( /*next, current*/) {

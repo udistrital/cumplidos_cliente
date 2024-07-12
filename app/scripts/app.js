@@ -152,11 +152,20 @@ angular
           controllerAs: "ReversionAprobados",
         })
         .when("/seguimientoycontrol/tecnico/historico_pagos", {
-          templateUrl:
-            "views/seguimientoycontrol/tecnico/historico_cumplidos.html",
+          templateUrl: "views/seguimientoycontrol/tecnico/historico_cumplidos.html",
           controller: "HistoricoCumplidosCtrl",
           controllerAs: "HistoricoCumplidos",
-        })
+          
+          resolve: {
+              checkRole: ['RoleCheckService', function(RoleCheckService) {
+                  return RoleCheckService.checkRole([
+                      "ORDENADOR_DEL_GASTO",
+                      "SUPERVISOR",
+                      "CONTROL_INTERNO"
+                  ]);
+              }]
+          }
+      })
         .otherwise({
           redirectTo: "/",
         });

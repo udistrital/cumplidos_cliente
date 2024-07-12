@@ -9,7 +9,6 @@
 angular.module('contractualClienteApp')
     .controller('notificacionesCtrl',
         function (notificacionRequest, $scope, behaviorTheme,token_service,$location) {
-            var self = this;
             $scope.roles= token_service.getAppPayload().role
 
 
@@ -35,8 +34,8 @@ angular.module('contractualClienteApp')
                 }else{
                     //console.log("no tiene el rol")
                 }
-    
-    
+
+
                 if($scope.roles!=null && $scope.roles.includes('ORDENADOR_DEL_GASTO')){
                     notificacionRequest.traerNotificacion('ColaOrdenador').then(function (response) {
                         //console.log(response)
@@ -56,7 +55,7 @@ angular.module('contractualClienteApp')
                     //console.log("no tiene el rol")
                 }
             }
-            
+
 
             $scope.claseContainer = behaviorTheme.notificacion;
             $scope.redirect_url = function () {

@@ -119,12 +119,6 @@ body {
 
 /* Properties content main */
 
-.btn-small {
-  text-align: center;
-  display: inline-block;
-  padding: 6px 6px;
-}
-
 textarea {
   resize: none;
 }
