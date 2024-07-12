@@ -12,7 +12,8 @@ angular.module('contractualClienteApp')
 
     var self = this;
 
-    self.pago_mensual_id = $routeParams.pago_mensual_id;
+    // self.pago_mensual_id = $routeParams.pago_mensual_id;
+    self.pago_mensual_id = "124783";
     self.ObtenerInformacionPagoMensual = function () {
       if (self.pago_mensual_id == null || self.pago_mensual_id == undefined) {
         swal({
@@ -143,17 +144,17 @@ angular.module('contractualClienteApp')
       //console.log("validacion")
 
       //demas novedades
-      if(self.informacion_informe.Novedades.Suspencion!=null){
-        for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
-          self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
-          self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
-        }
-      }
-      if(self.informacion_informe.Novedades.Terminacion!=null){
-        for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
-          self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
-        }
-      }
+      // if (self.informacion_informe.Novedades.Suspencion != null) {
+      //   for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
+      //     self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
+      //     self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
+      //   }
+      // }
+      // if (self.informacion_informe.Novedades.Terminacion != null) {
+      //   for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
+      //     self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
+      //   }
+      // }
     }
 
     self.calcularPorcentajeTiempo = function () {
@@ -165,11 +166,14 @@ angular.module('contractualClienteApp')
       diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.Informe.PeriodoInformeFin)
 
 
-      if(self.informacion_informe.Novedades.Suspencion!=null){
-        for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
+      // ---------------------------------------------------------------------------------------------------------
+      
+      
+      if (self.informacion_informe.Novedades.Suspencion != null) {
+        for (let index = 0; index < self.informacion_informe.Novedades.SuspenZion.length; index++) {
           const Sus = self.informacion_informe.Novedades.Suspencion[index];
-          if(self.Informe.PeriodoInformeInicio >self.informacion_informe.Novedades.Suspencion[index].FechaInicio ){
-            diasContrato=diasContrato+Sus.PlazoEjecucion
+          if (self.Informe.PeriodoInformeInicio > self.informacion_informe.Novedades.SuspenCion[index].FechaInicio) {
+            diasContrato = diasContrato + Sus.PlazoEjecucion
           }
         }
       }
@@ -330,8 +334,8 @@ angular.module('contractualClienteApp')
             self.informacion_informe.RP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.RP.Fecha))
             self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.FechaInicio))
             self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.FechaFin))
-            self.informacion_informe.FechasConNovedades.FechaInicio= new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaInicio))
-            self.informacion_informe.FechasConNovedades.FechaFin= new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaFin))
+            self.informacion_informe.FechasConNovedades.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaInicio))
+            self.informacion_informe.FechasConNovedades.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaFin))
 
             self.validarNovedades();
           } else {
@@ -345,6 +349,8 @@ angular.module('contractualClienteApp')
               $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
             })
           }
+        } else {
+
         }
       }).catch(
         function (error) {
@@ -585,6 +591,54 @@ angular.module('contractualClienteApp')
       return body
     }
 
+    self.tablaNovedades = function (novedadesInforme) {
+      console.log("novedadesInforme", novedadesInforme);
+
+      console.log(Object.keys(novedadesInforme).length);
+
+      // var body = [];
+      // body.push({ text: 'NOVEDADES CONTRACTUALES', style: 'tableActividadesHeader'});
+      // body.push([{ text: 'ola', style: 'tableActividadesHeader'},{ text: 'NOVEDADES CONTRACTUALES', style: 'tableActividadesHeader'}]);
+
+      var novedades = [];
+      var cont = 1;
+
+      if (novedadesInforme.Otrosi != null) {
+        for (var i = 0; i < novedadesInforme.Otrosi.length; i++) {
+          novedades.push({ text: cont, style: 'tableActividadesHeader', margin: [0, 9, 0, 0] }, { text: 'TIPO NOVEDAD:', style: 'tableActividadesHeader', margin: [0, 9, 0, 0] }, { text: 'Otro si', alignment: 'center', margin: [0, 9, 0, 0] }, { text: 'FECHA INICIO:', style: 'tableActividadesHeader', margin: [0, 9, 0, 0] }, { text: novedadesInforme.Otrosi[i].FechaInicio.substring(0, 10).replace(/[-]/g, '/'), alignment: 'center', margin: [0, 9, 0, 0] }, { text: 'FECHA FIN', style: 'tableActividadesHeader', margin: [0, 9, 0, 0] }, { text: novedadesInforme.Otrosi[i].FechaFin.substring(0, 10).replace(/[-]/g, '/'), alignment: 'center', margin: [0, 6, 0, 0] }, { text: 'DISPONIBILIDAD PRESUPUESTAL', style: 'tableActividadesHeader', margin: [0, 4, 0, 0] }, { text: novedadesInforme.Otrosi[i].NumeroCdp + ' de ' + novedadesInforme.Otrosi[i].VigenciaCdp, alignment: 'center', margin: [0, 9, 0, 0] });
+          cont += 1;
+        }
+      }
+      if (novedadesInforme.Cesion != null) {
+        for (var i = 0; i < novedadesInforme.Cesion.length; i++) {
+          console.log("La novedad: ", i);
+        }
+      }
+      if (novedadesInforme.Suspencion != null) {
+        for (var i = 0; i < novedadesInforme.Suspencion.length; i++) {
+          console.log("La novedad: ", i);
+        }
+      }
+      if (novedadesInforme.Terminacion != null) {
+        for (var i = 0; i < novedadesInforme.Terminacion.length; i++) {
+          console.log("La novedad: ", i);
+        }
+      }
+
+      return {
+        style: 'tableContractInfo',
+        widths: '*',
+        table: {
+          widths: ['auto', '*', '*', '*', '*', '*', '*', '*', '*'],
+          heights: 33,
+          body: [novedades]
+          // [
+          //   [{ text: 'OBJETO DEL CONTRATO:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 15, 0, 0] }, { text: 'Objeto contractual', alignment: 'justify', fontSize: 10 }]
+          // ]
+        }
+      }
+    }
+
     self.texto_aportes = function () {
       var fechasInicioCumplido = []; // Arreglo de fechas que involucran cambio en la descripción del periodo de informe
       var fechasFinCumplido = [];
@@ -727,7 +781,7 @@ angular.module('contractualClienteApp')
             }
           },
           {
-            //Certificado de cumplimiento
+            //Certificado de cumplimiento  
             style: 'tableContractInfo',
             widths: '*',
             table: {
@@ -744,7 +798,18 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'Nota: Yo, ' + self.informacion_informe.InformacionContratista.Nombre + ' , autorizo a la Universidad Distrital para hacer el abono de mis pagos a la cuenta bancaria relacionada. Bajo gravedad del juramento, certifico que estoy realizando los aportes a seguridad social, de conformidad con lo establecido por la Ley. ', alignment: 'justify', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}]
               ]
             }
-          }, {
+          },
+          // {
+          //   style: 'tableContractInfo',
+          //   widths: '*',
+          //   table: {
+          //     dontBreakRows: true,
+          //     // widths: ['*','auto','auto','auto','auto','auto','auto','auto','auto'],
+          //     body: self.tablaNovedades(self.informacion_informe.Novedades)
+          //   }
+          // },
+          self.tablaNovedades(self.informacion_informe.Novedades),
+          {
             margin: [0, 20, 0, 0],
             columns: [
               { width: '*', text: '' },
@@ -947,16 +1012,16 @@ angular.module('contractualClienteApp')
       });
     }
 
-    self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme){
-      var actividades=actividadesUltimoInforme
-      for (let index_act_esp = 0; index_act_esp <  actividades.length; index_act_esp++) {
-        delete  actividades[index_act_esp].FechaCreacion
-        delete  actividades[index_act_esp].FechaModificacion
-        delete  actividades[index_act_esp].Id
-        for (let index_act_rea = 0; index_act_rea <  actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
-          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
-          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
-          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
+    self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme) {
+      var actividades = actividadesUltimoInforme
+      for (let index_act_esp = 0; index_act_esp < actividades.length; index_act_esp++) {
+        delete actividades[index_act_esp].FechaCreacion
+        delete actividades[index_act_esp].FechaModificacion
+        delete actividades[index_act_esp].Id
+        for (let index_act_rea = 0; index_act_rea < actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
         }
       }
       return actividades
