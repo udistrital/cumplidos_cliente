@@ -365,7 +365,6 @@ angular.module('contractualClienteApp')
       self.fila_sol_pago = fila;
       funcGen.obtener_doc(self.fila_sol_pago.Id).then(function (documentos) {
         self.documentos = documentos;
-        // console.log(self.documentos);
       }).catch(function (error) {
         console.log("error", error)
         self.documentos = undefined;
