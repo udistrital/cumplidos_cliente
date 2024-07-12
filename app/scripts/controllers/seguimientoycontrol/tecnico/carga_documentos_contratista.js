@@ -240,7 +240,7 @@ angular.module('contractualClienteApp')
               'No se encontraron contratos vigentes asociados a su número de documento',
               'error'
             )
-          };
+          }
         });
     };
 
@@ -412,7 +412,7 @@ angular.module('contractualClienteApp')
             limit: 0
           })).then(function (responsePago) {
             if(Object.entries(responsePago.data.Data[0]).length==0){
-              //no existe pago para ese mes y se crea 
+              //no existe pago para ese mes y se crea
               cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
               .then(function (responsePagoPost) {
                 //console.log(responsePagoPost.data);
@@ -439,10 +439,10 @@ angular.module('contractualClienteApp')
                 'warning'
               );
             }
-            
-           
+
+
           })
-            //Si responde con un error 
+            //Si responde con un error
             .catch(function (responsePago) {
               //console.error('Error 500 WSO2: ', responsePago.status, responsePago.data);
 
@@ -471,7 +471,7 @@ angular.module('contractualClienteApp')
       self.seleccionado = false;
       self.gridOptions2.data = [];
       self.contrato = contrato;
-      //consulta la dependencia del supervisor 
+      //consulta la dependencia del supervisor
       self.responsable = contrato.NumDocumentoSupervisor;
       self.obtenerDependenciasSupervisor();
       self.anios_solicitud_pago(contrato);
@@ -627,7 +627,6 @@ angular.module('contractualClienteApp')
         confirmButtonText: 'Enviar'
       }).then(function () {
 
-        var nombre_docs = solicitud.VigenciaContrato + solicitud.NumeroContrato + solicitud.DocumentoPersonaId + solicitud.Mes + solicitud.Ano;
 
         contratoRequest.get('contrato', self.contrato.NumeroContratoSuscrito + '/' + self.contrato.Vigencia).then(function (response) {
 

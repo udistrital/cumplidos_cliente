@@ -81,7 +81,7 @@ angular.module('contractualClienteApp')
         Nombre: $translate.instant('DIC')
       }
       ];
-  
+
     /*
       Función que permite inicializar los arreglos para filtrar por anio
     */
@@ -199,7 +199,7 @@ angular.module('contractualClienteApp')
         }
         ]
       };
-      
+
       self.cargarCumplidos= function () {
           cumplidosCrudRequest.get('pago_mensual',$.param({
               query:'EstadoPagoMensualId.Id:5',
@@ -280,7 +280,7 @@ angular.module('contractualClienteApp')
           console.log("error",error)
           self.documentos=undefined;
         })
-      
+
       };
 
       self.agregarNombreMeses=function (data) {
@@ -301,13 +301,9 @@ angular.module('contractualClienteApp')
         self.cargarCumplidos();
       }
 
-      self.filtroUsado=function () {
-        if(self.DocContratista==null && self.NumContrato==null && self.vigencia==null && self.anio==null && self.mes==null){
-          return false;
-        }else{
-          return true;
-        }
-      }
+      self.filtroUsado = function() {
+        return !(self.DocContratista == null && self.NumContrato == null && self.vigencia == null && self.anio == null && self.mes == null);
+    }
 
 
       self.inicializarAños();

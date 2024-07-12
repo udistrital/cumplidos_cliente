@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
   <meta charset="utf-8" />
@@ -27,8 +27,8 @@
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/custom.css" />
-  <!-- <link rel="stylesheet" href="styles/table-demo.css" /> -->
-  <!-- <link rel="stylesheet" href="styles/timeline.css" /> -->
+
+
   <link rel="stylesheet" href="styles/loading-bar.css" />
   <link rel="stylesheet" href="styles/steeper.css" />
   <link rel="stylesheet" href="styles/core.css" />
@@ -53,14 +53,6 @@
 
 <body ng-app="contractualClienteApp">
   <div ng-controller="headerCtrl">
-    <!-- <div ng-if="!isLogin" id="nb-global-spinner" class="spinner">
-      <div class="blob blob-0"></div>
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-      <div class="blob blob-4"></div>
-      <div class="blob blob-5"></div>
-    </div> -->
     <div ng-include="'views/header.html'" ng-controller="headerCtrl"></div>
     <div ng-if="isLogin" class="body-container-menuaplicaciones" ng-include="'views/menu-aplicaciones.html'"
       ng-controller="menuaplicacionesCtrl"></div>
@@ -175,6 +167,7 @@
 </body>
 
 <!-- build:js({.tmp,app}) scripts/extras.js -->
+ <script src="scripts/services/role_check_service.js"></script>
 <script src="scripts/environment/environment.js"></script>
 <script src="scripts/services/implicit_token.js"></script>
 <script src="scripts/services/notificacion.js"></script>
@@ -212,7 +205,8 @@
 <script src="scripts/controllers/seguimientoycontrol/tecnico/reversion_aprobados.js"></script>
 <script src="scripts/decorators/text_translate.js"></script>
 <script src="scripts/directives/opciones-component/opciones-directive.js"></script>
+<script src="scripts/controllers/seguimientoycontrol/tecnico/historico_cumplidos.js"></script>
+
 <!-- endbuild -->
-<!-- <script src="./core/scripts/angular-material.min.js"></script> -->
 
 </html>

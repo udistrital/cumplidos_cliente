@@ -766,7 +766,7 @@ var text_es = {
     NUM_DOC_IDENTIDAD: "NÚMERO DOCUMENTO DE IDENTIDAD",
     NAME_CONTRATISTA: "NOMBRE",
     CIUDAD_DOC: "CIUDAD",
-    NUM_CONTRAC: "NÚMERO CONTRATO",
+    NUM_CONTRAC: "Número Contrato",
     FECH_SUSC_CONT: "FECHA SUSCRIPCIÓN CONTRATO",
     UNIDAD_EJE: "UNIDAD EJECUTORA",
     TIPO_CUENTA: "TIPO CUENTA",
@@ -926,7 +926,17 @@ var text_es = {
 
     //Reversion cumplidos por ordenador
     REVERSION_CUMPLIDOS_ORDENADOR:"REVERSION DE CUMPLIDOS APROBADOS",
-    FECHA_APROBACION:"FECHA APROBACION"
+    FECHA_APROBACION:"FECHA APROBACION",
+
+      //Historico Cumplidos
+     HISTORICO_CUMPLIDOS: "HISTORICO DE CUMPLIDOS",
+     SELECION_OPCION : "Selecciona una opccion",
+     SOLO_NUMEROS: "Ingresa solo valores numéricos",
+    MULTIPLES_OPCCIONES: "Puedes ingresar varias opciones separadas por comas.",
+    ERROR_SIN_ESTADOS_PAGO: "No hay registros de cambio de estado.",
+    ERROR_SIN_DOCUEMENTOS_PAGO: "No hay documentos cargados",
+    TEMIRNACION_COMA : "no pude terminar en coma"
+    
 };
 
 var text_en = {
@@ -1393,6 +1403,13 @@ var text_en = {
     NO_EXISTE_RESOLUCION: "A document with that information doesn't exist",
     RESOLUCION_NO_VINCULACION: "A document with that information doesn't exist",
     RESOLUCION_NO_EXPEDIDA: "The document must be issued",
+
+// Historico Cumplidos
+HISTORICO_CUMPLIDOS: "COMPLIANCE HISTORY",
+SELECION_OPCION: "Select an option",
+SOLO_NUMEROS: "Enter only numeric values",
+MULTIPLES_OPCCIONES: "You can enter multiple options separated by commas.",
+TEMIRNACION_COMA: "cannot end with a comma"
 };
 
 angular.module('contractualClienteApp')

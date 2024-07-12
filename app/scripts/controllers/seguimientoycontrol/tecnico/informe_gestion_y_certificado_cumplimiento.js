@@ -160,10 +160,10 @@ angular.module('contractualClienteApp')
       //(self.informacion_informe);
       var diasContrato = null
       var diasContratoEjecutado = null
-      
+
       diasContrato = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.informacion_informe.FechasConNovedades.FechaFin)
       diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.Informe.PeriodoInformeFin)
-      
+
 
       if(self.informacion_informe.Novedades.Suspencion!=null){
         for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
@@ -345,8 +345,6 @@ angular.module('contractualClienteApp')
               $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
             })
           }
-        } else {
-
         }
       }).catch(
         function (error) {
@@ -729,7 +727,7 @@ angular.module('contractualClienteApp')
             }
           },
           {
-            //Certificado de cumplimiento  
+            //Certificado de cumplimiento
             style: 'tableContractInfo',
             widths: '*',
             table: {
@@ -963,7 +961,7 @@ angular.module('contractualClienteApp')
       }
       return actividades
     }
-    
+
   });
 
 angular.module('contractualClienteApp').filter('excludeUsed', function () {
