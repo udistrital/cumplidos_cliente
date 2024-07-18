@@ -184,6 +184,11 @@ angular.module('contractualClienteApp')
         {
           field: 'Acciones',
           displayName: $translate.instant('ACC'),
+          cellTemplate: '<a type="button" title="Ver soportes" type="button" class="fa fa-eye fa-lg  faa-shake animated-hover"' +
+          'ng-click="grid.appScope.aprobacionOrdenador.obtener_doc(row.entity.PagoMensual)" data-toggle="modal" data-target="#modal_ver_soportes"</a>&nbsp;' +
+          ' <a type="button" title="Aprobar pago" type="button" class="fa fa-check fa-lg  faa-shake animated-hover"  ng-click="grid.appScope.aprobacionOrdenador.aprobarPago(row.entity.PagoMensual)">' +
+          '<a type="button" title="Rechazar" type="button" class="fa fa-close fa-lg  faa-shake animated-hover"' +
+          'ng-click="grid.appScope.aprobacionOrdenador.rechazarPago(row.entity.PagoMensual)"></a>',
           width: "7%"
         }
       ]
