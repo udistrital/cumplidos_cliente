@@ -52,6 +52,7 @@ angular
     "cumplidosMidService",
     "adminMidService",
     "gestorDocumentalMidService",
+    'firmaElectronicaService',
     "adminJbpmV2Service",
     "amazonAdministrativaService",
     "contratoService",

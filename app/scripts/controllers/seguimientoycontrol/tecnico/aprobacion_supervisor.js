@@ -8,8 +8,9 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest, funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
-
+  .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest,
+    funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest,
+    cumplidosCrudRequest, firmaElectronicaRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -231,68 +232,250 @@ angular.module('contractualClienteApp')
       )
     }
 
+    self.firmaElectronica = function (pago_mensual) {
+      //Firma electrónica
+      //Captura de datos para firma electrónica
+      //OBTENCION DE DATOS DEL SUPERVISOR
+      let idSupervisor = pago_mensual.DocumentoResponsableId;
+      const idTipoSupervisor = "cc";
+      let cargoSupervisor = pago_mensual.CargoResponsable;
+      amazonAdministrativaRequest.get("supervisor_contrato", "sortby=FechaInicio&order=desc&query=Documento:" +
+        idSupervisor + "&limit=1").then(function (supervisorRespuesta) {
+          let nombreSupervisor = supervisorRespuesta.data[0].Nombre;
+          console.log(`PAGO MENSUAL: ${JSON.stringify(pagoMensual, null, 2)}`);
+          //OBTENCION DATOS DEL CONTRATISTA
+          let idContratista = pago_mensual.DocumentoPersonaId;
+          const cargoContratista = "Contratista";
+          amazonAdministrativaRequest.get("informacion_persona_natural", "query=Id:" +
+            idContratista).then(function (contratistaRespuesta) {
+              let persona = contratistaRespuesta.data[0];
+              let nombreContratista = `${persona.PrimerNombre} ${persona.SegundoNombre} ${persona.PrimerApellido} ${persona.SegundoApellido}`;
+              let idTipoContratistaTemp = persona.TipoDocumento.Id;
+
+              // -- Obtencion tipo doc
+              amazonAdministrativaRequest.get("parametro_estandar", "query=Id:" +
+                idTipoContratistaTemp).then(function (idTipoContratistaRespuesta) {
+                  let idTipoContratista = idTipoContratistaRespuesta.data[0].Abreviatura;
+
+                  //OBTENCION DE DATOS DEL DOCUMENTO
+                  let pago_mensual_id = pago_mensual.Id;
+                  funcGen.obtener_doc(pago_mensual_id).then(function (documentos) {
+                    documentos.forEach((documento) => {
+                      //CONSTRUCCION DE JSON PARA FIRMA
+                      let dataFirma = [{
+                        IdTipoDocumento: documento.Documento.TipoDocumento.Id,
+                        nombre: documento.Documento.Nombre,
+                        metadatos: {
+                          NombreArchivo: documento.Documento.Nombre,
+                          Tipo: "Archivo"
+                        },
+                        firmantes: [{
+                          nombre: nombreSupervisor,
+                          cargo: cargoSupervisor,
+                          tipoId: idTipoSupervisor,
+                          identificacion: idSupervisor
+                        },
+                        {
+                          nombre: nombreContratista,
+                          cargo: cargoContratista,
+                          tipoId: idTipoContratista,
+                          identificacion: idContratista
+                        }],
+                        representantes: [],
+                        descripcion: documento.Documento.Descripcion,
+                        file: documento.Archivo.file
+                      }];
+                      //PETICION A FIRMA
+
+                      firmaElectronicaRequest.postFirmaElectronica(dataFirma).then(function (respuestaFirma) {
+                        console.log("Id del documento firmado: ", respuestaFirma.data.res.Id);
+                        //ACTUALIZAR SOPORTE
+                        //Obtener Id de soporte_pago_mensual
+                        cumplidosCrudRequest.get("soporte_pago_mensual", "query=pago_mensual_id:" + pago_mensual.Id).then(function (responseGetSoporte) {
+                          let soporteItems = responseGetSoporte.data.Data;
+                          soporteItems.forEach(item => {
+                            let id = item.Id;
+                            let pago_mensual_id = item.PagoMensualId.Id;
+                            let item_informe_tipo_contrato_id = item.ItemInformeTipoContratoId.Id;
+                            let aprobado = item.Aprobado;
+                            let activo = item.Activo;
+                            let fechaCreacion = item.FechaCreacion;
+                            let fechaModificacionSoporte = item.FechaModificacion;
+
+                            let objeto_soporte = {
+                              "Id": id,
+                              "Documento": respuestaFirma.data.res.Id,
+                              "Activo": activo,
+                              "FechaCreacion": fechaCreacion,
+                              "FechaModificacion": fechaModificacionSoporte,
+                              "Aprobado": aprobado,
+                              "ItemInformeTipoContratoId": {
+                                "Id": item_informe_tipo_contrato_id
+                              },
+                              "PagoMensualId": {
+                                "Id": pago_mensual_id
+                              }
+                            };
+                            cumplidosCrudRequest.put("soporte_pago_mensual", id, objeto_soporte).then(function (responsePut) {
+                              console.log("Funcionó");
+                            }).catch(function (error) {
+                              swal({
+                                title: 'Error',
+                                text: 'Error al Actualizar datos del soporte mensual',
+                                type: 'error'
+                              });
+                              console.error("Error al Actualizar datos del soporte mensual : ", error)
+                            });
+                          });
+                        }).catch(function (error) {
+                          swal({
+                            title: 'Error',
+                            text: 'Error al obtener datos del soporte mensual',
+                            type: 'error'
+                          });
+                          console.error("Error al obtener datos del soporte mensual : ", error)
+                        });
+                        //FIN ACTUALIZAR SOPORTE
+                      }).catch(function (error) {
+                        swal({
+                          title: 'Error',
+                          text: 'Error en firma electronica',
+                          type: 'error'
+                        });
+                        console.error("Error en firma electronica")
+                      });
+
+                      //FIN PETICION A FIRMA
+
+                    });
+                    //FIN CONSTRUCCION JSON FIRMA
+
+                  }).catch(function (error) {
+                    swal({
+                      title: 'Error',
+                      text: 'Error al obtener los documentos',
+                      type: 'error'
+                    });
+                    console.error("Error al obtener los documentos : ", error)
+                  });
+                  //FIN OBTENCION DE DATOS DEL DOCUMENTO
+
+                }).catch(function (error) {
+                  swal({
+                    title: 'Error',
+                    text: 'Error al obtener el tipo de documento del contratista',
+                    type: 'error'
+                  });
+                  console.error("Error al obtener el tipo de documento del contratista : ", error)
+                });
+              // -- fin obtencion tipo doc
+
+
+
+            }).catch(function (error) {
+              swal({
+                title: 'Error',
+                text: 'Error al obtener Datos del contratista',
+                type: 'error'
+              });
+              console.error("Error al obtener Datos del contratista: ", error)
+            });
+          //FIN OBTENCION DATOS DEL CONTRATISTA
+
+        }).catch(function (error) {
+          swal({
+            title: 'Error',
+            text: 'Error al obtener Datos del supervisor',
+            type: 'error'
+          });
+          console.error("Error al obtener Datos del supervisor : ", error)
+        });
+      //FIN OBTENCION DE DATOS DEL SUPERVISOR
+      //Fin firma electrónica
+      //console.log(`PAGO MENSUAL: ${JSON.stringify(pagoMensual, null, 2)}`);
+    }
+
     self.dar_visto_bueno = function (pago_mensual) {
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
-          self.aux_pago_mensual = pago_mensual;
+          swal({
+            title: '¿Está seguro(a) que desea dar el visto bueno y firmar el documento?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Aceptar'
+          }).then(function () {
+            self.aux_pago_mensual = pago_mensual;
+            self.contrato = response.data.contrato;
 
-          self.contrato = response.data.contrato;
+            self.firmaElectronica(self.aux_pago_mensual);
+            console.log("La ejecución sigue");
+            console.log(`PAGO MENSUAL: ${JSON.stringify(pagoMensual, null, 2)}`);
+            self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por supervisor', self.Documento);
+            notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
+            notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
+            //Obtiene la información correspondiente del ordenador
+            cumplidosMidRequest.get('solicitudes_ordenador_contratistas/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
+              .then(function (responseOrdenador) {
+                self.ordenador = responseOrdenador.data.Data;
+                self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
+                self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
 
-          self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por supervisor', self.Documento);
-          notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
-          notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
-          //Obtiene la información correspondiente del ordenador
-          cumplidosMidRequest.get('solicitudes_ordenador_contratistas/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
-            .then(function (responseOrdenador) {
-              self.ordenador = responseOrdenador.data.Data;
-              self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
-              self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
 
+                cumplidosCrudRequest.get('estado_pago_mensual', $.param({
+                  limit: 0,
+                  query: 'CodigoAbreviacion:AS'
+                })).then(function (responseCod) {
 
-              cumplidosCrudRequest.get('estado_pago_mensual', $.param({
-                limit: 0,
-                query: 'CodigoAbreviacion:AS'
-              })).then(function (responseCod) {
+                  var sig_estado = responseCod.data.Data;
+                  self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
-                var sig_estado = responseCod.data.Data;
-                self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
+                  var pago_mensual_auditoria = {
+                    Pago: {
+                      CargoResponsable: self.ordenador.Cargo,
+                      EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
+                      FechaModificacion: new Date(),
+                      Mes: self.aux_pago_mensual.Mes,
+                      Ano: self.aux_pago_mensual.Ano,
+                      NumeroContrato: self.aux_pago_mensual.NumeroContrato,
+                      DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
+                      DocumentoResponsableId: (self.ordenador.NumeroDocumento).toString(),
+                      VigenciaContrato: parseInt(self.contrato.vigencia)
+                    },
+                    CargoEjecutor: ("SUPERVISOR: " + self.contrato.supervisor.cargo).substring(0, 69),
+                    DocumentoEjecutor: self.contrato.supervisor.documento_identificacion
+                  }
 
-                var pago_mensual_auditoria = {
-                  Pago: {
-                    CargoResponsable: self.ordenador.Cargo,
-                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
-                    FechaModificacion: new Date(),
-                    Mes: self.aux_pago_mensual.Mes,
-                    Ano: self.aux_pago_mensual.Ano,
-                    NumeroContrato: self.aux_pago_mensual.NumeroContrato,
-                    DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
-                    DocumentoResponsableId: (self.ordenador.NumeroDocumento).toString(),
-                    VigenciaContrato: parseInt(self.contrato.vigencia)
-                  },
-                  CargoEjecutor: ("SUPERVISOR: " + self.contrato.supervisor.cargo).substring(0, 69),
-                  DocumentoEjecutor: self.contrato.supervisor.documento_identificacion
-                }
+                  cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
+                    .then(function (response) {
+                      swal(
+                        'Visto bueno ',
+                        'Tiene la validación del supervisor del contrato',
+                        'success'
+                      )
+                      self.obtener_contratistas_supervisor();
+                      self.gridApi.core.refresh();
+                    })
+                    .catch(function (response) { //Manejo de error
+                      swal(
+                        'Error',
+                        'No se ha podido registrar la validación del supervisor',
+                        'error'
+                      );
+                    });
 
-                cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
-                  .then(function (response) {
-                    swal(
-                      'Visto bueno ',
-                      'Tiene la validación del supervisor del contrato',
-                      'success'
-                    )
-                    self.obtener_contratistas_supervisor();
-                    self.gridApi.core.refresh();
-                  })
-                  .catch(function (response) { //Manejo de error
-                    swal(
-                      'Error',
-                      'No se ha podido registrar la validación del supervisor',
-                      'error'
-                    );
-                  });
+                })
+              });
+          }).catch(function (response) {
+            swal({
+              title: 'Error',
+              text: 'Ha ocurrido un error en el proceso',
+              type: 'error'
+            })
+          });
 
-              })
-            });
         });
 
     };

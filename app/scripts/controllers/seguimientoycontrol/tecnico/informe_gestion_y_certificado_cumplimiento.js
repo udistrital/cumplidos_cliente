@@ -744,53 +744,7 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'Nota: Yo, ' + self.informacion_informe.InformacionContratista.Nombre + ' , autorizo a la Universidad Distrital para hacer el abono de mis pagos a la cuenta bancaria relacionada. Bajo gravedad del juramento, certifico que estoy realizando los aportes a seguridad social, de conformidad con lo establecido por la Ley. ', alignment: 'justify', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}]
               ]
             }
-          }, {
-            margin: [0, 20, 0, 0],
-            columns: [
-              { width: '*', text: '' },
-              {
-                width: 'auto',
-                table: {
-                  body: [
-                    [
-                      {
-                        border: [false, false, false, true],
-                        text: self.informacion_informe.InformacionContratista.Nombre, alignment: 'center'
-                      }
-                    ],
-                    [
-                      {
-                        border: [false, true, false, false],
-                        text: 'CONTRATISTA', bold: true,
-                        alignment: 'center'
-                      }
-                    ]]
-                }
-              },
-              { width: '*', text: '' },
-              {
-                width: 'auto',
-                table: {
-                  body: [
-                    [
-                      {
-                        border: [false, false, false, true],
-                        text: self.informacion_informe.Supervisor.Nombre, alignment: 'center'
-                      }
-                    ],
-                    [
-                      {
-                        border: [false, true, false, false],
-                        text: 'SUPERVISOR', bold: true,
-                        alignment: 'center'
-                      }
-                    ]]
-                }
-              },
-              { width: '*', text: '' },
-            ]
           }
-
         ],
         styles: {
           tableHeader: {
