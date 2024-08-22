@@ -19,10 +19,8 @@ angular.module("contractualClienteApp").constant("CONF", {
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
     ADMINISTRATIVA_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
-    //CUMPLIDOS_CRUD_SERVICE:
-      //"https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
     CUMPLIDOS_CRUD_SERVICE:
-      "http://pruebasapi.intranetoas.udistrital.edu.co:8511/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
     CUMPLIDOS_MID_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v2/",
     ADMINISTRATIVA_JBPM_V2:
@@ -50,7 +48,7 @@ angular.module("contractualClienteApp").constant("CONF", {
     GESTION_DOCUMENTAL_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1",
     TITAN_MID_SERVICE:'https://autenticacion.portaloas.udistrital.edu.co/apioas/titan_api_mid/v2/',
     AUTENTICATION_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/autenticacion_mid/v1/",
-    FIRMA_ELECTRONICA_SERVICE: "http://127.0.0.1:4000/v1/",
+    FIRMA_ELECTRONICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/firma_electronica_mid/v1/",
     TOKEN: {
       AUTORIZATION_URL:
         "https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize",
