@@ -15,7 +15,6 @@ angular.module('firmaElectronicaService', [])
         // Public API here
         return {
             postFirmaElectronica: function(data) {
-                console.log(`PAGO MENSUAL: ${JSON.stringify(data, null, 2)}`);
                 return $http.post(path + 'firma_electronica', data, token_service.getHeader());
             }
         };
