@@ -260,7 +260,6 @@ angular.module('contractualClienteApp')
 
                     //OBTENCION DE DATOS DEL DOCUMENTO
                     let pago_mensual_id = pago_mensual.Id;
-                    //console.log(`PAGO MENSUAL: ${JSON.stringify(pagoMensual, null, 2)}`);
                     funcGen.obtener_doc(pago_mensual_id).then(function (documentos) {
                       documentos.forEach((documento) => {
                         //CONSTRUCCION DE JSON PARA FIRMA
@@ -290,7 +289,6 @@ angular.module('contractualClienteApp')
                         //PETICION A FIRMA
 
                         firmaElectronicaRequest.postFirmaElectronica(dataFirma).then(function (respuestaFirma) {
-                          console.log("Id del documento firmado: ", respuestaFirma.data.res.Id);
                           //ACTUALIZAR SOPORTE
                           //Obtener Id de soporte_pago_mensual
                           cumplidosCrudRequest.get("soporte_pago_mensual", "query=pago_mensual_id:" + pago_mensual.Id).then(function (responseGetSoporte) {
@@ -320,7 +318,6 @@ angular.module('contractualClienteApp')
                               };
 
                               cumplidosCrudRequest.put("soporte_pago_mensual", id, objeto_soporte).then(function (responsePut) {
-                                console.log("Funcionó");
                                 resolve(responsePut);
                               }).catch(function (error) {
                                 reject(error);
@@ -361,7 +358,6 @@ angular.module('contractualClienteApp')
           });
         //FIN OBTENCION DE DATOS DEL SUPERVISOR
         //Fin firma electrónica
-        //console.log(`PAGO MENSUAL: ${JSON.stringify(pagoMensual, null, 2)}`);
       });
     }
 
@@ -389,7 +385,6 @@ angular.module('contractualClienteApp')
             self.aux_pago_mensual = pago_mensual;
             self.contrato = response.data.contrato;
             self.firmaElectronica(self.aux_pago_mensual).then(function (response) {
-              console.log("SIGUE LA EJECUCION");
               self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por supervisor', self.Documento);
               notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
               notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
