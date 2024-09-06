@@ -250,7 +250,7 @@ angular.module('contractualClienteApp')
             amazonAdministrativaRequest.get("informacion_persona_natural", "query=Id:" +
               idContratista).then(function (contratistaRespuesta) {
                 let persona = contratistaRespuesta.data[0];
-                let nombreContratista = `${persona.PrimerNombre} ${persona.SegundoNombre} ${persona.PrimerApellido} ${persona.SegundoApellido}`;
+                let nombreContratista = persona.PrimerNombre+' '+persona.SegundoNombre+' '+persona.PrimerApellido+' '+persona.SegundoApellido;
                 let idTipoContratistaTemp = persona.TipoDocumento.Id;
 
                 // -- Obtencion tipo doc
