@@ -277,13 +277,13 @@ angular.module('contractualClienteApp')
                   cargo: cargoSupervisor,
                   tipoId: idTipoSupervisor,
                   identificacion: idSupervisor
-                }/*,
+                },
                 {
                   nombre: nombreContratista,
                   cargo: cargoContratista,
                   tipoId: idTipoContratista,
                   identificacion: pago_mensual.DocumentoPersonaId
-                }*/],
+                }],
                 representantes: [],
                 descripcion: documento.TipoDocumento.Descripcion,
                 file: response.data.file
@@ -348,6 +348,11 @@ angular.module('contractualClienteApp')
 
       } catch (error) {
         console.error(error);
+        swal({
+          title: 'Error',
+          text: 'Ha ocurrido un error en el proceso de firma electrónica',
+          type: 'error'
+        })
         throw new Error('Exeption:', error);
       }
 
