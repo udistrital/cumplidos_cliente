@@ -232,134 +232,126 @@ angular.module('contractualClienteApp')
       )
     }
 
-  
+    self.obtenerInformeDeGestion = function (pago_mensual) {
+      return cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:'+pago_mensual.Id+',ItemInformeTipoContratoId.ItemInformeId.Id:10&limit=1&orderby=FechaCreacion')
+        .then(response => {
+          if (response && response.data) {
+            return response.data.Data[0];
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    };
     
-    self.obtenerInformeDeGestion =  async function(pago_mensual){
+    self.dataFirmaInformeDeGestion = function (idInforme, nombreSupervisor, cargoSupervisor, idTipoSupervisor, idSupervisor, nombreContratista, cargoContratista, idTipoContratista, idContratista, pago_mensual) {
+      let documento, nombreArchivo;
       
-      try{
-       self.response = await cumplidosCrudRequest.get("soporte_pago_mensual?query=PagoMensualId:"+pago_mensual.Id+",ItemInformeTipoContratoId.ItemInformeId.Id:10&limit=1&orderby=FechaCreacion");
-       if(self.response!=null && self.response.data!=null){
-        return self.response.data.Data[0];
-      }
-      }catch(error){
-          console.log(error)
-      }
-    }
-
-
-    self.dataFirmaInformeDeGestion = async function(idInforme,nombreSupervisor,cargoSupervisor,idTipoSupervisor,idSupervisor,nombreContratista,cargoContratista,idTipoContratista,idContratista,pago_mensual ){
-      
-          let nombreArchivo;
-          let documento;
-          let dataFirma;
-
-
-          let responseDocumento = await documentoRequest.get("documento","query=Id:"+idInforme)
-          if(responseDocumento!=null && responseDocumento?.data!=null){
-            documento = responseDocumento.data[0]
-            const metadatos = JSON.parse(responseDocumento.data[0].Metadatos);
-            nombreArchivo = metadatos.NombreArchivo
+      return documentoRequest.get('documento?query=Id:'+idInforme)
+        .then(responseDocumento => {
+          if (responseDocumento && responseDocumento.data) {
+            documento = responseDocumento.data[0];
+            const metadatos = JSON.parse(documento.Metadatos);
+            nombreArchivo = metadatos.NombreArchivo;
+    
+            return gestorDocumentalMidRequest.get('/document/'+documento.Enlace);
           }
-
-          let response = await gestorDocumentalMidRequest.get("/document/"+documento.Enlace)
-         
-          if(response!=null && response.data!=null){
-
-          dataFirma = [{
-                IdTipoDocumento: documento.TipoDocumento.Id,
-                nombre: nombreArchivo,
-                metadatos: {
-                  NombreArchivo: nombreArchivo,
-                  Tipo: "Archivo"
-                },
-                firmantes: [{
-                  nombre: nombreSupervisor,
-                  cargo: cargoSupervisor,
-                  tipoId: idTipoSupervisor,
-                  identificacion: idSupervisor
-                },
-                {
-                  nombre: nombreContratista,
-                  cargo: cargoContratista,
-                  tipoId: idTipoContratista,
-                  identificacion: pago_mensual.DocumentoPersonaId
-                }],
-                representantes: [],
-                descripcion: documento.TipoDocumento.Descripcion,
-                file: response.data.file
-              }];
-              
+        })
+        .then(response => {
+          if (response && response.data) {
+            const dataFirma = [{
+              IdTipoDocumento: documento.TipoDocumento.Id,
+              nombre: nombreArchivo,
+              metadatos: {
+                NombreArchivo: nombreArchivo,
+                Tipo: "Archivo"
+              },
+              firmantes: [{
+                nombre: nombreSupervisor,
+                cargo: cargoSupervisor,
+                tipoId: idTipoSupervisor,
+                identificacion: idSupervisor
+              },
+              {
+                nombre: nombreContratista,
+                cargo: cargoContratista,
+                tipoId: idTipoContratista,
+                identificacion: pago_mensual.DocumentoPersonaId
+              }],
+              representantes: [],
+              descripcion: documento.TipoDocumento.Descripcion,
+              file: response.data.file
+            }];
             
+            return dataFirma;
           }
-         return dataFirma;
-    }
-
-
-    self.firmaElectronica = async function (pago_mensual) {
-      //Firma electrónica
-      //Captura de datos para firma electrónica
-      //OBTENCION DE DATOS DEL SUPERVISOR
-
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+    
+    self.firmaElectronica = function (pago_mensual) {
       const idTipoSupervisor = "cc";
       const cargoContratista = "Contratista";
       let idSupervisor = pago_mensual.DocumentoResponsableId;
       let cargoSupervisor = pago_mensual.CargoResponsable;
-
-      try {
-        let supervisorRespuesta = await amazonAdministrativaRequest.get("supervisor_contrato", "sortby=FechaInicio&order=desc&query=Documento:" +
-          idSupervisor + "&limit=1")
-        let nombreSupervisor = supervisorRespuesta.data[0].Nombre;
-        //OBTENCION DATOS DEL CONTRATISTA
-        let idContratista = pago_mensual.DocumentoPersonaId;
-        let contratistaRespuesta = await amazonAdministrativaRequest.get("informacion_persona_natural", "query=Id:" +
-          idContratista)
-        let persona = contratistaRespuesta.data[0];
-        let nombreContratista = persona.PrimerNombre+' '+persona.SegundoNombre+' '+persona.PrimerApellido+' '+persona.SegundoApellido;
-        let idTipoContratistaTemp = persona.TipoDocumento.Id;
-        let idTipoContratistaRespuesta = await amazonAdministrativaRequest.get("parametro_estandar", "query=Id:" +
-          idTipoContratistaTemp)
-
-        let idTipoContratista = idTipoContratistaRespuesta.data[0].Abreviatura;
-        // Obtiene El informe De gestion individual
-        let informeDeGestion = await self.obtenerInformeDeGestion(pago_mensual)
-        let dataFirma = await self.dataFirmaInformeDeGestion(informeDeGestion.Documento,nombreSupervisor,cargoSupervisor,idTipoSupervisor,idSupervisor,
-          nombreContratista,cargoContratista,idTipoContratista,idTipoContratistaTemp,pago_mensual);
-          console.log(dataFirma, "data firma")
-        
-        let respuestaFirma = await firmaElectronicaRequest.postFirmaElectronica(dataFirma);
-
-        let objeto_soporte = {
-          "Id":  informeDeGestion.Id,
-          "Documento": respuestaFirma.data.res.Id,
-          "Activo": informeDeGestion.Activo,
-          "FechaCreacion": informeDeGestion.FechaCreacion,
-          "FechaModificacion": informeDeGestion.FechaModificacion,
-          "Aprobado": informeDeGestion.Aprobado,
-          "ItemInformeTipoContratoId": {
-            "Id": informeDeGestion.ItemInformeTipoContratoId.Id
-          },
-          "PagoMensualId": {
-            "Id": pago_mensual.Id
-          }
-        };
-
-        let responsePut = await cumplidosCrudRequest.put("soporte_pago_mensual", informeDeGestion.Id, objeto_soporte);
-        return responsePut;
-
-      } catch (error) {
-        console.error(error);
-        swal({
-          title: 'Error',
-          text: 'Ha ocurrido un error en el proceso de firma electrónica',
-          type: 'error'
-        })
-        throw new Error('Exeption:', error);
-      }
-
-
+      let nombreSupervisor, nombreContratista, idTipoContratista;
     
-      
-    }
+      return Promise.all([
+        amazonAdministrativaRequest.get('supervisor_contrato?sortby=FechaInicio&order=desc&query=Documento:'+idSupervisor+'&limit=1'),
+        amazonAdministrativaRequest.get('informacion_persona_natural?query=Id:'+pago_mensual.DocumentoPersonaId)
+      ])
+        .then(([supervisorRespuesta, contratistaRespuesta]) => {
+          nombreSupervisor = supervisorRespuesta.data[0].Nombre;
+    
+          const persona = contratistaRespuesta.data[0];
+          nombreContratista = ''+persona.PrimerNombre+' '+persona.SegundoNombre+' '+persona.PrimerApellido+' '+persona.SegundoApellido;
+          const idTipoContratistaTemp = persona.TipoDocumento.Id;
+    
+          return amazonAdministrativaRequest.get('parametro_estandar?query=Id:'+idTipoContratistaTemp);
+        })
+        .then(idTipoContratistaRespuesta => {
+          idTipoContratista = idTipoContratistaRespuesta.data[0].Abreviatura;
+    
+          return self.obtenerInformeDeGestion(pago_mensual);
+        })
+        .then(informeDeGestion => {
+          return self.dataFirmaInformeDeGestion(informeDeGestion.Documento, nombreSupervisor, cargoSupervisor, idTipoSupervisor, idSupervisor, nombreContratista, cargoContratista, idTipoContratista, pago_mensual.DocumentoPersonaId, pago_mensual)
+            .then(dataFirma => {
+              return firmaElectronicaRequest.postFirmaElectronica(dataFirma)
+                .then(respuestaFirma => {
+                  const objeto_soporte = {
+                    "Id": informeDeGestion.Id,
+                    "Documento": respuestaFirma.data.res.Id,
+                    "Activo": informeDeGestion.Activo,
+                    "FechaCreacion": informeDeGestion.FechaCreacion,
+                    "FechaModificacion": informeDeGestion.FechaModificacion,
+                    "Aprobado": informeDeGestion.Aprobado,
+                    "ItemInformeTipoContratoId": {
+                      "Id": informeDeGestion.ItemInformeTipoContratoId.Id
+                    },
+                    "PagoMensualId": {
+                      "Id": pago_mensual.Id
+                    }
+                  };
+                  
+                  return cumplidosCrudRequest.put('soporte_pago_mensual', informeDeGestion.Id, objeto_soporte);
+                });
+            });
+        })
+        .catch(error => {
+          console.error(error);
+          swal({
+            title: 'Error',
+            text: 'Ha ocurrido un error en el proceso de firma electrónica',
+            type: 'error'
+          });
+          throw new Error('Exception:', error);
+        });
+    };
+    ''
+    
 
     self.dar_visto_bueno = function (pago_mensual) {
 
@@ -386,6 +378,7 @@ angular.module('contractualClienteApp')
             self.aux_pago_mensual = pago_mensual;
             self.contrato = response.data.contrato;
             self.firmaElectronica(self.aux_pago_mensual).then(function (response) {
+              console.log(response)
               self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por supervisor', self.Documento);
               notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
               notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
