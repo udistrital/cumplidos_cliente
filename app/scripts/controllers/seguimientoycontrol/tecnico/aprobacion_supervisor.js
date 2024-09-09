@@ -10,7 +10,7 @@
 angular.module('contractualClienteApp')
   .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest,
     funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest,
-    cumplidosCrudRequest, firmaElectronicaRequest) {
+    cumplidosCrudRequest, firmaElectronicaRequest,gestorDocumentalMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -232,136 +232,132 @@ angular.module('contractualClienteApp')
       )
     }
 
-    self.firmaElectronica = function (pago_mensual) {
-      return new Promise((resolve, reject) => {
-
-        //Firma electrónica
-        //Captura de datos para firma electrónica
-        //OBTENCION DE DATOS DEL SUPERVISOR
-        let idSupervisor = pago_mensual.DocumentoResponsableId;
-        const idTipoSupervisor = "cc";
-        let cargoSupervisor = pago_mensual.CargoResponsable;
-        amazonAdministrativaRequest.get("supervisor_contrato", "sortby=FechaInicio&order=desc&query=Documento:" +
-          idSupervisor + "&limit=1").then(function (supervisorRespuesta) {
-            let nombreSupervisor = supervisorRespuesta.data[0].Nombre;
-            //OBTENCION DATOS DEL CONTRATISTA
-            let idContratista = pago_mensual.DocumentoPersonaId;
-            const cargoContratista = "Contratista";
-            amazonAdministrativaRequest.get("informacion_persona_natural", "query=Id:" +
-              idContratista).then(function (contratistaRespuesta) {
-                let persona = contratistaRespuesta.data[0];
-                let nombreContratista = persona.PrimerNombre+' '+persona.SegundoNombre+' '+persona.PrimerApellido+' '+persona.SegundoApellido;
-                let idTipoContratistaTemp = persona.TipoDocumento.Id;
-
-                // -- Obtencion tipo doc
-                amazonAdministrativaRequest.get("parametro_estandar", "query=Id:" +
-                  idTipoContratistaTemp).then(function (idTipoContratistaRespuesta) {
-                    let idTipoContratista = idTipoContratistaRespuesta.data[0].Abreviatura;
-
-                    //OBTENCION DE DATOS DEL DOCUMENTO
-                    let pago_mensual_id = pago_mensual.Id;
-                    funcGen.obtener_doc(pago_mensual_id).then(function (documentos) {
-                      documentos.forEach((documento) => {
-                        //CONSTRUCCION DE JSON PARA FIRMA
-                        let dataFirma = [{
-                          IdTipoDocumento: documento.Documento.TipoDocumento.Id,
-                          nombre: documento.Documento.Nombre,
-                          metadatos: {
-                            NombreArchivo: documento.Documento.Nombre,
-                            Tipo: "Archivo"
-                          },
-                          firmantes: [{
-                            nombre: nombreSupervisor,
-                            cargo: cargoSupervisor,
-                            tipoId: idTipoSupervisor,
-                            identificacion: idSupervisor
-                          },
-                          {
-                            nombre: nombreContratista,
-                            cargo: cargoContratista,
-                            tipoId: idTipoContratista,
-                            identificacion: idContratista
-                          }],
-                          representantes: [],
-                          descripcion: documento.Documento.Descripcion,
-                          file: documento.Archivo.file
-                        }];
-                        //PETICION A FIRMA
-
-                        firmaElectronicaRequest.postFirmaElectronica(dataFirma).then(function (respuestaFirma) {
-                          //ACTUALIZAR SOPORTE
-                          //Obtener Id de soporte_pago_mensual
-                          cumplidosCrudRequest.get("soporte_pago_mensual", "query=pago_mensual_id:" + pago_mensual.Id).then(function (responseGetSoporte) {
-                            let soporteItems = responseGetSoporte.data.Data;
-                            soporteItems.forEach(item => {
-                              let id = item.Id;
-                              let pago_mensual_id = item.PagoMensualId.Id;
-                              let item_informe_tipo_contrato_id = item.ItemInformeTipoContratoId.Id;
-                              let aprobado = item.Aprobado;
-                              let activo = item.Activo;
-                              let fechaCreacion = item.FechaCreacion;
-                              let fechaModificacionSoporte = item.FechaModificacion;
-
-                              let objeto_soporte = {
-                                "Id": id,
-                                "Documento": respuestaFirma.data.res.Id,
-                                "Activo": activo,
-                                "FechaCreacion": fechaCreacion,
-                                "FechaModificacion": fechaModificacionSoporte,
-                                "Aprobado": aprobado,
-                                "ItemInformeTipoContratoId": {
-                                  "Id": item_informe_tipo_contrato_id
-                                },
-                                "PagoMensualId": {
-                                  "Id": pago_mensual_id
-                                }
-                              };
-
-                              cumplidosCrudRequest.put("soporte_pago_mensual", id, objeto_soporte).then(function (responsePut) {
-                                resolve(responsePut);
-                              }).catch(function (error) {
-                                reject(error);
-                              });
-                            });
-                          }).catch(function (error) {
-                            reject(error);
-                          });
-                          //FIN ACTUALIZAR SOPORTE
-                        }).catch(function (error) {
-                          reject(error);
-                        });
-
-                        //FIN PETICION A FIRMA
-
-                      });
-                      //FIN CONSTRUCCION JSON FIRMA
-
-                    }).catch(function (error) {
-                      reject(error);
-                    });
-                    //FIN OBTENCION DE DATOS DEL DOCUMENTO
-
-                  }).catch(function (error) {
-                    reject(error);
-                  });
-                // -- fin obtencion tipo doc
+  
+    
+    self.obtenerInformeDeGestion =  async function(pago_mensual){
+      
+      try{
+       self.response = await cumplidosCrudRequest.get("soporte_pago_mensual?query=PagoMensualId:"+pago_mensual.Id+",ItemInformeTipoContratoId.ItemInformeId.Id:10&limit=1&orderby=FechaCreacion");
+       if(self.response!=null && self.response.data!=null){
+        return self.response.data.Data[0];
+      }
+      }catch(error){
+          console.log(error)
+      }
+    }
 
 
+    self.dataFirmaInformeDeGestion = async function(idInforme,nombreSupervisor,cargoSupervisor,idTipoSupervisor,idSupervisor,nombreContratista,cargoContratista,idTipoContratista,idContratista,pago_mensual ){
+      
+          let nombreArchivo;
+          let documento;
+          let dataFirma;
 
-              }).catch(function (error) {
-                reject(error);
-              });
-            //FIN OBTENCION DATOS DEL CONTRATISTA
 
-          }).catch(function (error) {
-            reject(error);
-          });
-        //FIN OBTENCION DE DATOS DEL SUPERVISOR
-        //Fin firma electrónica
-      });
+          let responseDocumento = await documentoRequest.get("documento","query=Id:"+idInforme)
+          if(responseDocumento!=null && responseDocumento?.data!=null){
+            documento = responseDocumento.data[0]
+            const metadatos = JSON.parse(responseDocumento.data[0].Metadatos);
+            nombreArchivo = metadatos.NombreArchivo
+          }
+
+          let response = await gestorDocumentalMidRequest.get("/document/"+documento.Enlace)
+         
+          if(response!=null && response.data!=null){
+
+          dataFirma = [{
+                IdTipoDocumento: documento.TipoDocumento.Id,
+                nombre: nombreArchivo,
+                metadatos: {
+                  NombreArchivo: nombreArchivo,
+                  Tipo: "Archivo"
+                },
+                firmantes: [{
+                  nombre: nombreSupervisor,
+                  cargo: cargoSupervisor,
+                  tipoId: idTipoSupervisor,
+                  identificacion: idSupervisor
+                }/*,
+                {
+                  nombre: nombreContratista,
+                  cargo: cargoContratista,
+                  tipoId: idTipoContratista,
+                  identificacion: pago_mensual.DocumentoPersonaId
+                }*/],
+                representantes: [],
+                descripcion: documento.TipoDocumento.Descripcion,
+                file: response.data.file
+              }];
+              
+            
+          }
+         return dataFirma;
+    }
+
+
+    self.firmaElectronica = async function (pago_mensual) {
+      //Firma electrónica
+      //Captura de datos para firma electrónica
+      //OBTENCION DE DATOS DEL SUPERVISOR
+
+      const idTipoSupervisor = "cc";
+      const cargoContratista = "Contratista";
+      let idSupervisor = pago_mensual.DocumentoResponsableId;
+      let cargoSupervisor = pago_mensual.CargoResponsable;
+
+      try {
+        let supervisorRespuesta = await amazonAdministrativaRequest.get("supervisor_contrato", "sortby=FechaInicio&order=desc&query=Documento:" +
+          idSupervisor + "&limit=1")
+        let nombreSupervisor = supervisorRespuesta.data[0].Nombre;
+        //OBTENCION DATOS DEL CONTRATISTA
+        let idContratista = pago_mensual.DocumentoPersonaId;
+        let contratistaRespuesta = await amazonAdministrativaRequest.get("informacion_persona_natural", "query=Id:" +
+          idContratista)
+        let persona = contratistaRespuesta.data[0];
+        let nombreContratista = persona.PrimerNombre+' '+persona.SegundoNombre+' '+persona.PrimerApellido+' '+persona.SegundoApellido;
+        let idTipoContratistaTemp = persona.TipoDocumento.Id;
+        let idTipoContratistaRespuesta = await amazonAdministrativaRequest.get("parametro_estandar", "query=Id:" +
+          idTipoContratistaTemp)
+
+        let idTipoContratista = idTipoContratistaRespuesta.data[0].Abreviatura;
+        // Obtiene El informe De gestion individual
+        let informeDeGestion = await self.obtenerInformeDeGestion(pago_mensual)
+        let dataFirma = await self.dataFirmaInformeDeGestion(informeDeGestion.Documento,nombreSupervisor,cargoSupervisor,idTipoSupervisor,idSupervisor,
+          nombreContratista,cargoContratista,idTipoContratista,idTipoContratistaTemp,pago_mensual);
+          console.log(dataFirma, "data firma")
+        
+        let respuestaFirma = await firmaElectronicaRequest.postFirmaElectronica(dataFirma);
+
+        let objeto_soporte = {
+          "Id":  informeDeGestion.Id,
+          "Documento": respuestaFirma.data.res.Id,
+          "Activo": informeDeGestion.Activo,
+          "FechaCreacion": informeDeGestion.FechaCreacion,
+          "FechaModificacion": informeDeGestion.FechaModificacion,
+          "Aprobado": informeDeGestion.Aprobado,
+          "ItemInformeTipoContratoId": {
+            "Id": informeDeGestion.ItemInformeTipoContratoId.Id
+          },
+          "PagoMensualId": {
+            "Id": pago_mensual.Id
+          }
+        };
+
+        let responsePut = await cumplidosCrudRequest.put("soporte_pago_mensual", informeDeGestion.Id, objeto_soporte);
+        return responsePut;
+
+      } catch (error) {
+        console.error(error);
+        throw new Error('Exeption:', error);
+      }
+
+
+    
+      
     }
 
     self.dar_visto_bueno = function (pago_mensual) {
+
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           swal({
