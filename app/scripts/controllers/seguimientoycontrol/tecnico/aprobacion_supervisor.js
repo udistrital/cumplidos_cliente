@@ -264,22 +264,30 @@ angular.module('contractualClienteApp')
               nombre: nombreArchivo,
               metadatos: {
                 NombreArchivo: nombreArchivo,
-                Tipo: "Archivo"
+                Tipo: "Archivo",
+                firmantes: [{
+                  nombre: nombreSupervisor,
+                  cargo: cargoSupervisor,
+                  tipoId: idTipoSupervisor,
+                  identificacion: idSupervisor
+                },
+                {
+                  nombre: nombreContratista,
+                  cargo: cargoContratista,
+                  tipoId: idTipoContratista,
+                  identificacion: pago_mensual.DocumentoPersonaId
+                }],
+                representantes: []
               },
               firmantes: [{
                 nombre: nombreSupervisor,
                 cargo: cargoSupervisor,
                 tipoId: idTipoSupervisor,
                 identificacion: idSupervisor
-              },
-              {
-                nombre: nombreContratista,
-                cargo: cargoContratista,
-                tipoId: idTipoContratista,
-                identificacion: pago_mensual.DocumentoPersonaId
               }],
               representantes: [],
               descripcion: documento.TipoDocumento.Descripcion,
+              etapa_firma: 3,
               file: response.data.file
             }];
             
@@ -319,7 +327,7 @@ angular.module('contractualClienteApp')
         .then(informeDeGestion => {
           return self.dataFirmaInformeDeGestion(informeDeGestion.Documento, nombreSupervisor, cargoSupervisor, idTipoSupervisor, idSupervisor, nombreContratista, cargoContratista, idTipoContratista, pago_mensual.DocumentoPersonaId, pago_mensual)
             .then(dataFirma => {
-              return firmaElectronicaRequest.postFirmaElectronica(dataFirma)
+              return firmaElectronicaRequest.firma_multiple(dataFirma)
                 .then(respuestaFirma => {
                   const objeto_soporte = {
                     "Id": informeDeGestion.Id,
