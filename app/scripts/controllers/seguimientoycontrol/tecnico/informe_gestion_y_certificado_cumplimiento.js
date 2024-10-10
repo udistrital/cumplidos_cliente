@@ -16,7 +16,7 @@ angular.module('contractualClienteApp')
     self.ObtenerInformacionPagoMensual = function () {
       if (self.pago_mensual_id == null || self.pago_mensual_id == undefined) {
         swal({
-          title: 'Ocurrió un error al traer la información del cumplido 1, intente nuevamente más tarde',
+          title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
           type: 'error',
           showCancelButton: false,
           confirmButtonColor: '#d33',
@@ -46,7 +46,7 @@ angular.module('contractualClienteApp')
             self.obtenerPreliquidacion();
           } else {
             swal({
-              title: 'Ocurrió un error al traer la información del cumplido 2, intente nuevamente más tarde',
+              title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
               type: 'error',
               showCancelButton: false,
               confirmButtonColor: '#d33',
@@ -60,7 +60,7 @@ angular.module('contractualClienteApp')
         }).catch(function (error) {
           //console.log(error)
           swal({
-            title: 'Ocurrió un error al traer la información del cumplido 3, intente nuevamente más tarde',
+            title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
             type: 'error',
             showCancelButton: false,
             confirmButtonColor: '#d33',
@@ -839,7 +839,7 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'EL JEFE DE ' + self.informacion_informe.Dependencia + ' DE LA UNIVERSIDAD DISTRITAL “FRANCISCO JOSÉ DE CALDAS” CERTIFICA QUE EL/LA CONTRATISTA:', alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'NOMBRE DEL CONTRATISTA:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.Nombre, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'TIPO DE IDENTIFICACIÓN:', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.TipoIdentificacion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'No.', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.documento_contratista, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'De', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: self.informacion_informe.InformacionContratista.CiudadExpedicion, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{
-                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), ' + + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
+                  colSpan: 8, text: 'Viene cumpliendo a satisfacción con el objeto establecido en el contrato de prestación de servicios No. ' + self.contrato + ' ' + utils.formatoFecha(self.informacion_informe.FechaCPS) + ', que el valor causado por este concepto, es la suma de: (' + utils.numeroALetras(self.Preliquidacion.TotalDevengado).toUpperCase() + ') (' + utils.formatoNumero(self.Preliquidacion.TotalDevengado) + ' M/CTE.), ' + self.texto_aportes() + '.', alignment: 'justify', fontSize: 11, margin: [0, 5, 0, 0]
                 }, {}, {}, {}, {}, {}, {}, {}],
                 [{ text: 'VALOR DEL CONTRATO', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Ejecutado, alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN TIEMPO (PORCENTAJE %)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: '%' + self.informacion_informe.porcentajeTiempo.Faltante, alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],
                 [{ text: utils.formatoNumero(self.informacion_informe.ValorTotalContrato), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'EJECUTADO EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: utils.formatoNumero(self.informacion_informe.EjecutadoDinero.Pagado), alignment: 'center', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'PENDIENTE POR EJECUTAR EN DINERO ($)', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: utils.formatoNumero(self.informacion_informe.EjecutadoDinero.Faltante), alignment: 'center', fontSize: 11, margin: [0, 5, 0, 0] }],

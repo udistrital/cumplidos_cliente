@@ -19,15 +19,13 @@ angular.module("contractualClienteApp").constant("CONF", {
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_mid_api/v1/",
     ADMINISTRATIVA_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
-    // CUMPLIDOS_CRUD_SERVICE:
-    //   "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
-    CUMPLIDOS_CRUD_SERVICE: "http://api.intranetoas.udistrital.edu.co:8511/v1/",
-    // CUMPLIDOS_MID_SERVICE:
-    //   "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v2/",
+    CUMPLIDOS_CRUD_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
+    // CUMPLIDOS_CRUD_SERVICE: "http://api.intranetoas.udistrital.edu.co:8511/v1/",
+    CUMPLIDOS_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v2/",
     // CUMPLIDOS_MID_SERVICE: "http://api.intranetoas.udistrital.edu.co:8513/v1/",
-    CUMPLIDOS_MID_SERVICE: "http://localhost:8081/v1/",
+    // CUMPLIDOS_MID_SERVICE: "http://localhost:8081/v1/",
     ADMINISTRATIVA_JBPM_V2:
-      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/",
     ADMINISTRATIVA_PRUEBAS_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/",
     CONFIGURACION_SERVICE:
@@ -46,7 +44,7 @@ angular.module("contractualClienteApp").constant("CONF", {
     OIKOS_SERVICE:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v1/",
     CONTRATO_SERVICE:
-      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/",
+      "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/",
     FINANCIERA_JBPM_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/financiera_jbpm/v1/",
     GESTION_DOCUMENTAL_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1",
     TITAN_MID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/titan_api_mid/v2/',
