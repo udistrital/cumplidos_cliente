@@ -51,6 +51,7 @@ angular.module("contractualClienteApp").constant("CONF", {
     GESTION_DOCUMENTAL_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1",
     TITAN_MID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/titan_api_mid/v2/',
     AUTENTICATION_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/autenticacion_mid/v1/",
+    FIRMA_ELECTRONICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/firma_electronica_mid/v1/",
     TOKEN: {
       AUTORIZATION_URL:
         "https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize",

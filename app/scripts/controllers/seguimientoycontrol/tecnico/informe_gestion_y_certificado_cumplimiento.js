@@ -893,7 +893,6 @@ angular.module('contractualClienteApp')
               { width: '*', text: '' },
             ]
           }
-
         ],
         styles: {
           tableHeader: {

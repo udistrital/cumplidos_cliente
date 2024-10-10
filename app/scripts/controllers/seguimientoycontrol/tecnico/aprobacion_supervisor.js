@@ -8,8 +8,9 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest, funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
-
+  .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest,
+    funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest,
+    cumplidosCrudRequest, firmaElectronicaRequest,gestorDocumentalMidRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
@@ -231,68 +232,221 @@ angular.module('contractualClienteApp')
       )
     }
 
+    self.obtenerInformeDeGestion = function (pago_mensual) {
+      return cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:'+pago_mensual.Id+',ItemInformeTipoContratoId.ItemInformeId.Id:10&limit=1&orderby=FechaCreacion')
+        .then(response => {
+          if (response && response.data) {
+            return response.data.Data[0];
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    };
+    
+    self.dataFirmaInformeDeGestion = function (idInforme, nombreSupervisor, cargoSupervisor, idTipoSupervisor, idSupervisor, nombreContratista, cargoContratista, idTipoContratista, idContratista, pago_mensual) {
+      let documento, nombreArchivo;
+      
+      return documentoRequest.get('documento?query=Id:'+idInforme)
+        .then(responseDocumento => {
+          if (responseDocumento && responseDocumento.data) {
+            documento = responseDocumento.data[0];
+            const metadatos = JSON.parse(documento.Metadatos);
+            nombreArchivo = metadatos.NombreArchivo;
+    
+            return gestorDocumentalMidRequest.get('/document/'+documento.Enlace);
+          }
+        })
+        .then(response => {
+          if (response && response.data) {
+            const dataFirma = [{
+              IdTipoDocumento: documento.TipoDocumento.Id,
+              nombre: nombreArchivo,
+              metadatos: {
+                NombreArchivo: nombreArchivo,
+                Tipo: "Archivo"
+              },
+              firmantes: [{
+                nombre: nombreSupervisor,
+                cargo: cargoSupervisor,
+                tipoId: idTipoSupervisor,
+                identificacion: idSupervisor
+              },
+              {
+                nombre: nombreContratista,
+                cargo: cargoContratista,
+                tipoId: idTipoContratista,
+                identificacion: pago_mensual.DocumentoPersonaId
+              }],
+              representantes: [],
+              descripcion: documento.TipoDocumento.Descripcion,
+              file: response.data.file
+            }];
+            
+            return dataFirma;
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+    
+    self.firmaElectronica = function (pago_mensual) {
+      const idTipoSupervisor = "cc";
+      const cargoContratista = "Contratista";
+      let idSupervisor = pago_mensual.DocumentoResponsableId;
+      let cargoSupervisor = pago_mensual.CargoResponsable;
+      let nombreSupervisor, nombreContratista, idTipoContratista;
+    
+      return Promise.all([
+        amazonAdministrativaRequest.get('supervisor_contrato?sortby=FechaInicio&order=desc&query=Documento:'+idSupervisor+'&limit=1'),
+        amazonAdministrativaRequest.get('informacion_persona_natural?query=Id:'+pago_mensual.DocumentoPersonaId)
+      ])
+        .then(([supervisorRespuesta, contratistaRespuesta]) => {
+          nombreSupervisor = supervisorRespuesta.data[0].Nombre;
+    
+          const persona = contratistaRespuesta.data[0];
+          nombreContratista = ''+persona.PrimerNombre+' '+persona.SegundoNombre+' '+persona.PrimerApellido+' '+persona.SegundoApellido;
+          const idTipoContratistaTemp = persona.TipoDocumento.Id;
+    
+          return amazonAdministrativaRequest.get('parametro_estandar?query=Id:'+idTipoContratistaTemp);
+        })
+        .then(idTipoContratistaRespuesta => {
+          idTipoContratista = idTipoContratistaRespuesta.data[0].Abreviatura;
+    
+          return self.obtenerInformeDeGestion(pago_mensual);
+        })
+        .then(informeDeGestion => {
+          return self.dataFirmaInformeDeGestion(informeDeGestion.Documento, nombreSupervisor, cargoSupervisor, idTipoSupervisor, idSupervisor, nombreContratista, cargoContratista, idTipoContratista, pago_mensual.DocumentoPersonaId, pago_mensual)
+            .then(dataFirma => {
+              return firmaElectronicaRequest.postFirmaElectronica(dataFirma)
+                .then(respuestaFirma => {
+                  const objeto_soporte = {
+                    "Id": informeDeGestion.Id,
+                    "Documento": respuestaFirma.data.res.Id,
+                    "Activo": informeDeGestion.Activo,
+                    "FechaCreacion": informeDeGestion.FechaCreacion,
+                    "FechaModificacion": informeDeGestion.FechaModificacion,
+                    "Aprobado": informeDeGestion.Aprobado,
+                    "ItemInformeTipoContratoId": {
+                      "Id": informeDeGestion.ItemInformeTipoContratoId.Id
+                    },
+                    "PagoMensualId": {
+                      "Id": pago_mensual.Id
+                    }
+                  };
+                  
+                  return cumplidosCrudRequest.put('soporte_pago_mensual', informeDeGestion.Id, objeto_soporte);
+                });
+            });
+        })
+        .catch(error => {
+          console.error(error);
+          swal({
+            title: 'Error',
+            text: 'Ha ocurrido un error en el proceso de firma electrónica',
+            type: 'error'
+          });
+          throw new Error('Exception:', error);
+        });
+    };
+    ''
+    
+
     self.dar_visto_bueno = function (pago_mensual) {
+
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
-          self.aux_pago_mensual = pago_mensual;
+          swal({
+            title: '¿Está seguro(a) que desea dar el visto bueno y firmar el documento?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Aceptar'
+          }).then(function () {
+            swal({
+              title: 'Procesando',
+              text: 'Espere un momento...',
+              showConfirmButton: false,
+              allowOutsideClick: false,
+              onOpen: () => {
+                swal.showLoading()
+              }
+            });
+            self.aux_pago_mensual = pago_mensual;
+            self.contrato = response.data.contrato;
+            self.firmaElectronica(self.aux_pago_mensual).then(function (response) {
+              console.log(response)
+              self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por supervisor', self.Documento);
+              notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
+              notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
+              //Obtiene la información correspondiente del ordenador
+              cumplidosMidRequest.get('solicitudes_ordenador_contratistas/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
+                .then(function (responseOrdenador) {
+                  self.ordenador = responseOrdenador.data.Data;
+                  self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
+                  self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
 
-          self.contrato = response.data.contrato;
+                  cumplidosCrudRequest.get('estado_pago_mensual', $.param({
+                    limit: 0,
+                    query: 'CodigoAbreviacion:AS'
+                  })).then(function (responseCod) {
 
-          self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por supervisor', self.Documento);
-          notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaOrdenador', '/seguimientoycontrol/tecnico/aprobacion_ordenador');
-          notificacionRequest.borrarNotificaciones('ColaSupervisor', [self.aux_pago_mensual.DocumentoPersonaId]);
-          //Obtiene la información correspondiente del ordenador
-          cumplidosMidRequest.get('solicitudes_ordenador_contratistas/informacion_ordenador/' + self.contrato.numero_contrato + '/' + pago_mensual.VigenciaContrato)
-            .then(function (responseOrdenador) {
-              self.ordenador = responseOrdenador.data.Data;
-              self.aux_pago_mensual.DocumentoResponsableId = self.ordenador.NumeroDocumento.toString();
-              self.aux_pago_mensual.CargoResponsable = self.ordenador.Cargo;
+                    var sig_estado = responseCod.data.Data;
+                    self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
 
+                    var pago_mensual_auditoria = {
+                      Pago: {
+                        CargoResponsable: self.ordenador.Cargo,
+                        EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
+                        FechaModificacion: new Date(),
+                        Mes: self.aux_pago_mensual.Mes,
+                        Ano: self.aux_pago_mensual.Ano,
+                        NumeroContrato: self.aux_pago_mensual.NumeroContrato,
+                        DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
+                        DocumentoResponsableId: (self.ordenador.NumeroDocumento).toString(),
+                        VigenciaContrato: parseInt(self.contrato.vigencia)
+                      },
+                      CargoEjecutor: ("SUPERVISOR: " + self.contrato.supervisor.cargo).substring(0, 69),
+                      DocumentoEjecutor: self.contrato.supervisor.documento_identificacion
+                    }
 
-              cumplidosCrudRequest.get('estado_pago_mensual', $.param({
-                limit: 0,
-                query: 'CodigoAbreviacion:AS'
-              })).then(function (responseCod) {
+                    cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
+                      .then(function (response) {
+                        swal.close();
+                        swal(
+                          'Visto bueno ',
+                          'Tiene la validación del supervisor del contrato',
+                          'success'
+                        )
+                        self.obtener_contratistas_supervisor();
+                        self.gridApi.core.refresh();
+                      })
+                      .catch(function (response) { //Manejo de error
+                        swal.close();
+                        swal(
+                          'Error',
+                          'No se ha podido registrar la validación del supervisor',
+                          'error'
+                        );
+                      });
 
-                var sig_estado = responseCod.data.Data;
-                self.aux_pago_mensual.EstadoPagoMensualId.Id = sig_estado[0].Id;
-
-                var pago_mensual_auditoria = {
-                  Pago: {
-                    CargoResponsable: self.ordenador.Cargo,
-                    EstadoPagoMensualId: { "Id": self.aux_pago_mensual.EstadoPagoMensualId.Id },
-                    FechaModificacion: new Date(),
-                    Mes: self.aux_pago_mensual.Mes,
-                    Ano: self.aux_pago_mensual.Ano,
-                    NumeroContrato: self.aux_pago_mensual.NumeroContrato,
-                    DocumentoPersonaId: self.aux_pago_mensual.DocumentoPersonaId,
-                    DocumentoResponsableId: (self.ordenador.NumeroDocumento).toString(),
-                    VigenciaContrato: parseInt(self.contrato.vigencia)
-                  },
-                  CargoEjecutor: ("SUPERVISOR: " + self.contrato.supervisor.cargo).substring(0, 69),
-                  DocumentoEjecutor: self.contrato.supervisor.documento_identificacion
-                }
-
-                cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
-                  .then(function (response) {
-                    swal(
-                      'Visto bueno ',
-                      'Tiene la validación del supervisor del contrato',
-                      'success'
-                    )
-                    self.obtener_contratistas_supervisor();
-                    self.gridApi.core.refresh();
                   })
-                  .catch(function (response) { //Manejo de error
-                    swal(
-                      'Error',
-                      'No se ha podido registrar la validación del supervisor',
-                      'error'
-                    );
-                  });
+                });
 
+
+            }).catch(function (error) {
+              swal.close();
+              swal({
+                title: 'Error',
+                text: 'Ha ocurrido un error en el proceso de firma electrónica',
+                type: 'error'
               })
             });
+          });
+
         });
 
     };
@@ -365,7 +519,6 @@ angular.module('contractualClienteApp')
       self.fila_sol_pago = fila;
       funcGen.obtener_doc(self.fila_sol_pago.Id).then(function (documentos) {
         self.documentos = documentos;
-        // console.log(self.documentos);
       }).catch(function (error) {
         console.log("error", error)
         self.documentos = undefined;
