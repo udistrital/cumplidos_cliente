@@ -803,29 +803,45 @@ angular.module('contractualClienteApp')
       Función para "borrar" un documento
     */
     self.borrar_doc = function () {
-
       var documento = self.doc;
-      gestorDocumentalMidRequest.delete('/document', documento.Enlace).then(function (response) {
-        //console.log(response)
-        swal({
-          title: 'Documento borrado',
-          text: 'Se ha borrado exitosamente el documento',
-          type: 'success',
-          target: document.getElementById('modal_ver_soportes')
-        }).then(
-          function () {
-            self.obtener_doc(self.fila_sol_pago)
+      //------ INICIO MODIFICACIÓN ESTADO ACTIVO EN SOPORTE_PAGO_MENSUAL------------
+      cumplidosCrudRequest.get('soporte_pago_mensual?query=documento:'+documento.Id).then(response=>{
+        const soporte_info = response.data.Data[0];
+        const objeto_soporte = {
+          "Id": soporte_info.Id,
+          "Documento": documento.Id,
+          "Activo": false,
+          "FechaCreacion": soporte_info.FechaCreacion,
+          "FechaModificacion": soporte_info.FechaModificacion,
+          "Aprobado": soporte_info.Aprobado,
+          "ItemInformeTipoContratoId": {
+            "Id": soporte_info.ItemInformeTipoContratoId.Id
+          },
+          "PagoMensualId": {
+            "Id": soporte_info.PagoMensualId.Id
           }
-        );
-      }).catch(function (error) {
+        };
+        cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response =>{
+          swal({
+            title: 'Documento borrado',
+            text: 'Se ha borrado exitosamente el documento',
+            type: 'success',
+            target: document.getElementById('modal_ver_soportes')
+          }).then(
+            function () {
+              self.obtener_doc(self.fila_sol_pago)
+            }
+          );
+        });
+      }).catch(error=>{
         swal({
           title: 'Error',
           text: 'Hubo un error al momento de borrar el documento',
           type: 'error',
           target: document.getElementById('modal_ver_soportes')
         });
-      })
-
+      });
+      //------ FIN MODIFICACIÓN ESTADO ACTIVO EN SOPORTE_PAGO_MENSUAL------------
     }
 
     self.set_doc = function (doc) {
