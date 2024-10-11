@@ -22,7 +22,7 @@ angular.module('contractualClienteApp')
 
     //Se utiliza la variable self estandarizada
     var self = this;
-    self.funcGen=funcGen;
+    self.funcGen = funcGen;
     self.existe = true;
 
     //Variable que indica cuando mostrar tabla de contratos
@@ -99,7 +99,7 @@ angular.module('contractualClienteApp')
       Función que permite realizar una solicitud de pago mensual
     */
     self.anios_solicitud_pago = function (contrato) {
-      if(!(contrato.FechaInicio instanceof Date) && !(contrato.FechaFin instanceof Date)){
+      if (!(contrato.FechaInicio instanceof Date) && !(contrato.FechaFin instanceof Date)) {
         contrato.FechaInicio = new Date(utils.ajustarFecha(contrato.FechaInicio));
         contrato.FechaFin = new Date(utils.ajustarFecha(contrato.FechaFin));
       }
@@ -411,27 +411,27 @@ angular.module('contractualClienteApp')
               ",VigenciaCDP:" + self.contrato.VigenciaCdp,
             limit: 0
           })).then(function (responsePago) {
-            if(Object.entries(responsePago.data.Data[0]).length==0){
+            if (Object.entries(responsePago.data.Data[0]).length == 0) {
               //no existe pago para ese mes y se crea
               cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
-              .then(function (responsePagoPost) {
-                //console.log(responsePagoPost.data);
-                swal(
-                  $translate.instant('SOLICITUD_REGISTRADA'),
-                  $translate.instant('CARGUE_CORRESPONDIENTE'),
-                  'success'
-                )
+                .then(function (responsePagoPost) {
+                  //console.log(responsePagoPost.data);
+                  swal(
+                    $translate.instant('SOLICITUD_REGISTRADA'),
+                    $translate.instant('CARGUE_CORRESPONDIENTE'),
+                    'success'
+                  )
 
-                self.cargar_soportes(self.contrato);
+                  self.cargar_soportes(self.contrato);
 
-                //self.gridApi2.core.refresh();
-                //   self.contrato = {};
-                self.mes = undefined;
-                self.anio = undefined;
-                //self.mostrar_boton = true;
+                  //self.gridApi2.core.refresh();
+                  //   self.contrato = {};
+                  self.mes = undefined;
+                  self.anio = undefined;
+                  //self.mostrar_boton = true;
 
-              });
-            }else{
+                });
+            } else {
               //self.mostrar_boton = true;
               swal(
                 'Error',
@@ -504,8 +504,8 @@ angular.module('contractualClienteApp')
           });
         var solicitudes_pago_mensual = response.data.Data
         //console.log(solicitudes_pago_mensual);
-        if(Object.entries(solicitudes_pago_mensual[0]).length===0){
-          solicitudes_pago_mensual=[];
+        if (Object.entries(solicitudes_pago_mensual[0]).length === 0) {
+          solicitudes_pago_mensual = [];
         }
         var pagos_mensuales = solicitudes_pago_mensual.map(pago_mensual => {
           pago_mensual.FechaCreacion = new Date(pago_mensual.FechaCreacion).toLocaleDateString();
@@ -513,7 +513,7 @@ angular.module('contractualClienteApp')
         });
         //console.log('pagos men',pagos_mensuales)
         //console.log('longitud pagos',pagos_mensuales.length);
-        pagos_mensuales.length>0?self.gridOptions2.data =pagos_mensuales:self.gridOptions2.noData=true;
+        pagos_mensuales.length > 0 ? self.gridOptions2.data = pagos_mensuales : self.gridOptions2.noData = true;
 
       })
 
@@ -788,14 +788,14 @@ angular.module('contractualClienteApp')
 
     };
 
-    self.obtener_doc= function (fila) {
+    self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
       funcGen.obtener_doc(self.fila_sol_pago.Id).then(function (documentos) {
-        self.documentos=documentos;
+        self.documentos = documentos;
         //console.log(self.documentos);
       }).catch(function (error) {
         //console.log("error",error)
-        self.documentos=undefined;
+        self.documentos = undefined;
       })
     };
 
