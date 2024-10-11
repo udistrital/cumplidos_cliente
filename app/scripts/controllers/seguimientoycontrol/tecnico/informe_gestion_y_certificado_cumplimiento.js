@@ -112,48 +112,45 @@ angular.module('contractualClienteApp')
 
     self.informacion_informe = null;
 
+    self.novedades = {};
 
     self.validarNovedades = function () {
       //console.log('novedades: ', self.informacion_informe.Novedades)
-      self.informacion_informe.Novedades.UltimoOtrosi = {}
-      self.informacion_informe.Novedades.UltimaCesion = {}
-      if (self.informacion_informe.Novedades.Otrosi == null) {
-        self.informacion_informe.Novedades.UltimoOtrosi.Existe = ''
-        self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio = ''
-        self.informacion_informe.Novedades.UltimoOtrosi.FechaFin = ''
-      } else {
-        self.informacion_informe.Novedades.UltimoOtrosi.Existe = 'X'
-        self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Otrosi[0].FechaInicio))
-        self.informacion_informe.Novedades.UltimoOtrosi.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Otrosi[0].FechaFin))
-        self.informacion_informe.Novedades.UltimoOtrosi.ValorNovedad = self.informacion_informe.Novedades.Otrosi[0].ValorNovedad;
+      self.novedades.novedades = self.informacion_informe.Novedades;
+      self.novedades.UltimoOtrosi = {}
+      self.novedades.UltimaCesion = {}
+
+      for (var i = 0; i < self.informacion_informe.Novedades; i++) {
+        if (self.informacion_informe.Novedades[i].tipoNovedad == 'NP_ADPRO') { // otrosi
+          self.novedades.UltimoOtrosi.Existe = true;
+          self.novedades.UltimoOtrosi.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades[i].FechaInicio));
+          self.novedades.UltimoOtrosi.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades[i].FechaFin))
+        } else {
+          self.novedades.UltimoOtrosi.Existe = false;
+          self.novedades.UltimoOtrosi.FechaInicio = '';
+          self.novedades.UltimoOtrosi.FechaFin = '';
+        }
+        if (self.informacion_informe.Novedades[i].TipoNovedad == 'NP_CES') { // cesion
+          self.novedades.UltimaCesion.Existe = true;
+          self.novedades.UltimaCesion.FechaCesion = new Date(utils.ajustarFecha(self.informacion_informe.Novedades[i].FechaInicio));
+        } else {
+          self.novedades.UltimaCesion.Existe = false;
+          self.novedades.UltimaCesion.FechaCesion = '';
+        }
       }
-
-
-
-      //console.log(self.informacion_informe.Novedades.Cesion == null)
-      if (self.informacion_informe.Novedades.Cesion == null) {
-        self.informacion_informe.Novedades.UltimaCesion.Existe = ''
-        self.informacion_informe.Novedades.UltimaCesion.FechaCesion = ''
-      } else {
-        self.fechasCesiones = self.informacion_informe.Novedades.Cesion.map(cesion => new Date(utils.ajustarFecha(cesion.FechaInicio)));
-        self.fechasCesiones = self.fechasCesiones.sort((a, b) => a - b);
-        self.informacion_informe.Novedades.UltimaCesion.Existe = 'X'
-        self.informacion_informe.Novedades.UltimaCesion.FechaCesion = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Cesion[0].FechaInicio))
-      }
-      //console.log("validacion")
 
       //demas novedades
-      if(self.informacion_informe.Novedades.Suspencion!=null){
-        for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
-          self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
-          self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
-        }
-      }
-      if(self.informacion_informe.Novedades.Terminacion!=null){
-        for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
-          self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
-        }
-      }
+      // if (self.informacion_informe.Novedades.Suspencion != null) {
+      //   for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
+      //     self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
+      //     self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
+      //   }
+      // }
+      // if (self.informacion_informe.Novedades.Terminacion != null) {
+      //   for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
+      //     self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
+      //   }
+      // }
     }
 
     self.calcularPorcentajeTiempo = function () {
@@ -165,14 +162,17 @@ angular.module('contractualClienteApp')
       diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.Informe.PeriodoInformeFin)
 
 
-      if(self.informacion_informe.Novedades.Suspencion!=null){
-        for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
-          const Sus = self.informacion_informe.Novedades.Suspencion[index];
-          if(self.Informe.PeriodoInformeInicio >self.informacion_informe.Novedades.Suspencion[index].FechaInicio ){
-            diasContrato=diasContrato+Sus.PlazoEjecucion
-          }
-        }
-      }
+      // ---------------------------------------------------------------------------------------------------------
+
+
+      // if (self.informacion_informe.Novedades.Suspencion != null) {
+      //   for (let index = 0; index < self.informacion_informe.Novedades.SuspenZion.length; index++) {
+      //     const Sus = self.informacion_informe.Novedades.Suspencion[index];
+      //     if (self.Informe.PeriodoInformeInicio > self.informacion_informe.Novedades.SuspenCion[index].FechaInicio) {
+      //       diasContrato = diasContrato + Sus.PlazoEjecucion
+      //     }
+      //   }
+      // }
       var porcentajeEjecutado = ((diasContratoEjecutado * 100) / diasContrato);
       var porcentajeFaltante = 100 - porcentajeEjecutado;
       return { Ejecutado: porcentajeEjecutado.toFixed(2), Faltante: porcentajeFaltante.toFixed(2) }
@@ -330,8 +330,8 @@ angular.module('contractualClienteApp')
             self.informacion_informe.RP.Fecha = new Date(utils.ajustarFecha(self.informacion_informe.RP.Fecha))
             self.informacion_informe.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.FechaInicio))
             self.informacion_informe.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.FechaFin))
-            self.informacion_informe.FechasConNovedades.FechaInicio= new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaInicio))
-            self.informacion_informe.FechasConNovedades.FechaFin= new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaFin))
+            self.informacion_informe.FechasConNovedades.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaInicio))
+            self.informacion_informe.FechasConNovedades.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.FechasConNovedades.FechaFin))
 
             self.validarNovedades();
           } else {
@@ -345,6 +345,8 @@ angular.module('contractualClienteApp')
               $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
             })
           }
+        } else {
+
         }
       }).catch(
         function (error) {
@@ -585,25 +587,110 @@ angular.module('contractualClienteApp')
       return body
     }
 
+    // Tabla que retorna el body de la tabla de novedades para el informe
+    self.tablaNovedades = function (novedadesInforme) {
+
+      // var body = [];
+      // body.push({ text: 'NOVEDADES CONTRACTUALES', style: 'tableActividadesHeader'});
+      // body.push([{ text: 'ola', style: 'tableActividadesHeader'},{ text: 'NOVEDADES CONTRACTUALES', style: 'tableActividadesHeader'}]);
+
+      var tabla = [];
+      var novedades = [];
+
+      tabla.push({
+        style: 'tableContractInfo',
+        widths: ['*'],
+        table: {
+          dontBreakRows: true,
+          widths: ['*'],
+          body: [[{ text: 'NOVEDADES POSTCONTRACTUALES', style: 'tableNovedadesHeader' }]],
+          layout: 'noBorders'
+        }
+      });
+
+      // novedades.push(
+      //   [{ colSpan: 9, text: 'NOVEDADES POSTCONTRACTUALES', style: 'tableNovedadesHeader' }, {}, {}, {}, {}, {}, {}, {}, {}]
+      // );
+
+      var cont = 1;
+
+      for (var i = 0; i < novedadesInforme.length; i++) {
+        if (novedadesInforme[i].TipoNovedad == "NP_ADPRO") {
+          tabla.push({
+            style: 'novedadesTabla',
+            widths: ['*'],
+            table: {
+              dontBreakRows: true,
+              widths: ['2%', '10%', '5%', 'auto', 'auto', 'auto', 'auto', 'auto', '*'],
+              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Otro si', style: 'tableNovedadesText' }, { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaInicio.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'FECHA FIN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFin.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'DISPONIBILIDAD PRESUPUESTAL:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].NumeroCdp + ' de ' + novedadesInforme[i].VigenciaCdp, style: 'tableNovedadesText' }]],
+              layout: 'noBorders'
+            }
+          });
+          cont++;
+        }
+        if (novedadesInforme[i].TipoNovedad == "NP_CES") {
+          tabla.push({
+            style: 'novedadesTabla',
+            widths: ['*'],
+            table: {
+              dontBreakRows: true,
+              widths: ['2%', '10%', '5%', 'auto', 'auto', 'auto', '*', 'auto', '*'],
+              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Cesión', style: 'tableNovedadesText' }, { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaInicio.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'CEDENTE:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].Cedente, style: 'tableNovedadesText' }, { text: 'CESIONARIO:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].Cesionario, style: 'tableNovedadesText' }]],
+              layout: 'noBorders'
+            }
+          });
+          cont++;
+        }
+        if (novedadesInforme[i].TipoNovedad == "NP_SUS") {
+          tabla.push({
+            style: 'novedadesTabla',
+            widths: ['*'],
+            table: {
+              dontBreakRows: true,
+              widths: ['2%', '10%', '*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Suspensión', style: 'tableNovedadesText' }, { text: 'FECHA INICIO SUSPENSIÓN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaInicio.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'FECHA FIN SUSPENSIÓN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFinSus.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'NUEVA FECHA FIN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFin.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }]],
+              layout: 'noBorders'
+            }
+          });
+          cont++;
+        }
+        if (novedadesInforme[i].TipoNovedad == "NP_TER") {
+          tabla.push({
+            style: 'novedadesTabla',
+            widths: ['*'],
+            table: {
+              dontBreakRows: true,
+              widths: ['2%', '10%', '*', 'auto', '*'],
+              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Terminación anticipada', style: 'tableNovedadesText' }, { text: 'FECHA FINALIZACIÓN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFin.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }]],
+              layout: 'noBorders'
+            }
+          });
+          cont++;
+        }
+      }
+      return tabla;
+    }
+
     self.texto_aportes = function () {
+
       var fechasInicioCumplido = []; // Arreglo de fechas que involucran cambio en la descripción del periodo de informe
       var fechasFinCumplido = [];
       var fechasInicioAportes = []; //Arreglo de fechas que involucran cambio en la descripción del enunciado de aportes
       var textoAportes = "";
 
-      if (self.informacion_informe.Novedades.UltimoOtrosi.FechaFin != '' && self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio != '') {
-        fechasInicioCumplido.push(self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio);
-        fechasFinCumplido.push(self.informacion_informe.Novedades.UltimoOtrosi.FechaFin);
+      if (self.novedades.UltimoOtrosi.FechaFin != '' && self.novedades.UltimoOtrosi.FechaInicio != '') {
+        fechasInicioCumplido.push(self.novedades.UltimoOtrosi.FechaInicio);
+        fechasFinCumplido.push(self.novedades.UltimoOtrosi.FechaFin);
       }
       fechasInicioCumplido.push(self.informacion_informe.FechaInicio);
       fechasFinCumplido.push(self.informacion_informe.FechaFin);
 
       fechasInicioAportes.push(self.informacion_informe.FechaInicio);
 
-      if (self.informacion_informe.Novedades.UltimaCesion.FechaCesion != '') {
-        fechasInicioAportes.push(self.informacion_informe.Novedades.UltimaCesion.FechaCesion);
+      if (self.novedades.UltimaCesion.FechaCesion != '') {
+        fechasInicioAportes.push(self.novedades.UltimaCesion.FechaCesion);
 
-        var fechaCesionProxima = self.informacion_informe.Novedades.UltimaCesion.FechaCesion;
+        var fechaCesionProxima = self.novedades.UltimaCesion.FechaCesion;
         if (self.documentoCedente == self.documento_contratista) {
           if (fechaCesionProxima.getFullYear() == self.anio && fechaCesionProxima.getMonth() + 1 == self.mes) {
             fechaCesionProxima.setDate(fechaCesionProxima.getDate() - 1)
@@ -618,8 +705,8 @@ angular.module('contractualClienteApp')
 
       }
 
-      if (self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio != '') {
-        fechasInicioAportes.push(self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio);
+      if (self.novedades.UltimoOtrosi.FechaInicio != '') {
+        fechasInicioAportes.push(self.novedades.UltimoOtrosi.FechaInicio);
       }
 
       //Modificacion para tomar dias de la preliquidacion de titan
@@ -693,13 +780,17 @@ angular.module('contractualClienteApp')
             style: 'tableContractInfo',
             widths: '*',
             table: {
-              widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', '*'],
+              widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', '*'],
               body: [
-                [{ text: 'NOMBRE CONTRATISTA:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { colSpan: 3, text: self.informacion_informe.InformacionContratista.Nombre, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, { text: 'FECHA DE INICIO', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.informacion_informe.FechaInicio.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA FINALIZACIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.FechaFin.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: 'PROCESO:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.Informe.Proceso, fontSize: 11, margin: [0, 3, 0, 0] }, { text: 'OTROSÍ:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.Existe, bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA INICIO OTROSÍ:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio != '' ? self.informacion_informe.Novedades.UltimoOtrosi.FechaInicio.toLocaleDateString() : '', fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA FINALIZACIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimoOtrosi.FechaFin != '' ? self.informacion_informe.Novedades.UltimoOtrosi.FechaFin.toLocaleDateString() : '', fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: 'UNIDAD ACADÉMICA Y/O ADMINISTRATIVA:', bold: true, height: 40, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Dependencia, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'CESIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Novedades.UltimaCesion.Existe, bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA CESIÓN: ', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { colSpan: 3, text: self.informacion_informe.Novedades.UltimaCesion.FechaCesion != '' ? self.informacion_informe.Novedades.UltimaCesion.FechaCesion.toLocaleDateString() : '', fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}],
-                [{ text: 'SEDE:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Sede, fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'PERIODO INFORME:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, {}, { text: 'DESDE:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.Informe.PeriodoInformeInicio.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'HASTA:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.Informe.PeriodoInformeFin.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }],
-                [{ text: 'DISPONIBILIDAD PRESUPUESTAL', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.CDP.Consecutivo + ' ' + utils.formatoFecha(self.informacion_informe.CDP.Fecha), fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 3, text: 'CERTIFICADO REGISTRO PRESUPUESTAL:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, {}, {}, { colSpan: 3, text: self.informacion_informe.RP.Consecutivo + ' ' + utils.formatoFecha(self.informacion_informe.RP.Fecha), fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}],
+                [{ text: 'NOMBRE CONTRATISTA:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { colSpan: 2, text: self.informacion_informe.InformacionContratista.Nombre, fontSize: 11, margin: [0, 5, 0, 0] }, {}, { text: 'FECHA DE INICIO', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.informacion_informe.FechaInicio.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'FECHA FINALIZACIÓN:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.FechaFin.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }],
+
+                [{ text: 'PROCESO:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { colSpan: 6, text: self.Informe.Proceso, fontSize: 11, margin: [0, 3, 0, 0] }, {}, {}, {}, {}, {}],
+
+                [{ text: 'UNIDAD ACADÉMICA Y/O ADMINISTRATIVA:', bold: true, height: 40, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { colSpan: 6, text: self.informacion_informe.Dependencia, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}],
+
+                [{ text: 'SEDE:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.Sede, fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'PERIODO INFORME:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: 'DESDE:', bold: true, fillColor: '#CCCCCC', fontSize: 11, margin: [0, 3, 0, 0] }, { text: self.Informe.PeriodoInformeInicio.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }, { text: 'HASTA:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.Informe.PeriodoInformeFin.toLocaleDateString(), fontSize: 11, margin: [0, 5, 0, 0] }],
+
+                [{ text: 'DISPONIBILIDAD PRESUPUESTAL', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, { text: self.informacion_informe.CDP.Consecutivo + ' ' + utils.formatoFecha(self.informacion_informe.CDP.Fecha), fontSize: 11, margin: [0, 5, 0, 0] }, { colSpan: 2, text: 'CERTIFICADO REGISTRO PRESUPUESTAL:', bold: true, fontSize: 11, fillColor: '#CCCCCC', margin: [0, 3, 0, 0] }, {}, { colSpan: 3, text: self.informacion_informe.RP.Consecutivo + ' ' + utils.formatoFecha(self.informacion_informe.RP.Fecha), fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}],
               ]
             }
           },
@@ -716,7 +807,7 @@ angular.module('contractualClienteApp')
             }
           },
           {
-            //actividades
+            // actividades
             style: 'tableContractInfo',
             widths: '*',
             table: {
@@ -724,10 +815,21 @@ angular.module('contractualClienteApp')
               widths: ['auto', 'auto', 'auto', 'auto', 'auto', '*'],
               body: self.construirTabla(self.Informe)
 
-            }
+            },
           },
+          // {
+          //   // Novedades postcontractuales
+          //   style: 'tableNovedades',
+          //   widths: '*',
+          //   table: {
+          //     dontBreakRows: true,
+          //     // widths: ['auto', 'auto', '*', 'auto', '*', 'auto', '*', 'auto', '*'],
+          //     body: self.tablaNovedades(self.informacion_informe.Novedades)
+          //   }
+          // },
+          self.tablaNovedades(self.informacion_informe.Novedades),
           {
-            //Certificado de cumplimiento
+            //Certificado de cumplimiento  
             style: 'tableContractInfo',
             widths: '*',
             table: {
@@ -744,6 +846,52 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'Nota: Yo, ' + self.informacion_informe.InformacionContratista.Nombre + ' , autorizo a la Universidad Distrital para hacer el abono de mis pagos a la cuenta bancaria relacionada. Bajo gravedad del juramento, certifico que estoy realizando los aportes a seguridad social, de conformidad con lo establecido por la Ley. ', alignment: 'justify', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}]
               ]
             }
+          },
+          {
+            margin: [0, 20, 0, 0],
+            columns: [
+              { width: '*', text: '' },
+              {
+                width: 'auto',
+                table: {
+                  body: [
+                    [
+                      {
+                        border: [false, false, false, true],
+                        text: self.informacion_informe.InformacionContratista.Nombre, alignment: 'center'
+                      }
+                    ],
+                    [
+                      {
+                        border: [false, true, false, false],
+                        text: 'CONTRATISTA', bold: true,
+                        alignment: 'center'
+                      }
+                    ]]
+                }
+              },
+              { width: '*', text: '' },
+              {
+                width: 'auto',
+                table: {
+                  body: [
+                    [
+                      {
+                        border: [false, false, false, true],
+                        text: self.informacion_informe.Supervisor.Nombre, alignment: 'center'
+                      }
+                    ],
+                    [
+                      {
+                        border: [false, true, false, false],
+                        text: 'SUPERVISOR', bold: true,
+                        alignment: 'center'
+                      }
+                    ]]
+                }
+              },
+              { width: '*', text: '' },
+            ]
           }
         ],
         styles: {
@@ -758,14 +906,30 @@ angular.module('contractualClienteApp')
             color: 'black',
             fontSize: 10
           },
+          novedadesTabla: {
+            margin: 0,
+            color: 'black',
+            fontSize: 10
+          },
           tableActividadesHeader: {
             bold: true,
             fontSize: 11,
             fillColor: '#CCCCCC',
             alignment: 'center',
             margin: [0, 3, 0, 0]
+          },
+          tableNovedadesHeader: {
+            bold: true,
+            fontSize: 11,
+            fillColor: '#CCCCCC',
+            alignment: 'center',
+            margin: [0, 4, 0, 0],
+          },
+          tableNovedadesText: {
+            fontSize: 11,
+            alignment: 'left',
+            margin: [0, 5, 0, 0]
           }
-
         },
 
         images: {
@@ -901,16 +1065,16 @@ angular.module('contractualClienteApp')
       });
     }
 
-    self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme){
-      var actividades=actividadesUltimoInforme
-      for (let index_act_esp = 0; index_act_esp <  actividades.length; index_act_esp++) {
-        delete  actividades[index_act_esp].FechaCreacion
-        delete  actividades[index_act_esp].FechaModificacion
-        delete  actividades[index_act_esp].Id
-        for (let index_act_rea = 0; index_act_rea <  actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
-          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
-          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
-          delete  actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
+    self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme) {
+      var actividades = actividadesUltimoInforme
+      for (let index_act_esp = 0; index_act_esp < actividades.length; index_act_esp++) {
+        delete actividades[index_act_esp].FechaCreacion
+        delete actividades[index_act_esp].FechaModificacion
+        delete actividades[index_act_esp].Id
+        for (let index_act_rea = 0; index_act_rea < actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
         }
       }
       return actividades
