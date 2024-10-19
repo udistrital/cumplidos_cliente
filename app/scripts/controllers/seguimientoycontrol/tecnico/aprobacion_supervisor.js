@@ -233,7 +233,7 @@ angular.module('contractualClienteApp')
     }
 
     self.obtenerInformeDeGestion = function (pago_mensual) {
-      return cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:'+pago_mensual.Id+',ItemInformeTipoContratoId.ItemInformeId.Id:10&limit=1&orderby=FechaCreacion')
+      return cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:'+pago_mensual.Id+',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&limit=1&order=desc&sortby=FechaCreacion')
         .then(response => {
           if (response && response.data) {
             return response.data.Data[0];
@@ -497,6 +497,39 @@ angular.module('contractualClienteApp')
 
                 cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
                   .then(function (response) {
+                    //Inicio flujo rechazo
+                    cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:'+pago_mensual.Id+',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+                    .then(response=>{
+                      const soportesRes = response.data.Data;
+                      let arr_informes=[];
+                      for (let i=0; i<soportesRes.length; i++){
+                        let soporte_info = soportesRes[i];
+                        if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10){
+                          arr_informes.push(soporte_info);
+                        }
+                      }
+                      for(let i=0; i<arr_informes.length-1;i++){
+                        let soporte_info = arr_informes[i];
+                        let objeto_soporte = {
+                          "Id": soporte_info.Id,
+                          "Documento": soporte_info.Documento,
+                          "Activo": false,
+                          "FechaCreacion": soporte_info.FechaCreacion,
+                          "FechaModificacion": soporte_info.FechaModificacion,
+                          "Aprobado": soporte_info.Aprobado,
+                          "ItemInformeTipoContratoId": {
+                            "Id": soporte_info.ItemInformeTipoContratoId.Id
+                          },
+                          "PagoMensualId": {
+                            "Id": soporte_info.PagoMensualId.Id
+                          }
+                        };
+                        cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
+                          console.log("Proceso exitoso");
+                        });
+                      }
+                    });
+                    //fin flujo rechazo
                     swal(
                       'Rechazo registrado',
                       'Se ha registrado el rechazo de los soportes',

@@ -833,26 +833,17 @@ angular.module('contractualClienteApp')
           var data = [{
             IdTipoDocumento: 19, //id tipo documento de documentos_crud
             nombre: nombre_doc,// nombre formado por vigencia+contrato+cedula+mes+año
+            file: self.pdf_base64,
             metadatos: {
               NombreArchivo: nombre_Archivo,
               Tipo: "Archivo",
               Observaciones: ''
             },
-            firmantes: [
-              {
-                nombre: self.informacion_informe.InformacionContratista.Nombre,
-                cargo: "Contratista",
-                tipoId: self.informacion_informe.InformacionContratista.TipoIdentificacion,
-                identificacion: self.documento_contratista
-              }
-            ],
-            representantes: [],
             descripcion: 'INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO',
-            etapa_firma: 1,
-            file: self.pdf_base64
+
           }];
-          //estampa la firma del contratista y guarda en BD y nuxeo mediante API firma electrónica
-          firmaElectronicaRequest.firma_multiple(data).then(function (response){
+          //guarda el soporte por medio del gestor documental
+          gestorDocumentalMidRequest.post('/document/upload', data).then(function (response) {
             //console.log(response.data);
 
             if (response.data.Status == 200) {

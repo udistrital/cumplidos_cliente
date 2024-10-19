@@ -8,13 +8,13 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionOrdenadorCtrl', function (token_service, $scope, $http, uiGridConstants, contratoRequest, $translate, documentoRequest, funcGen, gridApiService,  adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest, notificacionRequest) {
+  .controller('AprobacionOrdenadorCtrl', function (token_service, $scope, $http, uiGridConstants, contratoRequest, $translate, documentoRequest, funcGen, gridApiService, adminJbpmV2Request, cumplidosCrudRequest, cumplidosMidRequest, notificacionRequest) {
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
 
     //Se utiliza la variable self estandarizada
     var self = this;
-    self.funcGen=funcGen;
+    self.funcGen = funcGen;
     self.Documento = token_service.getAppPayload().documento;
     self.contratistas = [];
     self.dependencias_contratos = {};
@@ -185,10 +185,10 @@ angular.module('contractualClienteApp')
           field: 'Acciones',
           displayName: $translate.instant('ACC'),
           cellTemplate: '<a type="button" title="Ver soportes" type="button" class="fa fa-eye fa-lg  faa-shake animated-hover"' +
-          'ng-click="grid.appScope.aprobacionOrdenador.obtener_doc(row.entity.PagoMensual)" data-toggle="modal" data-target="#modal_ver_soportes"</a>&nbsp;' +
-          ' <a type="button" title="Aprobar pago" type="button" class="fa fa-check fa-lg  faa-shake animated-hover"  ng-click="grid.appScope.aprobacionOrdenador.aprobarPago(row.entity.PagoMensual)">' +
-          '<a type="button" title="Rechazar" type="button" class="fa fa-close fa-lg  faa-shake animated-hover"' +
-          'ng-click="grid.appScope.aprobacionOrdenador.rechazarPago(row.entity.PagoMensual)"></a>',
+            'ng-click="grid.appScope.aprobacionOrdenador.obtener_doc(row.entity.PagoMensual)" data-toggle="modal" data-target="#modal_ver_soportes"</a>&nbsp;' +
+            ' <a type="button" title="Aprobar pago" type="button" class="fa fa-check fa-lg  faa-shake animated-hover"  ng-click="grid.appScope.aprobacionOrdenador.aprobarPago(row.entity.PagoMensual)">' +
+            '<a type="button" title="Rechazar" type="button" class="fa fa-close fa-lg  faa-shake animated-hover"' +
+            'ng-click="grid.appScope.aprobacionOrdenador.rechazarPago(row.entity.PagoMensual)"></a>',
           width: "7%"
         }
       ]
@@ -293,8 +293,8 @@ angular.module('contractualClienteApp')
 
     }, true);
 
-    self.enviar_notificacion=function (asunto,destinatario,mensaje,remitenteId) {
-      notificacionRequest.enviarCorreo(asunto,{},[destinatario],'','',mensaje,remitenteId).then(function (response) {
+    self.enviar_notificacion = function (asunto, destinatario, mensaje, remitenteId) {
+      notificacionRequest.enviarCorreo(asunto, {}, [destinatario], '', '', mensaje, remitenteId).then(function (response) {
         //console.log(response)
       }).catch(
         function (error) {
@@ -304,14 +304,14 @@ angular.module('contractualClienteApp')
     }
 
     self.aprobarPago = function (pago_mensual) {
-      //console.log(pago_mensual);
+      console.log(pago_mensual);
 
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato)
         .then(function (response) {
           self.aux_pago_mensual = pago_mensual;
 
-          self.enviar_notificacion('[APROBADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido aprobados por ordenador ',self.Documento);
-          notificacionRequest.borrarNotificaciones('ColaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
+          self.enviar_notificacion('[APROBADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido aprobados por ordenador ', self.Documento);
+          notificacionRequest.borrarNotificaciones('ColaOrdenador', [self.aux_pago_mensual.DocumentoPersonaId])
           cumplidosCrudRequest.get('estado_pago_mensual', $.param({
             limit: 0,
             query: 'CodigoAbreviacion:AP'
@@ -338,6 +338,39 @@ angular.module('contractualClienteApp')
 
             cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
               .then(function (response) {
+                //Inicio desactivación informes antiguos
+                cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + pago_mensual.Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+                  .then(response => {
+                    const soportesRes = response.data.Data;
+                    let arr_informes = [];
+                    for (let i = 0; i < soportesRes.length; i++) {
+                      let soporte_info = soportesRes[i];
+                      if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10) {
+                        arr_informes.push(soporte_info);
+                      }
+                    }
+                    for (let i = 1; i < arr_informes.length; i++) {
+                      let soporte_info = arr_informes[i];
+                      let objeto_soporte = {
+                        "Id": soporte_info.Id,
+                        "Documento": soporte_info.Documento,
+                        "Activo": false,
+                        "FechaCreacion": soporte_info.FechaCreacion,
+                        "FechaModificacion": soporte_info.FechaModificacion,
+                        "Aprobado": soporte_info.Aprobado,
+                        "ItemInformeTipoContratoId": {
+                          "Id": soporte_info.ItemInformeTipoContratoId.Id
+                        },
+                        "PagoMensualId": {
+                          "Id": soporte_info.PagoMensualId.Id
+                        }
+                      };
+                      cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
+                        console.log("Proceso exitoso");
+                      });
+                    }
+                  });
+                //Fin desactivación informes antiguos
                 swal(
                   'Pago aprobado',
                   'Se ha registrado la aprobación del pago por parte del ordenador',
@@ -366,8 +399,8 @@ angular.module('contractualClienteApp')
       contratoRequest.get('contrato', pago_mensual.NumeroContrato + '/' + pago_mensual.VigenciaContrato).then(function (response) {
         self.aux_pago_mensual = pago_mensual;
 
-        self.enviar_notificacion('[RECHAZADOS] Cumplido del '+self.aux_pago_mensual.Mes+' de '+self.aux_pago_mensual.Ano,self.aux_pago_mensual.DocumentoPersonaId,'Documentos del cumplido rechazados por ordenador del gasto',self.Documento)
-        notificacionRequest.borrarNotificaciones('ColaOrdenador',[self.aux_pago_mensual.DocumentoPersonaId])
+        self.enviar_notificacion('[RECHAZADOS] Cumplido del ' + self.aux_pago_mensual.Mes + ' de ' + self.aux_pago_mensual.Ano, self.aux_pago_mensual.DocumentoPersonaId, 'Documentos del cumplido rechazados por ordenador del gasto', self.Documento)
+        notificacionRequest.borrarNotificaciones('ColaOrdenador', [self.aux_pago_mensual.DocumentoPersonaId])
 
         cumplidosCrudRequest.get('estado_pago_mensual', $.param({
           limit: 0,
@@ -395,6 +428,40 @@ angular.module('contractualClienteApp')
 
           cumplidosCrudRequest.put('pago_mensual', self.aux_pago_mensual.Id, pago_mensual_auditoria)
             .then(function (response) {
+              //Inicio flujo rechazo
+              cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + pago_mensual.Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+                .then(response => {
+                  const soportesRes = response.data.Data;
+                  let arr_informes = [];
+                  for (let i = 0; i < soportesRes.length; i++) {
+                    let soporte_info = soportesRes[i];
+                    if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10) {
+                      arr_informes.push(soporte_info);
+                    }
+                  }
+                  for (let i = 0; i < arr_informes.length - 1; i++) {
+                    let soporte_info = arr_informes[i];
+                    let objeto_soporte = {
+                      "Id": soporte_info.Id,
+                      "Documento": soporte_info.Documento,
+                      "Activo": false,
+                      "FechaCreacion": soporte_info.FechaCreacion,
+                      "FechaModificacion": soporte_info.FechaModificacion,
+                      "Aprobado": soporte_info.Aprobado,
+                      "ItemInformeTipoContratoId": {
+                        "Id": soporte_info.ItemInformeTipoContratoId.Id
+                      },
+                      "PagoMensualId": {
+                        "Id": soporte_info.PagoMensualId.Id
+                      }
+                    };
+                    cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
+                      console.log("Proceso exitoso");
+                    });
+                  }
+                });
+
+              //Fin flujo rechazo
               swal(
                 'Pago rechazado',
                 'Se ha registrado el rechazo del pago',
@@ -442,8 +509,43 @@ angular.module('contractualClienteApp')
             CargoEjecutor: (response.data.contrato.ordenador_gasto.rol_ordenador).substring(0, 69),
             DocumentoEjecutor: self.Documento
           }
-          cumplidosCrudRequest.post('tr_aprobacion_masiva_pagos', pago_mensual_auditoria_masiva).then(function(response_transaccion){
+          cumplidosCrudRequest.post('tr_aprobacion_masiva_pagos', pago_mensual_auditoria_masiva).then(function (response_transaccion) {
             if (response_transaccion.data.Data === 'OK') {
+              //Inicio desactivación informes antiguos
+              for (let pagoMen of arreglo_aux) {
+                cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + pagoMen.Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+                  .then(response => {
+                    const soportesRes = response.data.Data;
+                    let arr_informes = [];
+                    for (let i = 0; i < soportesRes.length; i++) {
+                      let soporte_info = soportesRes[i];
+                      if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10) {
+                        arr_informes.push(soporte_info);
+                      }
+                    }
+                    for (let i = 1; i < arr_informes.length; i++) {
+                      let soporte_info = arr_informes[i];
+                      let objeto_soporte = {
+                        "Id": soporte_info.Id,
+                        "Documento": soporte_info.Documento,
+                        "Activo": false,
+                        "FechaCreacion": soporte_info.FechaCreacion,
+                        "FechaModificacion": soporte_info.FechaModificacion,
+                        "Aprobado": soporte_info.Aprobado,
+                        "ItemInformeTipoContratoId": {
+                          "Id": soporte_info.ItemInformeTipoContratoId.Id
+                        },
+                        "PagoMensualId": {
+                          "Id": soporte_info.PagoMensualId.Id
+                        }
+                      };
+                      cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
+                        console.log("Proceso exitoso");
+                      });
+                    }
+                  });
+              }
+              //Fin desactivación informes antiguos
               swal(
                 'Pagos Aprobados',
                 'Se han aprobado los pagos de las solicitudes seleccionadas',
@@ -451,8 +553,8 @@ angular.module('contractualClienteApp')
               )
               self.obtener_informacion_ordenador(self.offset);
               self.gridApi.core.refresh();
-              notificacionRequest.borrarNotificaciones('ColaOrdenador',["All"])
-            }else {
+              notificacionRequest.borrarNotificaciones('ColaOrdenador', ["All"])
+            } else {
 
               swal(
                 'Error',
@@ -463,6 +565,41 @@ angular.module('contractualClienteApp')
             }
           }).catch(function (response) { // en caso de nulos
             //if (response.data === 'OK'){
+            //Inicio desactivación informes antiguos
+            for (let pagoMen of arreglo_aux) {
+              cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + pagoMen.Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+                .then(response => {
+                  const soportesRes = response.data.Data;
+                  let arr_informes = [];
+                  for (let i = 0; i < soportesRes.length; i++) {
+                    let soporte_info = soportesRes[i];
+                    if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10) {
+                      arr_informes.push(soporte_info);
+                    }
+                  }
+                  for (let i = 1; i < arr_informes.length; i++) {
+                    let soporte_info = arr_informes[i];
+                    let objeto_soporte = {
+                      "Id": soporte_info.Id,
+                      "Documento": soporte_info.Documento,
+                      "Activo": false,
+                      "FechaCreacion": soporte_info.FechaCreacion,
+                      "FechaModificacion": soporte_info.FechaModificacion,
+                      "Aprobado": soporte_info.Aprobado,
+                      "ItemInformeTipoContratoId": {
+                        "Id": soporte_info.ItemInformeTipoContratoId.Id
+                      },
+                      "PagoMensualId": {
+                        "Id": soporte_info.PagoMensualId.Id
+                      }
+                    };
+                    cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
+                      console.log("Proceso exitoso");
+                    });
+                  }
+                });
+            }
+            //Fin desactivación informes antiguos
             swal(
               'Pagos Aprobados',
               'Se han aprobado los pagos de las solicitudes seleccionadas',
@@ -503,14 +640,14 @@ angular.module('contractualClienteApp')
     }
 
 
-    self.obtener_doc= function (fila) {
+    self.obtener_doc = function (fila) {
       self.fila_sol_pago = fila;
       funcGen.obtener_doc(self.fila_sol_pago.Id).then(function (documentos) {
-        self.documentos=documentos;
+        self.documentos = documentos;
         console.log(self.documentos);
       }).catch(function (error) {
-        console.log("error",error)
-        self.documentos=undefined;
+        console.log("error", error)
+        self.documentos = undefined;
       })
     };
 
