@@ -512,8 +512,8 @@ angular.module('contractualClienteApp')
           cumplidosCrudRequest.post('tr_aprobacion_masiva_pagos', pago_mensual_auditoria_masiva).then(function (response_transaccion) {
             if (response_transaccion.data.Data === 'OK') {
               //Inicio desactivación informes antiguos
-              for (let pagoMen of arreglo_aux) {
-                cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + pagoMen.Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+              for (let j=0; j < arreglo_aux.length; j++) {  
+                cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + arreglo_aux[j].Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
                   .then(response => {
                     const soportesRes = response.data.Data;
                     let arr_informes = [];
@@ -566,8 +566,8 @@ angular.module('contractualClienteApp')
           }).catch(function (response) { // en caso de nulos
             //if (response.data === 'OK'){
             //Inicio desactivación informes antiguos
-            for (let pagoMen of arreglo_aux) {
-              cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + pagoMen.Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+            for (let j=0; j < arreglo_aux.length; j++) {  
+              cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + arreglo_aux[j].Id + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
                 .then(response => {
                   const soportesRes = response.data.Data;
                   let arr_informes = [];
