@@ -818,52 +818,6 @@ angular.module('contractualClienteApp')
               ]
             }
           },
-          {
-            margin: [0, 20, 0, 0],
-            columns: [
-              { width: '*', text: '' },
-              {
-                width: 'auto',
-                table: {
-                  body: [
-                    [
-                      {
-                        border: [false, false, false, true],
-                        text: self.informacion_informe.InformacionContratista.Nombre, alignment: 'center'
-                      }
-                    ],
-                    [
-                      {
-                        border: [false, true, false, false],
-                        text: 'CONTRATISTA', bold: true,
-                        alignment: 'center'
-                      }
-                    ]]
-                }
-              },
-              { width: '*', text: '' },
-              {
-                width: 'auto',
-                table: {
-                  body: [
-                    [
-                      {
-                        border: [false, false, false, true],
-                        text: self.informacion_informe.Supervisor.Nombre, alignment: 'center'
-                      }
-                    ],
-                    [
-                      {
-                        border: [false, true, false, false],
-                        text: 'SUPERVISOR', bold: true,
-                        alignment: 'center'
-                      }
-                    ]]
-                }
-              },
-              { width: '*', text: '' },
-            ]
-          }
         ],
         styles: {
           tableHeader: {
