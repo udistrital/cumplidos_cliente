@@ -115,42 +115,21 @@ angular.module('contractualClienteApp')
     self.novedades = {};
 
     self.validarNovedades = function () {
-      //console.log('novedades: ', self.informacion_informe.Novedades)
       self.novedades.novedades = self.informacion_informe.Novedades;
-      self.novedades.UltimoOtrosi = {}
       self.novedades.UltimaCesion = {}
 
-      for (var i = 0; i < self.informacion_informe.Novedades; i++) {
-        if (self.informacion_informe.Novedades[i].tipoNovedad == 'NP_ADPRO') { // otrosi
-          self.novedades.UltimoOtrosi.Existe = true;
-          self.novedades.UltimoOtrosi.FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades[i].FechaInicio));
-          self.novedades.UltimoOtrosi.FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades[i].FechaFin))
-        } else {
-          self.novedades.UltimoOtrosi.Existe = false;
-          self.novedades.UltimoOtrosi.FechaInicio = '';
-          self.novedades.UltimoOtrosi.FechaFin = '';
-        }
+      self.novedades.UltimaCesion.Existe = false;
+      self.novedades.UltimaCesion.FechaCesion = '';
+      self.novedades.UltimaCesion.Cesionario = '';
+
+      for (var i = self.informacion_informe.Novedades.length - 1; i >= 0; i--) {
         if (self.informacion_informe.Novedades[i].TipoNovedad == 'NP_CES') { // cesion
           self.novedades.UltimaCesion.Existe = true;
+          self.novedades.UltimaCesion.Cesionario = self.informacion_informe.Novedades[i].Cesionario;
           self.novedades.UltimaCesion.FechaCesion = new Date(utils.ajustarFecha(self.informacion_informe.Novedades[i].FechaInicio));
-        } else {
-          self.novedades.UltimaCesion.Existe = false;
-          self.novedades.UltimaCesion.FechaCesion = '';
+          break;
         }
       }
-
-      //demas novedades
-      // if (self.informacion_informe.Novedades.Suspencion != null) {
-      //   for (let index = 0; index < self.informacion_informe.Novedades.Suspencion.length; index++) {
-      //     self.informacion_informe.Novedades.Suspencion[index].FechaInicio = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaInicio));
-      //     self.informacion_informe.Novedades.Suspencion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Suspencion[index].FechaFin));
-      //   }
-      // }
-      // if (self.informacion_informe.Novedades.Terminacion != null) {
-      //   for (let index = 0; index < self.informacion_informe.Novedades.Terminacion.length; index++) {
-      //     self.informacion_informe.Novedades.Terminacion[index].FechaFin = new Date(utils.ajustarFecha(self.informacion_informe.Novedades.Terminacion[index].FechaFin));
-      //   }
-      // }
     }
 
     self.calcularPorcentajeTiempo = function () {
@@ -161,18 +140,14 @@ angular.module('contractualClienteApp')
       diasContrato = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.informacion_informe.FechasConNovedades.FechaFin)
       diasContratoEjecutado = utils.diferenciaFechasDias(self.informacion_informe.FechasConNovedades.FechaInicio, self.Informe.PeriodoInformeFin)
 
+      for (var i = 0; i < self.informacion_informe.Novedades.length; i++) {
+        if (self.informacion_informe.Novedades[i].TipoNovedad == 'NP_SUS') {
+          if (self.Informe.PeriodoInformeInicio > self.informacion_informe.Novedades[i].FechaInicio) {
+            diasContrato = diasContrato + self.informacion_informe.Novedades[i].PlazoEjecucion;
+          }
+        }
+      }
 
-      // ---------------------------------------------------------------------------------------------------------
-
-
-      // if (self.informacion_informe.Novedades.Suspencion != null) {
-      //   for (let index = 0; index < self.informacion_informe.Novedades.SuspenZion.length; index++) {
-      //     const Sus = self.informacion_informe.Novedades.Suspencion[index];
-      //     if (self.Informe.PeriodoInformeInicio > self.informacion_informe.Novedades.SuspenCion[index].FechaInicio) {
-      //       diasContrato = diasContrato + Sus.PlazoEjecucion
-      //     }
-      //   }
-      // }
       var porcentajeEjecutado = ((diasContratoEjecutado * 100) / diasContrato);
       var porcentajeFaltante = 100 - porcentajeEjecutado;
       return { Ejecutado: porcentajeEjecutado.toFixed(2), Faltante: porcentajeFaltante.toFixed(2) }
@@ -608,10 +583,6 @@ angular.module('contractualClienteApp')
         }
       });
 
-      // novedades.push(
-      //   [{ colSpan: 9, text: 'NOVEDADES POSTCONTRACTUALES', style: 'tableNovedadesHeader' }, {}, {}, {}, {}, {}, {}, {}, {}]
-      // );
-
       var cont = 1;
 
       for (var i = 0; i < novedadesInforme.length; i++) {
@@ -622,7 +593,17 @@ angular.module('contractualClienteApp')
             table: {
               dontBreakRows: true,
               widths: ['2%', '10%', '5%', 'auto', 'auto', 'auto', 'auto', 'auto', '*'],
-              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Otro si', style: 'tableNovedadesText' }, { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaInicio.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'FECHA FIN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFin.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'DISPONIBILIDAD PRESUPUESTAL:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].NumeroCdp + ' de ' + novedadesInforme[i].VigenciaCdp, style: 'tableNovedadesText' }]],
+              body: [[
+                { text: cont, style: 'tableNovedadesHeader' },
+                { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' },
+                { text: 'Otro si', style: 'tableNovedadesText' },
+                { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].FechaInicio, style: 'tableNovedadesText' },
+                { text: 'FECHA FIN:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].FechaFin, style: 'tableNovedadesText' },
+                { text: 'DISPONIBILIDAD PRESUPUESTAL:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].NumeroCdp + ' de ' + novedadesInforme[i].VigenciaCdp, style: 'tableNovedadesText' }
+              ]],
               layout: 'noBorders'
             }
           });
@@ -635,7 +616,17 @@ angular.module('contractualClienteApp')
             table: {
               dontBreakRows: true,
               widths: ['2%', '10%', '5%', 'auto', 'auto', 'auto', '*', 'auto', '*'],
-              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Cesión', style: 'tableNovedadesText' }, { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaInicio.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'CEDENTE:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].Cedente, style: 'tableNovedadesText' }, { text: 'CESIONARIO:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].Cesionario, style: 'tableNovedadesText' }]],
+              body: [[
+                { text: cont, style: 'tableNovedadesHeader' },
+                { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' },
+                { text: 'Cesión', style: 'tableNovedadesText' },
+                { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].FechaInicio, style: 'tableNovedadesText' },
+                { text: 'CEDENTE:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].Cedente, style: 'tableNovedadesText' },
+                { text: 'CESIONARIO:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].Cesionario, style: 'tableNovedadesText' }
+              ]],
               layout: 'noBorders'
             }
           });
@@ -647,8 +638,18 @@ angular.module('contractualClienteApp')
             widths: ['*'],
             table: {
               dontBreakRows: true,
-              widths: ['2%', '10%', '*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
-              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Suspensión', style: 'tableNovedadesText' }, { text: 'FECHA INICIO SUSPENSIÓN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaInicio.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'FECHA FIN SUSPENSIÓN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFinSus.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }, { text: 'NUEVA FECHA FIN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFin.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }]],
+              widths: ['1.95%', '10.05%', '14.75%', 'auto', 'auto', 'auto', 'auto', 'auto', '*'],
+              body: [[
+                { text: cont, style: 'tableNovedadesHeader' },
+                { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' },
+                { text: 'Suspensión', style: 'tableNovedadesText' },
+                { text: 'FECHA INICIO SUSPENSIÓN:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].FechaInicio, style: 'tableNovedadesText' },
+                { text: 'FECHA FIN SUSPENSIÓN:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].FechaFinSus, style: 'tableNovedadesText' },
+                { text: 'NUEVA FECHA FIN:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].FechaFin, style: 'tableNovedadesText' }
+              ]],
               layout: 'noBorders'
             }
           });
@@ -660,8 +661,14 @@ angular.module('contractualClienteApp')
             widths: ['*'],
             table: {
               dontBreakRows: true,
-              widths: ['2%', '10%', '*', 'auto', '*'],
-              body: [[{ text: cont, style: 'tableNovedadesHeader' }, { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' }, { text: 'Terminación anticipada', style: 'tableNovedadesText' }, { text: 'FECHA FINALIZACIÓN:', style: 'tableNovedadesHeader' }, { text: novedadesInforme[i].FechaFin.substring(0, 10).replace(/[-]/g, '/'), style: 'tableNovedadesText' }]],
+              widths: ['2%', '9.5%', '*', 'auto', '*'],
+              body: [[
+                { text: cont, style: 'tableNovedadesHeader' },
+                { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' },
+                { text: 'Terminación anticipada', style: 'tableNovedadesText' },
+                { text: 'FECHA FINALIZACIÓN:', style: 'tableNovedadesHeader' },
+                { text: novedadesInforme[i].FechaFin, style: 'tableNovedadesText' }
+              ]],
               layout: 'noBorders'
             }
           });
@@ -673,40 +680,13 @@ angular.module('contractualClienteApp')
 
     self.texto_aportes = function () {
 
-      var fechasInicioCumplido = []; // Arreglo de fechas que involucran cambio en la descripción del periodo de informe
-      var fechasFinCumplido = [];
       var fechasInicioAportes = []; //Arreglo de fechas que involucran cambio en la descripción del enunciado de aportes
       var textoAportes = "";
 
-      if (self.novedades.UltimoOtrosi.FechaFin != '' && self.novedades.UltimoOtrosi.FechaInicio != '') {
-        fechasInicioCumplido.push(self.novedades.UltimoOtrosi.FechaInicio);
-        fechasFinCumplido.push(self.novedades.UltimoOtrosi.FechaFin);
-      }
-      fechasInicioCumplido.push(self.informacion_informe.FechaInicio);
-      fechasFinCumplido.push(self.informacion_informe.FechaFin);
-
       fechasInicioAportes.push(self.informacion_informe.FechaInicio);
 
-      if (self.novedades.UltimaCesion.FechaCesion != '') {
+      if (self.novedades.UltimaCesion.Existe) {
         fechasInicioAportes.push(self.novedades.UltimaCesion.FechaCesion);
-
-        var fechaCesionProxima = self.novedades.UltimaCesion.FechaCesion;
-        if (self.documentoCedente == self.documento_contratista) {
-          if (fechaCesionProxima.getFullYear() == self.anio && fechaCesionProxima.getMonth() + 1 == self.mes) {
-            fechaCesionProxima.setDate(fechaCesionProxima.getDate() - 1)
-            fechasFinCumplido.push(fechaCesionProxima);
-          }
-        } else {// esta condición no abarca el caso en que exista más de una cesión
-          if (fechaCesionProxima.getFullYear() == self.anio && fechaCesionProxima.getMonth() + 1 == self.mes) {
-            fechaCesionProxima.setDate(fechaCesionProxima.getDate())
-            fechasInicioCumplido.push(fechaCesionProxima);
-          }
-        }
-
-      }
-
-      if (self.novedades.UltimoOtrosi.FechaInicio != '') {
-        fechasInicioAportes.push(self.novedades.UltimoOtrosi.FechaInicio);
       }
 
       //Modificacion para tomar dias de la preliquidacion de titan
@@ -817,16 +797,7 @@ angular.module('contractualClienteApp')
 
             },
           },
-          // {
-          //   // Novedades postcontractuales
-          //   style: 'tableNovedades',
-          //   widths: '*',
-          //   table: {
-          //     dontBreakRows: true,
-          //     // widths: ['auto', 'auto', '*', 'auto', '*', 'auto', '*', 'auto', '*'],
-          //     body: self.tablaNovedades(self.informacion_informe.Novedades)
-          //   }
-          // },
+          // Novedades postcontractuales
           self.tablaNovedades(self.informacion_informe.Novedades),
           {
             //Certificado de cumplimiento  
