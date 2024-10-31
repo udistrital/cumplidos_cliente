@@ -623,9 +623,9 @@ angular.module('contractualClienteApp')
                 { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' },
                 { text: novedadesInforme[i].FechaInicio, style: 'tableNovedadesText' },
                 { text: 'CEDENTE:', style: 'tableNovedadesHeader' },
-                { text: novedadesInforme[i].Cedente, style: 'tableNovedadesText' },
+                { text: novedadesInforme[i].NombreCedente, style: 'tableNovedadesText' },
                 { text: 'CESIONARIO:', style: 'tableNovedadesHeader' },
-                { text: novedadesInforme[i].Cesionario, style: 'tableNovedadesText' }
+                { text: novedadesInforme[i].NombreCesionario, style: 'tableNovedadesText' }
               ]],
               layout: 'noBorders'
             }
