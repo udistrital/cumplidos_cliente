@@ -596,7 +596,7 @@ angular.module('contractualClienteApp')
               body: [[
                 { text: cont, style: 'tableNovedadesHeader' },
                 { text: 'TIPO NOVEDAD:', style: 'tableNovedadesHeader' },
-                { text: 'Otro si', style: 'tableNovedadesText' },
+                { text: 'Otrosí', style: 'tableNovedadesText' },
                 { text: 'FECHA INICIO:', style: 'tableNovedadesHeader' },
                 { text: novedadesInforme[i].FechaInicio, style: 'tableNovedadesText' },
                 { text: 'FECHA FIN:', style: 'tableNovedadesHeader' },

@@ -655,7 +655,7 @@ angular.module('contractualClienteApp')
     */
     self.enviar_cumplido = function (solicitud) {
       swal({
-        title: '¿Está seguro(a) de enviar a revisar los soportes por el supervisor?',
+        title: '¿Está seguro(a) de firmar electrónicamente y enviar a revisar los soportes por el supervisor?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
