@@ -21,9 +21,9 @@ angular.module("contractualClienteApp").constant("CONF", {
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_crud_api/v1/",
     CUMPLIDOS_CRUD_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_crud/v1/",
     // CUMPLIDOS_CRUD_SERVICE: "http://api.intranetoas.udistrital.edu.co:8511/v1/",
-    // CUMPLIDOS_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v2/",
+    CUMPLIDOS_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_mid/v2/",
     // CUMPLIDOS_MID_SERVICE: "http://api.intranetoas.udistrital.edu.co:8513/v1/",
-    CUMPLIDOS_MID_SERVICE: "http://localhost:8081/v1/",
+    // CUMPLIDOS_MID_SERVICE: "http://localhost:8081/v1/",
     ADMINISTRATIVA_JBPM_V2:
       "https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/",
     ADMINISTRATIVA_PRUEBAS_SERVICE:
