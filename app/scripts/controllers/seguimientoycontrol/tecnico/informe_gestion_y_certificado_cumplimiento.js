@@ -1051,13 +1051,13 @@ angular.module('contractualClienteApp')
     self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme) {
       var actividades = actividadesUltimoInforme
       for (let index_act_esp = 0; index_act_esp < actividades.length; index_act_esp++) {
-        delete actividades[index_act_esp].FechaCreacion
-        delete actividades[index_act_esp].FechaModificacion
-        delete actividades[index_act_esp].Id
+        actividades[index_act_esp].FechaCreacion = null
+        actividades[index_act_esp].FechaModificacion = null
+        actividades[index_act_esp].Id = null
         for (let index_act_rea = 0; index_act_rea < actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
-          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
-          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
-          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
+          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion = null
+          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion = null
+          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id = null
         }
       }
       return actividades
