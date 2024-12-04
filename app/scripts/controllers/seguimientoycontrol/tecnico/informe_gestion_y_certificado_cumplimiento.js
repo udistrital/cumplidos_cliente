@@ -346,7 +346,65 @@ angular.module('contractualClienteApp')
       cumplidosMidRequest.get('informacion_informe/preliquidacion/' + self.pago_mensual_id).then(
         function (response) {
           if (response.data.Status == "200") {
-            self.Preliquidacion = response.data.Data
+            if (response.data.Data.length > 1) {
+              cumplidosCrudRequest.get('pago_mensual', $.param({
+                query: "NumeroContrato:" + self.contrato + ",Ano:" + self.anio + ",Mes:" + self.mes + ",VigenciaContrato:" + self.vigencia + ",NumeroCDP:" + self.cdp,
+                sortby: "Id",
+                order: "asc",
+                limit: 2
+              })).then(function (response_pago_mensual) {
+                if (response_pago_mensual.data.Data.length > 1) {
+                  try {
+                    var preliquidaciones = response.data.Data;
+                    var pago_mensual = response_pago_mensual.data.Data;
+                    for (var i = 0; i < pago_mensual.length; i++) {
+                      if (pago_mensual[i].Id == self.pago_mensual_id) {
+                        self.Preliquidacion = preliquidaciones[i];
+                      }
+                    }
+                  } catch (error) {
+                    swal({
+                      title: 'Ocurrió un error al procesar la información de la preliquidación\n' + error,
+                      type: 'error',
+                      showCancelButton: false,
+                      confirmButtonColor: '#d33',
+                      confirmButtonText: 'Aceptar',
+                      allowEscapeKey: false,
+                      allowOutsideClick: false
+                    }).then(function () {
+                      $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+                    });
+                  }
+                } else {
+                  swal({
+                    title: 'No existen los dos (2) registros de pago para el mes, no se puede traer la información de la preliquidación',
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false
+                  }).then(function () {
+                    $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+                  })
+                }
+              }).catch(function (error) {
+                //console.log(error)
+                swal({
+                  title: 'Ocurrió un error al traer la información del cumplido, intente nuevamente más tarde',
+                  type: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#d33',
+                  confirmButtonText: 'Aceptar',
+                  allowEscapeKey: false,
+                  allowOutsideClick: false
+                }).then(function () {
+                  $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
+                })
+              })
+            } else {
+              self.Preliquidacion = response.data.Data[0]
+            }
           } else {
             swal({
               title: 'Ocurrio un error al traer la preliquidacion, intente nuevamente mas tarde',
@@ -993,13 +1051,13 @@ angular.module('contractualClienteApp')
     self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme) {
       var actividades = actividadesUltimoInforme
       for (let index_act_esp = 0; index_act_esp < actividades.length; index_act_esp++) {
-        actividades[index_act_esp].FechaCreacion=null
-        actividades[index_act_esp].FechaModificacion=null
-        actividades[index_act_esp].Id =null
+        delete actividades[index_act_esp].FechaCreacion
+        delete actividades[index_act_esp].FechaModificacion
+        delete actividades[index_act_esp].Id
         for (let index_act_rea = 0; index_act_rea < actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
-          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion = null
-          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion = null
-          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id = null
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
         }
       }
       return actividades
