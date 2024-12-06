@@ -432,12 +432,37 @@ angular.module('contractualClienteApp')
 
                 });
             } else {
-              //self.mostrar_boton = true;
-              swal(
-                'Error',
-                'No se puede crear mas de una solicitud de pago del mismo mes y año',
-                'warning'
-              );
+
+              cumplidosMidRequest.get('informacion_informe/' + responsePago.data.Data[0].Id).then(function (response) {
+                for (var i = response.data.Data.Novedades.length - 1; i >= 0; i--) {
+                  if (response.data.Data.Novedades[i].TipoNovedad == "NP_SUS") {
+                    var fechaInicio = response.data.Data.Novedades[i].FechaInicio.split("-");
+                    var fechaFin = response.data.Data.Novedades[i].FechaFin.split("-");
+                    if (fechaInicio[1] == self.mes && fechaInicio[0] == self.anio && fechaFin[1] == self.mes && fechaFin[0] == self.anio) {
+
+                      cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
+                        .then(function (responsePagoPost) {
+                          swal(
+                            $translate.instant('SOLICITUD_REGISTRADA'),
+                            $translate.instant('CARGUE_CORRESPONDIENTE'),
+                            'success'
+                          )
+                          self.cargar_soportes(self.contrato);
+                          self.mes = undefined;
+                          self.anio = undefined;
+                        });
+                    } else {
+                      swal(
+                        'Error',
+                        'No se puede crear mas de una solicitud de pago del mismo mes y año',
+                        'warning'
+                      );
+                    }
+                  }
+                }
+              }).catch(function (error) {
+                console.log("Error", error);
+              });
             }
 
 
