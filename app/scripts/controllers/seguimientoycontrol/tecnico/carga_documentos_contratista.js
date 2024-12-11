@@ -411,23 +411,64 @@ angular.module('contractualClienteApp')
               ",VigenciaCDP:" + self.contrato.VigenciaCdp,
             limit: 0
           })).then(function (responsePago) {
-            //no existe pago para ese mes y se crea
-            cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
-              .then(function (responsePagoPost) {
-                //console.log(responsePagoPost.data);
-                swal(
-                  $translate.instant('SOLICITUD_REGISTRADA'),
-                  $translate.instant('CARGUE_CORRESPONDIENTE'),
-                  'success'
-                )
-                self.cargar_soportes(self.contrato);
-                //self.gridApi2.core.refresh();
-                //   self.contrato = {};
-                self.mes = undefined;
-                self.anio = undefined;
-                //self.mostrar_boton = true;
+            if (Object.entries(responsePago.data.Data[0]).length == 0) {
+              //no existe pago para ese mes y se crea
+              cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
+                .then(function (responsePagoPost) {
+                  //console.log(responsePagoPost.data);
+                  swal(
+                    $translate.instant('SOLICITUD_REGISTRADA'),
+                    $translate.instant('CARGUE_CORRESPONDIENTE'),
+                    'success'
+                  )
 
+                  self.cargar_soportes(self.contrato);
+
+                  //self.gridApi2.core.refresh();
+                  //   self.contrato = {};
+                  self.mes = undefined;
+                  self.anio = undefined;
+                  //self.mostrar_boton = true;
+
+                });
+            } else {
+              // En caso de existir una solicitud, se verifica si pertenece a un mes con novedad de suspensión
+              cumplidosMidRequest.get('informacion_informe/' + responsePago.data.Data[0].Id).then(function (response) {
+                for (var i = response.data.Data.Novedades.length - 1; i >= 0; i--) {
+                  if (response.data.Data.Novedades[i].TipoNovedad == "NP_SUS") {
+                    var fechaInicio = response.data.Data.Novedades[i].FechaInicio.split("-");
+                    var fechaFin = response.data.Data.Novedades[i].FechaFin.split("-");
+                    if (fechaInicio[1] == self.mes && fechaInicio[0] == self.anio && fechaFin[1] == self.mes && fechaFin[0] == self.anio) {
+
+                      cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
+                        .then(function (responsePagoPost) {
+                          swal(
+                            $translate.instant('SOLICITUD_REGISTRADA'),
+                            $translate.instant('CARGUE_CORRESPONDIENTE'),
+                            'success'
+                          )
+                          self.cargar_soportes(self.contrato);
+                          self.mes = undefined;
+                          self.anio = undefined;
+                        });
+                    } else {
+                      swal(
+                        'Error',
+                        'No se puede crear mas de una solicitud de pago del mismo mes y año',
+                        'warning'
+                      );
+                    }
+                  }
+                }
+              }).catch(function (error) {
+                swal(
+                  'Error',
+                  'Error al consultar la información de la solicitud de pago',
+                  'warning'
+                );
               });
+            }
+
 
           })
             //Si responde con un error
