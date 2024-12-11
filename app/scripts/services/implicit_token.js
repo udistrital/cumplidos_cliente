@@ -35,7 +35,7 @@ if (window.localStorage.getItem('access_token') === null ||
   } else {
     window.localStorage.clear();
   }
-  req.onreadystatechange = function(e) {
+  req.onreadystatechange = function (e) {
     if (req.readyState === 4) {
       if (req.status === 200) {
         //
@@ -48,56 +48,83 @@ if (window.localStorage.getItem('access_token') === null ||
   };
 }
 
-angular.module('implicitToken', [])
-  .factory('token_service', function ($q,CONF, md5, $interval,autenticacionMidRequest) {
+angular.module('inactivityModule', [])
+  .service('inactivityService', ['$rootScope', '$timeout', '$window', function ($rootScope, $timeout, $window) {
+    var inactivityTimeout;
+    var inactivityTime = 1200000; // 20 minutos
+
+    function startInactivityTimer() {
+      inactivityTimeout = $timeout(function () {
+        $rootScope.$broadcast('inactivityEvent');
+      }, inactivityTime);
+    }
+
+    function resetInactivityTimer() {
+      if (inactivityTimeout) {
+        $timeout.cancel(inactivityTimeout);
+      }
+      startInactivityTimer();
+    }
+
+    this.init = function () {
+      startInactivityTimer();
+      angular.element(document).on('mousemove click keydown', function() {
+        resetInactivityTimer();
+      });
+    };
+
+  }]);
+
+angular.module('implicitToken', ['inactivityModule'])
+  .factory('token_service', function ($q, CONF, md5, $interval, autenticacionMidRequest) {
 
     var service = {
       //session: $localStorage.default(params),
       header: null,
       token: null,
       logout_url: null,
-      loaded_data:false,
-      getLoginData: function() {
+      loaded_data: false,
+      getLoginData: function () {
         //Para  llamar el api de autenticacion
         var deferred = $q.defer();
         if (window.localStorage.getItem('access_token') !== null &&
           window.localStorage.getItem('access_token') !== undefined) {
-            //console.log('access_code existe',window.localStorage.getItem('access_code'))
+          //console.log('access_code existe',window.localStorage.getItem('access_code'))
           if (window.localStorage.getItem('access_code') === null ||
             window.localStorage.getItem('access_code') === undefined) {
             var appUserInfo = JSON.parse(atob(window.localStorage.getItem('id_token').split('.')[1]));
             var appUserDocument;
             var appUserRole;
-            var userRol= {
+            var userRol = {
               user: appUserInfo.email
             };
             //console.log('entro ',appUserInfo)
             //console.log((appUserInfo.role===null ||appUserInfo.role===undefined) &&(appUserInfo.documento===null ||appUserInfo.documento===undefined) && (appUserInfo.email!=null && appUserInfo.email!=undefined))
-            if((appUserInfo.role===null ||appUserInfo.role===undefined) &&(appUserInfo.documento===null ||appUserInfo.documento===undefined) && (appUserInfo.email!=null && appUserInfo.email!=undefined)){
+            if ((appUserInfo.role === null || appUserInfo.role === undefined) && (appUserInfo.documento === null || appUserInfo.documento === undefined) && (appUserInfo.email != null && appUserInfo.email != undefined)) {
               autenticacionMidRequest.post("token/userRol", userRol, {
                 headers: {
                   'Accept': 'application/json',
                   "Authorization": "Bearer " + window.localStorage.getItem('access_token'),
                 }
               })
-              .then(function(respuestaAutenticacion) {
-                appUserDocument = respuestaAutenticacion.data.documento;
+                .then(function (respuestaAutenticacion) {
+                  appUserDocument = respuestaAutenticacion.data.documento;
 
-                appUserRole = respuestaAutenticacion.data.role;
-                //console.log('respuesta autenticacion',appUserDocument,appUserRole)
-                window.location.reload();
-                window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
-                window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
-                setExpiresAt();
-                timer();
-                //
-                deferred.resolve(true);
-              })
-              .catch(function(excepcionAutenticacion) {
-                //console.log("fallo la autenticacion");
-                //service.logout();
-              });
-            }else{
+                  appUserRole = respuestaAutenticacion.data.role;
+                  //console.log('respuesta autenticacion',appUserDocument,appUserRole)
+                  window.location.reload();
+                  window.localStorage.setItem('access_code', btoa(JSON.stringify(appUserDocument)));
+                  window.localStorage.setItem('access_role', btoa(JSON.stringify(appUserRole)));
+                  setExpiresAt();
+                  timer();
+                  //
+                  deferred.resolve(true);
+                })
+                .catch(function (excepcionAutenticacion) {
+                  //console.log("fallo la autenticacion");
+                  //service.logout();
+                });
+            } else {
               deferred.resolve(true);
             }
           } else {
@@ -166,17 +193,17 @@ angular.module('implicitToken', [])
         var id_token = window.localStorage.getItem('id_token').split('.');
         return JSON.parse(atob(id_token[1]));
       },
-      getAppPayload: function() {
+      getAppPayload: function () {
 
         var id_token = window.localStorage.getItem('id_token').split('.');
         var access_code = window.localStorage.getItem('access_code');
         var access_role = window.localStorage.getItem('access_role');
         var data = angular.fromJson(atob(id_token[1]));
         //console.log('access_code:',access_code,'access_role: ',access_role);
-        if(!data.documento){
+        if (!data.documento) {
           data.documento = angular.fromJson(atob(access_code));
         }
-        if(!data.role){
+        if (!data.role) {
           data.role = angular.fromJson(atob(access_role));
         }
         //console.log('data:',data)
@@ -190,7 +217,7 @@ angular.module('implicitToken', [])
         //window.location.replace(service.logout_url);
       },
       expired: function () {
-        return ( window.localStorage.getItem('expires_at')!==null && new Date(window.localStorage.getItem('expires_at')) < new Date());
+        return (window.localStorage.getItem('expires_at') !== null && new Date(window.localStorage.getItem('expires_at')) < new Date());
       },
 
       setExpiresAt: function () {
@@ -203,12 +230,12 @@ angular.module('implicitToken', [])
 
       timer: function () {
         if (!angular.isUndefined(window.localStorage.getItem('expires_at')) || window.localStorage.getItem('expires_at') === null || window.localStorage.getItem('expires_at') === 'Invalid Date') {
-          var mostrado=false
+          var mostrado = false
           $interval(function () {
             var restante = new Date()
-            restante.setMinutes(restante.getMinutes()+5)
-            if (window.localStorage.getItem('expires_at') !== null && new Date(window.localStorage.getItem('expires_at')) < restante && !mostrado){
-              mostrado=true
+            restante.setMinutes(restante.getMinutes() + 5)
+            if (window.localStorage.getItem('expires_at') !== null && new Date(window.localStorage.getItem('expires_at')) < restante && !mostrado) {
+              mostrado = true
               swal({
                 title: 'Su sesión caducará pronto, por favor asegurese de guardar todos los cambios',
                 type: 'error',
@@ -216,7 +243,7 @@ angular.module('implicitToken', [])
                 confirmButtonColor: '#d33',
                 confirmButtonText: 'Aceptar'
               })
-            }else if (service.expired()) {
+            } else if (service.expired()) {
               swal({
                 title: 'Su sesión ha caducado, por favor vuelva a ingresar',
                 type: 'error',
@@ -224,7 +251,7 @@ angular.module('implicitToken', [])
                 confirmButtonColor: '#d33',
                 confirmButtonText: 'Aceptar'
               }).then(function () {
-              service.logout();
+                service.logout();
               })
             }
           }, 5000);
@@ -259,6 +286,13 @@ angular.module('implicitToken', [])
       }
     };
     //service.setExpiresAt();
-    service.timer();
+    inactivityService.init();
     return service;
   });
+
+  angular.module('implicitToken').run(['$rootScope', 'token_service', function (token_service) {
+    $rootScope.$on('inactivityEvent', function () {
+      // 
+      token_service.logout();
+    });
+  }]);
