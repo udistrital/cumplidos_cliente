@@ -431,7 +431,7 @@ angular.module('contractualClienteApp')
                   //self.mostrar_boton = true;
 
                 });
-            } else {
+            } else if (Object.entries(solicitudes_pago_mensual[0]).length === 1) {
 
               cumplidosMidRequest.get('informacion_informe/' + responsePago.data.Data[0].Id).then(function (response) {
                 for (var i = response.data.Data.Novedades.length - 1; i >= 0; i--) {
@@ -463,6 +463,12 @@ angular.module('contractualClienteApp')
               }).catch(function (error) {
                 console.log("Error", error);
               });
+            } else {
+              swal(
+                'Error',
+                'No se puede crear mas de dos solicitudes de pago (suspensión)',
+                'warning'
+              );
             }
 
 
@@ -626,40 +632,40 @@ angular.module('contractualClienteApp')
     /*
       Función para asegurarse que los informes hayan sido desactivados correctamente
     */
-    self.comprobarDesactivacionInformes = function (soporteId){
-      cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:'+soporteId+',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
-      .then(response=>{
-        const soportesRes = response.data.Data;
-        let arr_informes=[];
-        for (let i=0; i<soportesRes.length; i++){
-          let soporte_info = soportesRes[i];
-          if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10){
-            arr_informes.push(soporte_info);
+    self.comprobarDesactivacionInformes = function (soporteId) {
+      cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + soporteId + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
+        .then(response => {
+          const soportesRes = response.data.Data;
+          let arr_informes = [];
+          for (let i = 0; i < soportesRes.length; i++) {
+            let soporte_info = soportesRes[i];
+            if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10) {
+              arr_informes.push(soporte_info);
+            }
           }
-        }
-        if(arr_informes.length != 1){
-          for(let i=0; i<arr_informes.length-1;i++){
-            let soporte_info = arr_informes[i];
-            let objeto_soporte = {
-              "Id": soporte_info.Id,
-              "Documento": soporte_info.Documento,
-              "Activo": false,
-              "FechaCreacion": soporte_info.FechaCreacion,
-              "FechaModificacion": soporte_info.FechaModificacion,
-              "Aprobado": soporte_info.Aprobado,
-              "ItemInformeTipoContratoId": {
-                "Id": soporte_info.ItemInformeTipoContratoId.Id
-              },
-              "PagoMensualId": {
-                "Id": soporte_info.PagoMensualId.Id
-              }
-            };
-            cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
-              console.log("Proceso exitoso");
-            });
+          if (arr_informes.length != 1) {
+            for (let i = 0; i < arr_informes.length - 1; i++) {
+              let soporte_info = arr_informes[i];
+              let objeto_soporte = {
+                "Id": soporte_info.Id,
+                "Documento": soporte_info.Documento,
+                "Activo": false,
+                "FechaCreacion": soporte_info.FechaCreacion,
+                "FechaModificacion": soporte_info.FechaModificacion,
+                "Aprobado": soporte_info.Aprobado,
+                "ItemInformeTipoContratoId": {
+                  "Id": soporte_info.ItemInformeTipoContratoId.Id
+                },
+                "PagoMensualId": {
+                  "Id": soporte_info.PagoMensualId.Id
+                }
+              };
+              cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
+                console.log("Proceso exitoso");
+              });
+            }
           }
-        } 
-      });
+        });
     }
     //
     /*
