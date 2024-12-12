@@ -431,7 +431,7 @@ angular.module('contractualClienteApp')
                   //self.mostrar_boton = true;
 
                 });
-            } else {
+            } else if (Object.entries(responsePago.data.Data[0]).length == 1) {
               // En caso de existir una solicitud, se verifica si pertenece a un mes con novedad de suspensión
               cumplidosMidRequest.get('informacion_informe/' + responsePago.data.Data[0].Id).then(function (response) {
                 var ultimaSuspension = null;
@@ -478,6 +478,12 @@ angular.module('contractualClienteApp')
                   'warning'
                 );
               });
+            } else {
+              swal(
+                'Error',
+                'No se puede crear más de dos solicitudes de pago (suspensión)',
+                'warning'
+              );
             }
 
 
