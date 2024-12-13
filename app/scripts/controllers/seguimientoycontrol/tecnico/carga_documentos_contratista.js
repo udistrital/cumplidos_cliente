@@ -411,7 +411,7 @@ angular.module('contractualClienteApp')
               ",VigenciaCDP:" + self.contrato.VigenciaCdp,
             limit: 0
           })).then(function (responsePago) {
-            if (Object.entries(responsePago.data.Data[0]).length == 0) {
+            if (responsePago.data.Data.length === 0) {
               //no existe pago para ese mes y se crea
               cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
                 .then(function (responsePagoPost) {
@@ -431,7 +431,7 @@ angular.module('contractualClienteApp')
                   //self.mostrar_boton = true;
 
                 });
-            } else if (Object.entries(responsePago.data.Data[0]).length === 1) {
+            } else if (responsePago.data.Data.length === 1) {
               // En caso de existir una solicitud, se verifica si pertenece a un mes con novedad de suspensión
               cumplidosMidRequest.get('informacion_informe/' + responsePago.data.Data[0].Id).then(function (response) {
                 var ultimaSuspension = null;
@@ -481,7 +481,7 @@ angular.module('contractualClienteApp')
             } else {
               swal(
                 'Error',
-                'No se puede crear más de dos solicitudes de pago (suspensión)',
+                'No se puede crear más de dos solicitudes de pago para el presente contrato en el mismo mes',
                 'warning'
               );
             }
