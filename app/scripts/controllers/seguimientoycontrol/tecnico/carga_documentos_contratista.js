@@ -411,7 +411,7 @@ angular.module('contractualClienteApp')
               ",VigenciaCDP:" + self.contrato.VigenciaCdp,
             limit: 0
           })).then(function (responsePago) {
-            if (responsePago.data.Data.length === 0) {
+            if (Object.keys(responsePago.data.Data[0]).length === 0) {
               //no existe pago para ese mes y se crea
               cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
                 .then(function (responsePagoPost) {
