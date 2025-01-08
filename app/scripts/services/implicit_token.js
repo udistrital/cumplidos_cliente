@@ -51,7 +51,7 @@ if (window.localStorage.getItem('access_token') === null ||
 angular.module('inactivityModule', [])
   .service('inactivityService', ['$rootScope', '$timeout', '$window', function ($rootScope, $timeout, $window) {
     var inactivityTimeout;
-    var inactivityTime = 7500; // 7 seconds 
+    var inactivityTime = 1800000; // 30 minutes
 
     function startInactivityTimer() {
       inactivityTimeout = $timeout(function () {
@@ -210,11 +210,11 @@ angular.module('implicitToken', ['inactivityModule'])
           return data;
         },
         logout: function () {
-          // window.localStorage.clear();
+          window.localStorage.clear();
           // window.location.replace("/");
-          console.log(service.logout_url);
+          // console.log(service.logout_url);
           // se elimina el redirect
-          //window.location.replace(service.logout_url);
+          window.location.replace(service.logout_url);
         },
         // expired: function () {
         //   return (window.localStorage.getItem('expires_at') !== null && new Date(window.localStorage.getItem('expires_at')) < new Date());
@@ -287,7 +287,6 @@ angular.module('implicitToken', ['inactivityModule'])
       };
       //service.setExpiresAt();
       inactivityService.init();
-      service.live_token();
       return service;
     }
   ]);
