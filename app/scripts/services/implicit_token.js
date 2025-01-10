@@ -211,10 +211,10 @@ angular.module('implicitToken', ['inactivityModule'])
         },
         logout: function () {
           window.localStorage.clear();
-          // window.location.replace("/");
+          window.location.replace("/");
           // console.log(service.logout_url);
           // se elimina el redirect
-          window.location.replace(service.logout_url);
+          // window.location.replace(service.logout_url);
         },
         // expired: function () {
         //   return (window.localStorage.getItem('expires_at') !== null && new Date(window.localStorage.getItem('expires_at')) < new Date());
