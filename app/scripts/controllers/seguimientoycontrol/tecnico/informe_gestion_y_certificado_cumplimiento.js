@@ -8,11 +8,13 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, firmaElectronicaRequest, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest) {
+  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, $interval, firmaElectronicaRequest, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest) {
 
     var self = this;
 
     self.pago_mensual_id = $routeParams.pago_mensual_id;
+    self.autoGuardado = true;
+
     self.ObtenerInformacionPagoMensual = function () {
       if (self.pago_mensual_id == null || self.pago_mensual_id == undefined) {
         swal({
@@ -509,7 +511,8 @@ angular.module('contractualClienteApp')
           confirmButtonText: 'Aceptar'
         }).then(function () {
           //console.log(angular.toJson(self.Informe));
-          self.guardar_informe();
+          self.autoGuardado = false;
+          self.guardar_informe(false);
         }).catch(function (error) {
 
         });
@@ -555,11 +558,14 @@ angular.module('contractualClienteApp')
           if (response.status == 200) {
             self.DarFormatoInformeExistente(response.data.Data);
             //console.log("bien")
-            swal(
-              'INFORME GUARDADO',
-              'Su informe fue guardado con exito',
-              'success'
-            )
+            if (self.autoGuardado === false) {
+              swal(
+                'INFORME GUARDADO',
+                'Su informe fue guardado con exito',
+                'success'
+              )
+              self.autoGuardado = true;
+            }
           } else {
             swal(
               'ERROR AL GUARDAR INFORME',
@@ -1062,6 +1068,12 @@ angular.module('contractualClienteApp')
       }
       return actividades
     }
+
+    $interval(function () {
+      if (self.Informe.Proceso !== '' && self.Informe.Proceso !== null && self.Informe.Proceso !== undefined && self.Informe.PeriodoInformeFin !== undefined && self.Informe.PeriodoInformeFin !== null && self.Informe.PeriodoInformeInicio !== undefined && self.Informe.PeriodoInformeInicio !== null && self.nuevoInforme === false) {
+        self.guardar_informe();
+      }
+    }, 420000);
 
   });
 
