@@ -351,8 +351,8 @@ angular.module('contractualClienteApp')
                 sortby: "Id",
                 order: "asc",
                 limit: 2
-              })).then(function (response_pago_mensual) {
-                if (response_pago_mensual.data.Data.length > 1) {
+              })).then(function (response_pago_mensual) { 
+                if (response.data.Data.length > 1) {
                   try {
                     var preliquidaciones = response.data.Data;
                     var pago_mensual = response_pago_mensual.data.Data;
@@ -1138,3 +1138,4 @@ angular.module('contractualClienteApp').filter('excludeUsed', function () {
 
   return filter;
 });
+

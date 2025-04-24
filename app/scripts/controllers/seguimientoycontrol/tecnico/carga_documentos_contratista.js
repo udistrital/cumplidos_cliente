@@ -443,9 +443,9 @@ angular.module('contractualClienteApp')
                 }
                 if (ultimaSuspension != null) {
                   var fechaInicio = ultimaSuspension.FechaInicio.split("-");
-                  var fechaFin = ultimaSuspension.FechaFin.split("-");
-                  if (fechaInicio[1] == self.mes && fechaInicio[0] == self.anio && fechaFin[1] == self.mes && fechaFin[0] == self.anio) {
+                  var fechaFin = ultimaSuspension.FechaFinSus.split("-");
 
+                  if (fechaInicio[1] == self.mes && fechaInicio[0] == self.anio && fechaFin[1] == self.mes && fechaFin[0] == self.anio) {
                     cumplidosCrudRequest.post("pago_mensual", pago_mensual_auditoria)
                       .then(function (responsePagoPost) {
                         swal(
@@ -951,3 +951,4 @@ angular.module('contractualClienteApp')
         });
     };
   });
+
