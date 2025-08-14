@@ -1,30 +1,39 @@
 // scripts/services/cumplidos-modal.js
 (function () {
-  // --- Compatibilidad SweetAlert2 ---
-  // En algunos despliegues está expuesto como window.Swal (v7+), en otros como window.swal (v6.x).
-  if (typeof window.swal !== "function" && typeof window.Swal === "function") {
-    window.swal = window.Swal;
+  // Normaliza SweetAlert2 para soportar:
+  // - Legacy: window.swal(options)
+  // - Moderno: window.Swal.fire(options)
+  function showAlert(options) {
+    if (window.Swal && typeof window.Swal.fire === "function") {
+      // Mapear onOpen -> didOpen para versiones modernas
+      var opts = Object.assign({}, options);
+      if (typeof options.onOpen === "function" && !opts.didOpen) {
+        opts.didOpen = options.onOpen;
+        delete opts.onOpen;
+      }
+      return window.Swal.fire(opts);
+    } else if (typeof window.swal === "function") {
+      // Versión antigua
+      return window.swal(options);
+    } else {
+      console.error("SweetAlert2 no está disponible (ni Swal.fire ni swal). Verifica que sweetalert2.js cargue en release.");
+      return null;
+    }
   }
 
-  // Enlaza el botón sin usar onclick inline (evita problemas con CSP en release)
   function bindManualesButton() {
     var btn = document.getElementById("btnManuales");
     if (!btn) return;
 
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-
-      if (typeof window.swal !== "function") {
-        console.error("SweetAlert2 no está cargado (swal/Swal). Revisa que 'bower_components/sweetalert2/dist/sweetalert2.js' se esté sirviendo en release.");
-        return;
-      }
       openCumplidosModal();
     });
   }
 
-  // Exponemos global por si quieres llamarlo desde otros lugares
+  // Exponer global si lo necesitas en otros lados
   window.openCumplidosModal = function () {
-    window.swal({
+    showAlert({
       title: "Manuales y Videos del Módulo de Cumplidos",
       html: `
         <div style="text-align:left; font-size:14px;">
@@ -206,7 +215,7 @@
     });
   };
 
-  // Enlazamos cuando el DOM esté listo (compatible con CSP)
+  // Enlaza cuando el DOM esté listo
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", bindManualesButton);
   } else {
