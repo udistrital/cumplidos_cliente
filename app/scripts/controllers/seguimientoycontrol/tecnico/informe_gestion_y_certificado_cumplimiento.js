@@ -8,11 +8,13 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, firmaElectronicaRequest, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest) {
+  .controller('InformeGyCertificadoCCtrl', function (token_service, cumplidosCrudRequest, $window, $sce, $interval, gestorDocumentalMidRequest, $routeParams, utils, cumplidosMidRequest) {
 
     var self = this;
 
     self.pago_mensual_id = $routeParams.pago_mensual_id;
+    self.autoGuardado = true;
+
     self.ObtenerInformacionPagoMensual = function () {
       if (self.pago_mensual_id == null || self.pago_mensual_id == undefined) {
         swal({
@@ -352,8 +354,8 @@ angular.module('contractualClienteApp')
                 sortby: "Id",
                 order: "asc",
                 limit: 2
-              })).then(function (response_pago_mensual) {
-                if (response_pago_mensual.data.Data.length > 1) {
+              })).then(function (response_pago_mensual) { 
+                if (response.data.Data.length > 1) {
                   try {
                     var preliquidaciones = response.data.Data;
                     var pago_mensual = response_pago_mensual.data.Data;
@@ -509,7 +511,8 @@ angular.module('contractualClienteApp')
           confirmButtonText: 'Aceptar'
         }).then(function () {
           //console.log(angular.toJson(self.Informe));
-          self.guardar_informe();
+          self.autoGuardado = false;
+          self.guardar_informe(false);
         }).catch(function (error) {
 
         });
@@ -555,11 +558,14 @@ angular.module('contractualClienteApp')
           if (response.status == 200) {
             self.DarFormatoInformeExistente(response.data.Data);
             //console.log("bien")
-            swal(
-              'INFORME GUARDADO',
-              'Su informe fue guardado con exito',
-              'success'
-            )
+            if (self.autoGuardado === false) {
+              swal(
+                'INFORME GUARDADO',
+                'Su informe fue guardado con exito',
+                'success'
+              )
+              self.autoGuardado = true;
+            }
           } else {
             swal(
               'ERROR AL GUARDAR INFORME',
@@ -875,7 +881,52 @@ angular.module('contractualClienteApp')
                 [{ colSpan: 8, text: 'Nota: Yo, ' + self.informacion_informe.InformacionContratista.Nombre + ' , autorizo a la Universidad Distrital para hacer el abono de mis pagos a la cuenta bancaria relacionada. Bajo gravedad del juramento, certifico que estoy realizando los aportes a seguridad social, de conformidad con lo establecido por la Ley. ', alignment: 'justify', bold: true, fontSize: 11, margin: [0, 5, 0, 0] }, {}, {}, {}, {}, {}, {}, {}]
               ]
             }
-          },
+          }, {
+            margin: [0, 20, 0, 0],
+            columns: [
+              { width: '*', text: '' },
+              {
+                width: 'auto',
+                table: {
+                  body: [
+                    [
+                      {
+                        border: [false, false, false, true],
+                        text: self.informacion_informe.InformacionContratista.Nombre, alignment: 'center'
+                      }
+                    ],
+                    [
+                      {
+                        border: [false, true, false, false],
+                        text: 'CONTRATISTA', bold: true,
+                        alignment: 'center'
+                      }
+                    ]]
+                }
+              },
+              { width: '*', text: '' },
+              {
+                width: 'auto',
+                table: {
+                  body: [
+                    [
+                      {
+                        border: [false, false, false, true],
+                        text: self.informacion_informe.Supervisor.Nombre, alignment: 'center'
+                      }
+                    ],
+                    [
+                      {
+                        border: [false, true, false, false],
+                        text: 'SUPERVISOR', bold: true,
+                        alignment: 'center'
+                      }
+                    ]]
+                }
+              },
+              { width: '*', text: '' },
+            ]
+          }
         ],
         styles: {
           tableHeader: {
@@ -1051,17 +1102,23 @@ angular.module('contractualClienteApp')
     self.asignarActividadesUltimoInforme = function (actividadesUltimoInforme) {
       var actividades = actividadesUltimoInforme
       for (let index_act_esp = 0; index_act_esp < actividades.length; index_act_esp++) {
-        actividades[index_act_esp].FechaCreacion = null
-        actividades[index_act_esp].FechaModificacion = null
-        actividades[index_act_esp].Id = null
+        delete actividades[index_act_esp].FechaCreacion
+        delete actividades[index_act_esp].FechaModificacion
+        delete actividades[index_act_esp].Id
         for (let index_act_rea = 0; index_act_rea < actividades[index_act_esp].ActividadesRealizadas.length; index_act_rea++) {
-          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion = null
-          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion = null
-          actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id = null
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaCreacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].FechaModificacion
+          delete actividades[index_act_esp].ActividadesRealizadas[index_act_rea].Id
         }
       }
       return actividades
     }
+
+    $interval(function () {
+      if (self.Informe.Proceso !== '' && self.Informe.Proceso !== null && self.Informe.Proceso !== undefined && self.Informe.PeriodoInformeFin !== undefined && self.Informe.PeriodoInformeFin !== null && self.Informe.PeriodoInformeInicio !== undefined && self.Informe.PeriodoInformeInicio !== null && self.nuevoInforme === false) {
+        self.guardar_informe();
+      }
+    }, 420000);
 
   });
 
@@ -1084,3 +1141,4 @@ angular.module('contractualClienteApp').filter('excludeUsed', function () {
 
   return filter;
 });
+

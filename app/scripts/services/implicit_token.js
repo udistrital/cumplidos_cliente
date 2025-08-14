@@ -296,4 +296,3 @@ angular.module('implicitToken').run(['$rootScope', 'token_service', function ($r
     // 
     token_service.logout();
   });
-}]);
