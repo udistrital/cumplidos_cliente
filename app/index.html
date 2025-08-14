@@ -7,9 +7,6 @@
   <meta name="description" content="" />
   <meta name="viewport" content="width=device-width" />
   <script src="https://use.fontawesome.com/64b53ddd5b.js"></script>
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-  <!-- build:css(.) styles/vendor.css -->
-  <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
   <link rel="stylesheet" href="bower_components/angular-ui-grid/ui-grid.css" />
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
@@ -23,12 +20,7 @@
   <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
   <link rel="stylesheet" href="bower_components/select2/select2.css" />
   <link rel="stylesheet" href="bower_components/bootstrap-fileinput/css/fileinput.min.css" />
-  <!-- endbower -->
-  <!-- endbuild -->
-  <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/custom.css" />
-
-
   <link rel="stylesheet" href="styles/loading-bar.css" />
   <link rel="stylesheet" href="styles/steeper.css" />
   <link rel="stylesheet" href="styles/core.css" />
@@ -38,84 +30,68 @@
   <link rel="stylesheet" href="styles/menu-aplicaciones.css" />
   <link rel="stylesheet" href="styles/notificaciones.css" />
   <link rel="stylesheet" href="styles/ui-grid.css" />
-  <!-- endbuild -->
   <link rel="stylesheet" href="https://s3.amazonaws.com/assets-oas/oas-style.css">
   <link rel="stylesheet" href="https://s3.amazonaws.com/assets-oas/sb-admin-2.css">
   <link rel="stylesheet" href="https://s3.amazonaws.com/assets-oas/table-demo.css">
   <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/gaia-style.css" />
-  <!-- nix-style.css, gaia-style.css, athenea-style.css y urano-style.css -->
   <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/oas-style.css" />
   <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-stylus.css" />
   <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-info.css" />
   <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/isotipo-header.css" />
   <link rel="stylesheet" href="https://pruebasassets.portaloas.udistrital.edu.co/logo-header.css" />
+  <link rel="stylesheet" href="styles/cumplidos-modal.css" />
 </head>
 
 <body ng-app="contractualClienteApp">
   <div ng-controller="headerCtrl">
     <div ng-include="'views/header.html'" ng-controller="headerCtrl"></div>
-    <div ng-if="isLogin" class="body-container-menuaplicaciones" ng-include="'views/menu-aplicaciones.html'"
-      ng-controller="menuaplicacionesCtrl"></div>
-    <div ng-if="isLogin" class="body-container-notificaciones" ng-include="'views/notificaciones.html'"
-      ng-controller="notificacionesCtrl"></div>
-    <div ng-if="!isLogin" class="container-app" style="justify-content: center;
-    align-items: center;">
+
+    <div ng-if="isLogin" class="body-container-menuaplicaciones"
+         ng-include="'views/menu-aplicaciones.html'" ng-controller="menuaplicacionesCtrl"></div>
+
+    <div ng-if="isLogin" class="body-container-notificaciones"
+         ng-include="'views/notificaciones.html'" ng-controller="notificacionesCtrl"></div>
+
+    <div ng-if="!isLogin" class="container-app" style="justify-content: center; align-items: center;">
       <div class="welcome-panel">
         <h1 class="welcome-title text-center">Bienvenido al módulo de cumplidos</h1>
-        <p class="welcome-info">Se han implementado nuevas funcionalidades para el sistema, que afectan el flujo de
-          carga de cumplidos de los Contratistas. Los invitamos a revisar los Videotutoriales:</p>
-        <ul class="welcome-info">
-          <li>
-            <a href="https://drive.google.com/file/d/11RRvC8FypH5-YerL7Zdtav8FFqX3aePV/view?usp=share_link"
-              target="_blank" rel="noopener noreferrer">Informe de gestión y certificado de cumplimiento</a>
-          </li>
-          <li>
-            <a href="https://drive.google.com/file/d/1UyqLhMjsTVddPZSv_JtNyiia9bJNbanV/view?usp=sharing
-            " target="_blank" rel="noopener noreferrer">Notificaciones</a>
-          </li>
-        </ul>
+        <p class="welcome-info">
+          Consulte en el siguiente enlace los manuales y videotutoriales que le guiarán en el uso del aplicativo.
+        </p>
+        <div class="btn-container">
+          <button class="btn-manuales" onclick="openCumplidosModal()">
+            <i class="fa fa-book" aria-hidden="true"></i> Manuales y Videos
+          </button>
+        </div>
       </div>
     </div>
+
     <div ng-if="isLogin" class="container-app">
       <div id="menu-sidebar-container" ng-class="sidebarClases.sidebarContainerClase" ng-controller="headerCtrl">
-        <div id="menu-sidebar" ng-include="'views/menu-lateral.html'" ng-controller="menuLateralCtrl"
-          ng-class="sidebarClases.sidebarDivClase"></div>
+        <div id="menu-sidebar" ng-include="'views/menu-lateral.html'"
+             ng-controller="menuLateralCtrl" ng-class="sidebarClases.sidebarDivClase"></div>
       </div>
       <div ng-class="sidebarClases.containerBodyClase" ng-controller="headerCtrl">
         <div ng-view="" ng-class="sidebarClases.containerDivClase" ng-controller="headerCtrl"></div>
       </div>
     </div>
+
     <div class="container-footer" ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
   </div>
 
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
   <script>
     !(function (A, n, g, u, l, a, r) {
       (A.GoogleAnalyticsObject = l),
-        (A[l] =
-          A[l] ||
-          function () {
-            (A[l].q = A[l].q || []).push(arguments);
-          }),
-        (A[l].l = +new Date()),
-        (a = n.createElement(g)),
-        (r = n.getElementsByTagName(g)[0]),
-        (a.src = u),
-        r.parentNode.insertBefore(a, r);
-    })(
-      window,
-      document,
-      "script",
-      "https://www.google-analytics.com/analytics.js",
-      "ga"
-    );
-
+      (A[l] = A[l] || function () { (A[l].q = A[l].q || []).push(arguments); }),
+      (A[l].l = +new Date()),
+      (a = n.createElement(g)),
+      (r = n.getElementsByTagName(g)[0]),
+      (a.src = u),
+      r.parentNode.insertBefore(a, r);
+    })(window, document, "script", "https://www.google-analytics.com/analytics.js", "ga");
     ga("create", "UA-XXXXX-X");
     ga("send", "pageview");
   </script>
-
-  <!-- build:js(.) scripts/vendor.js -->
-  <!-- bower:js -->
   <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -157,57 +133,48 @@
   <script src="bower_components/lodash/lodash.js"></script>
   <script src="bower_components/jszip/dist/jszip.js"></script>
   <script src="bower_components/excel-builder-js/dist/excel-builder.dist.js"></script>
-  <!-- endbower -->
-  <!-- endbuild -->
-
-  <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="scripts/app.js"></script>
   <script src="scripts/controllers/main.js"></script>
-  <!-- endbuild -->
+  <script src="scripts/services/role_check_service.js"></script>
+  <script src="scripts/services/firma_electronica_mid_service.js"></script>
+  <script src="scripts/environment/environment.js"></script>
+  <script src="scripts/services/implicit_token.js"></script>
+  <script src="scripts/services/notificacion.js"></script>
+  <script src="scripts/services/theme.js"></script>
+  <script src="scripts/services/administrativa_service.js"></script>
+  <script src="scripts/services/administrativa_mid_service.js"></script>
+  <script src="scripts/services/autenticacion_mid_service.js"></script>
+  <script src="scripts/services/cumplidos_crud_service.js"></script>
+  <script src="scripts/services/cumplidos_mid_service.js"></script>
+  <script src="scripts/services/utilidades.js"></script>
+  <script src="scripts/services/titan_mid_service.js"></script>
+  <script src="scripts/services/gestor_documental_mid_service.js"></script>
+  <script src="scripts/services/administrstiva_jbpm_v2_service.js"></script>
+  <script src="scripts/services/core_service.js"></script>
+  <script src="scripts/services/documento_crud_service.js"></script>
+  <script src="scripts/services/amazon_administrativa.js"></script>
+  <script src="scripts/services/contrato_service.js"></script>
+  <script src="scripts/services/financiera_jbpm_service.js"></script>
+  <script src="scripts/services/configuracion_service.js"></script>
+  <script src="scripts/services/grid/gridapi_service.js"></script>
+  <script src="scripts/services/utils/colombia_holidays.js"></script>
+  <script src="scripts/services/funcionalidades_generales.js"></script>
+  <script src="scripts/controllers/header.js"></script>
+  <script src="scripts/controllers/menu-aplicaciones.js"></script>
+  <script src="scripts/controllers/menu-lateral.js"></script>
+  <script src="scripts/controllers/notificaciones.js"></script>
+  <script src="scripts/controllers/footer.js"></script>
+  <script src="scripts/controllers/about.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/carga_documentos_contratista.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.js"></script>
+  <script src="scripts/controllers/cumplidosaprobadosordenador/visualizacion_cumplidos.js"></script>
+  <script src="scripts/controllers/parametrizacionfechas/parametrizacion_fechas.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_supervisor.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_ordenador.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/reversion_aprobados.js"></script>
+  <script src="scripts/decorators/text_translate.js"></script>
+  <script src="scripts/directives/opciones-component/opciones-directive.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/historico_cumplidos.js"></script>
+  <script src="scripts/services/cumplidos-modal.js"></script>
 </body>
-
-<!-- build:js({.tmp,app}) scripts/extras.js -->
-<script src="scripts/services/role_check_service.js"></script>
-<script src="scripts/services/firma_electronica_mid_service.js"></script>
-<script src="scripts/environment/environment.js"></script>
-<script src="scripts/services/implicit_token.js"></script>
-<script src="scripts/services/notificacion.js"></script>
-<script src="scripts/services/theme.js"></script>
-<script src="scripts/services/administrativa_service.js"></script>
-<script src="scripts/services/administrativa_mid_service.js"></script>
-<script src="scripts/services/autenticacion_mid_service.js"></script>
-<script src="scripts/services/cumplidos_crud_service.js"></script>
-<script src="scripts/services/cumplidos_mid_service.js"></script>
-<script src="scripts/services/utilidades.js"></script>
-<script src="scripts/services/titan_mid_service.js"></script>
-<script src="scripts/services/gestor_documental_mid_service.js"></script>
-<script src="scripts/services/administrstiva_jbpm_v2_service.js"></script>
-<script src="scripts/services/core_service.js"></script>
-<script src="scripts/services/documento_crud_service.js"></script>
-<script src="scripts/services/amazon_administrativa.js"></script>
-<script src="scripts/services/contrato_service.js"></script>
-<script src="scripts/services/financiera_jbpm_service.js"></script>
-<script src="scripts/services/configuracion_service.js"></script>
-<script src="scripts/services/grid/gridapi_service.js"></script>
-<script src="scripts/services/utils/colombia_holidays.js"></script>
-<script src="scripts/services/funcionalidades_generales.js"></script>
-<script src="scripts/controllers/header.js"></script>
-<script src="scripts/controllers/menu-aplicaciones.js"></script>
-<script src="scripts/controllers/menu-lateral.js"></script>
-<script src="scripts/controllers/notificaciones.js"></script>
-<script src="scripts/controllers/footer.js"></script>
-<script src="scripts/controllers/about.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/carga_documentos_contratista.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.js"></script>
-<script src="scripts/controllers/cumplidosaprobadosordenador/visualizacion_cumplidos.js"></script>
-<script src="scripts/controllers/parametrizacionfechas/parametrizacion_fechas.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_supervisor.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_ordenador.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/reversion_aprobados.js"></script>
-<script src="scripts/decorators/text_translate.js"></script>
-<script src="scripts/directives/opciones-component/opciones-directive.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/historico_cumplidos.js"></script>
-
-<!-- endbuild -->
-
 </html>
