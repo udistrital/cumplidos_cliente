@@ -62,7 +62,7 @@ steps:
     branch: [master]
     event: [push]
 
-# --------- PUBLICACIÓN PRUEBAS (release/*) ----------
+
 - name: publish_s3_release
   image: plugins/s3
   settings:
@@ -74,9 +74,8 @@ steps:
     region: us-east-1
     source: dist/**/*
     target: /${DRONE_REPO_NAME}
-    strip_prefix: dist/
-    acl: public-read            # << hace públicos los objetos
-    cache_control: no-cache     # << evita cache dura mientras pruebas
+    strip_prefix: dist/         
+    cache_control: no-cache   
   when:
     branch: [release/*]
     event: [push]
@@ -90,14 +89,14 @@ steps:
       from_secret: aws_secret_access_key
     AWS_DEFAULT_REGION: us-east-1
     CF_DIST_ID:
-      from_secret: CF_DISTRIBUTION_ID_PRUEBAS  # crea este secreto con tu ID
+      from_secret: CF_DISTRIBUTION_ID_PRUEBAS 
   commands:
   - aws cloudfront create-invalidation --distribution-id "$CF_DIST_ID" --paths "/${DRONE_REPO_NAME}/*"
   when:
     branch: [release/*]
     event: [push]
 
-# --------- PUBLICACIÓN PRODUCCIÓN (master) ----------
+
 - name: publish_s3_master
   image: plugins/s3
   settings:
@@ -110,7 +109,6 @@ steps:
     source: dist/**/*
     target: /${DRONE_REPO_NAME}
     strip_prefix: dist/
-    acl: public-read
     cache_control: public,max-age=3600
   when:
     branch: [master]
