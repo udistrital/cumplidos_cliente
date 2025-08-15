@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <title>Sistema de Gestión Administrativa</title>
   <meta name="description" content="" />
   <meta name="viewport" content="width=device-width" />
-
   <script src="https://use.fontawesome.com/64b53ddd5b.js"></script>
 
   <!-- build:css(.) styles/vendor.css -->
@@ -37,7 +36,7 @@
   <link rel="stylesheet" href="styles/menu-aplicaciones.css" />
   <link rel="stylesheet" href="styles/notificaciones.css" />
   <link rel="stylesheet" href="styles/ui-grid.css" />
-  <!--  CSS del popup -->
+  <!-- CSS del popup -->
   <link rel="stylesheet" href="styles/cumplidos-modal.css" />
   <!-- endbuild -->
 
@@ -62,15 +61,12 @@
     <div ng-if="isLogin" class="body-container-notificaciones"
          ng-include="'views/notificaciones.html'" ng-controller="notificacionesCtrl"></div>
 
-    <!-- Vista de bienvenida NO LOGUEADO -->
     <div ng-if="!isLogin" class="container-app" style="justify-content:center;align-items:center;">
       <div class="welcome-panel">
         <h1 class="welcome-title text-center">Bienvenido al módulo de cumplidos</h1>
         <p class="welcome-info">
           Consulte en el siguiente enlace los manuales y videotutoriales que le guiarán en el uso del aplicativo.
         </p>
-
-        <!--  Botón para abrir el popup -->
         <div class="btn-container" style="text-align:center;margin-top:18px">
           <button id="btnManuales" class="btn-manuales">
             <i class="fa fa-book" aria-hidden="true"></i> Manuales y Videos
@@ -79,7 +75,6 @@
       </div>
     </div>
 
-    <!-- Vista logueado -->
     <div ng-if="isLogin" class="container-app">
       <div id="menu-sidebar-container" ng-class="sidebarClases.sidebarContainerClase" ng-controller="headerCtrl">
         <div id="menu-sidebar" ng-include="'views/menu-lateral.html'"
@@ -93,7 +88,6 @@
     <div class="container-footer" ng-include="'views/footer.html'" ng-controller="footerCtrl"></div>
   </div>
 
-  <!-- Google Analytics -->
   <script>
     !(function (A, n, g, u, l, a, r) {
       (A.GoogleAnalyticsObject = l),
@@ -158,50 +152,50 @@
   <script src="scripts/app.js"></script>
   <script src="scripts/controllers/main.js"></script>
   <!-- endbuild -->
+
+  <!-- build:js({.tmp,app}) scripts/extras.js -->
+  <script src="scripts/services/role_check_service.js"></script>
+  <script src="scripts/environment/environment.js"></script>
+  <script src="scripts/services/implicit_token.js"></script>
+  <script src="scripts/services/notificacion.js"></script>
+  <script src="scripts/services/theme.js"></script>
+  <script src="scripts/services/administrativa_service.js"></script>
+  <script src="scripts/services/administrativa_mid_service.js"></script>
+  <script src="scripts/services/autenticacion_mid_service.js"></script>
+  <script src="scripts/services/cumplidos_crud_service.js"></script>
+  <script src="scripts/services/cumplidos_mid_service.js"></script>
+  <script src="scripts/services/utilidades.js"></script>
+  <script src="scripts/services/titan_mid_service.js"></script>
+  <script src="scripts/services/gestor_documental_mid_service.js"></script>
+  <script src="scripts/services/administrstiva_jbpm_v2_service.js"></script>
+  <script src="scripts/services/core_service.js"></script>
+  <script src="scripts/services/documento_crud_service.js"></script>
+  <script src="scripts/services/amazon_administrativa.js"></script>
+  <script src="scripts/services/contrato_service.js"></script>
+  <script src="scripts/services/financiera_jbpm_service.js"></script>
+  <script src="scripts/services/configuracion_service.js"></script>
+  <script src="scripts/services/grid/gridapi_service.js"></script>
+  <script src="scripts/services/utils/colombia_holidays.js"></script>
+  <script src="scripts/services/funcionalidades_generales.js"></script>
+  <script src="scripts/controllers/header.js"></script>
+  <script src="scripts/controllers/menu-aplicaciones.js"></script>
+  <script src="scripts/controllers/menu-lateral.js"></script>
+  <script src="scripts/controllers/notificaciones.js"></script>
+  <script src="scripts/controllers/footer.js"></script>
+  <script src="scripts/controllers/about.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/carga_documentos_contratista.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.js"></script>
+  <script src="scripts/controllers/cumplidosaprobadosordenador/visualizacion_cumplidos.js"></script>
+  <script src="scripts/controllers/parametrizacionfechas/parametrizacion_fechas.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_supervisor.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_ordenador.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/reversion_aprobados.js"></script>
+  <script src="scripts/decorators/text_translate.js"></script>
+  <script src="scripts/directives/opciones-component/opciones-directive.js"></script>
+  <script src="scripts/controllers/seguimientoycontrol/tecnico/historico_cumplidos.js"></script>
+  <!-- endbuild -->
+
+  <!-- JS del popup (después de vendor & extras) -->
+  <script src="scripts/services/cumplidos-modal.js"></script>
 </body>
-
-<!-- build:js({.tmp,app}) scripts/extras.js -->
-<script src="scripts/services/role_check_service.js"></script>
-<script src="scripts/environment/environment.js"></script>
-<script src="scripts/services/implicit_token.js"></script>
-<script src="scripts/services/notificacion.js"></script>
-<script src="scripts/services/theme.js"></script>
-<script src="scripts/services/administrativa_service.js"></script>
-<script src="scripts/services/administrativa_mid_service.js"></script>
-<script src="scripts/services/autenticacion_mid_service.js"></script>
-<script src="scripts/services/cumplidos_crud_service.js"></script>
-<script src="scripts/services/cumplidos_mid_service.js"></script>
-<script src="scripts/services/utilidades.js"></script>
-<script src="scripts/services/titan_mid_service.js"></script>
-<script src="scripts/services/gestor_documental_mid_service.js"></script>
-<script src="scripts/services/administrstiva_jbpm_v2_service.js"></script>
-<script src="scripts/services/core_service.js"></script>
-<script src="scripts/services/documento_crud_service.js"></script>
-<script src="scripts/services/amazon_administrativa.js"></script>
-<script src="scripts/services/contrato_service.js"></script>
-<script src="scripts/services/financiera_jbpm_service.js"></script>
-<script src="scripts/services/configuracion_service.js"></script>
-<script src="scripts/services/grid/gridapi_service.js"></script>
-<script src="scripts/services/utils/colombia_holidays.js"></script>
-<script src="scripts/services/funcionalidades_generales.js"></script>
-<script src="scripts/controllers/header.js"></script>
-<script src="scripts/controllers/menu-aplicaciones.js"></script>
-<script src="scripts/controllers/menu-lateral.js"></script>
-<script src="scripts/controllers/notificaciones.js"></script>
-<script src="scripts/controllers/footer.js"></script>
-<script src="scripts/controllers/about.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/carga_documentos_contratista.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/informe_gestion_y_certificado_cumplimiento.js"></script>
-<script src="scripts/controllers/cumplidosaprobadosordenador/visualizacion_cumplidos.js"></script>
-<script src="scripts/controllers/parametrizacionfechas/parametrizacion_fechas.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_supervisor.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/aprobacion_ordenador.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/reversion_aprobados.js"></script>
-<script src="scripts/decorators/text_translate.js"></script>
-<script src="scripts/directives/opciones-component/opciones-directive.js"></script>
-<script src="scripts/controllers/seguimientoycontrol/tecnico/historico_cumplidos.js"></script>
-
-<!--  JS del popup (debe ir después de sweetalert2 y del resto) -->
-<script src="scripts/services/cumplidos-modal.js"></script>
-<!-- endbuild -->
 </html>
