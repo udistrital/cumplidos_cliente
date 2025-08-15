@@ -39,6 +39,24 @@ steps:
     event:
     - push
 
+# - name: prueba_unitarias
+#   image: node:12.6.0
+#   commands:
+#   - npm i
+#   - npm run test
+#   when:
+#     branch:
+#     - unitest
+#
+# - name:  pruebas_linter
+#   image: node:12.6.0
+#   commands:
+#   - npm i
+#   - npm run lint
+#   when:
+#     branch:
+#     - unitest
+
 - name: run_sonar_scanner
   image: aosapps/drone-sonar-plugin
   settings:
@@ -96,25 +114,6 @@ steps:
     source: dist/**/*
     target: /${DRONE_REPO_NAME}
     strip_prefix: dist/
-    cache_control: no-cache
-  when:
-    branch:
-    - release/*
-    event:
-    - push
-
-- name: invalidate_cf_release
-  image: amazon/aws-cli
-  environment:
-    AWS_ACCESS_KEY_ID:
-      from_secret: aws_access_key_id
-    AWS_SECRET_ACCESS_KEY:
-      from_secret: aws_secret_access_key
-    AWS_DEFAULT_REGION: us-east-1
-    CF_DIST_ID:
-      from_secret: CF_DISTRIBUTION_ID_PRUEBAS
-  commands:
-  - aws cloudfront create-invalidation --distribution-id "$CF_DIST_ID" --paths "/${DRONE_REPO_NAME}/*"
   when:
     branch:
     - release/*
@@ -133,25 +132,6 @@ steps:
     source: dist/**/*
     target: /${DRONE_REPO_NAME}
     strip_prefix: dist/
-    cache_control: public,max-age=3600
-  when:
-    branch:
-    - master
-    event:
-    - push
-
-- name: invalidate_cf_master
-  image: amazon/aws-cli
-  environment:
-    AWS_ACCESS_KEY_ID:
-      from_secret: aws_access_key_id
-    AWS_SECRET_ACCESS_KEY:
-      from_secret: aws_secret_access_key
-    AWS_DEFAULT_REGION: us-east-1
-    CF_DIST_ID:
-      from_secret: CF_DISTRIBUTION_ID_PROD
-  commands:
-  - aws cloudfront create-invalidation --distribution-id "$CF_DIST_ID" --paths "/${DRONE_REPO_NAME}/*"
   when:
     branch:
     - master

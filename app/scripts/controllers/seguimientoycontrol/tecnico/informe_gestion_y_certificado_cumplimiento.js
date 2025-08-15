@@ -149,7 +149,6 @@ angular.module('contractualClienteApp')
           }
         }
       }
-
       var porcentajeEjecutado = ((diasContratoEjecutado * 100) / diasContrato);
       var porcentajeFaltante = 100 - porcentajeEjecutado;
       return { Ejecutado: porcentajeEjecutado.toFixed(2), Faltante: porcentajeFaltante.toFixed(2) }
@@ -322,8 +321,6 @@ angular.module('contractualClienteApp')
               $window.location.href = '/#/seguimientoycontrol/tecnico/carga_documentos_contratista';
             })
           }
-        } else {
-
         }
       }).catch(
         function (error) {
