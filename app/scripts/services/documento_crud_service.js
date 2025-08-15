@@ -17,11 +17,7 @@ angular.module('documentoService', [])
         // Public API here
         return {
             get: function(tabla, params) {
-                if(angular.isUndefined(params)){
-                    return $http.get(path + tabla, token_service.getHeader());
-                }else{
-                    return $http.get(path + tabla + "/?" + params, token_service.getHeader());
-                }
+                return $http.get(path + tabla + "/?" + params, token_service.getHeader());
             },
             post: function(tabla, elemento) {
                 return $http.post(path + tabla, elemento, token_service.getHeader());

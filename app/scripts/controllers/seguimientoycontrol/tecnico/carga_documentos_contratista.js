@@ -8,7 +8,7 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('cargaDocumentosContratistaCtrl', function (token_service, notificacionRequest, funcGen, $scope, $http, $translate, uiGridConstants, contratoRequest, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, firmaElectronicaRequest, $routeParams, utils, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('cargaDocumentosContratistaCtrl', function (token_service, notificacionRequest, funcGen, $scope, $http, $translate, uiGridConstants, contratoRequest, $q, documentoRequest, $window, $sce, gestorDocumentalMidRequest, $routeParams, utils, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
 
     //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
@@ -657,51 +657,14 @@ angular.module('contractualClienteApp')
 
     };
 
-    /*
-      Función para asegurarse que los informes hayan sido desactivados correctamente
-    */
-    self.comprobarDesactivacionInformes = function (soporteId) {
-      cumplidosCrudRequest.get('soporte_pago_mensual?query=PagoMensualId:' + soporteId + ',ItemInformeTipoContratoId.ItemInformeId.Id:10,activo:true&order=desc&sortby=FechaCreacion')
-        .then(response => {
-          const soportesRes = response.data.Data;
-          let arr_informes = [];
-          for (let i = 0; i < soportesRes.length; i++) {
-            let soporte_info = soportesRes[i];
-            if (soporte_info.ItemInformeTipoContratoId.ItemInformeId.Id == 10) {
-              arr_informes.push(soporte_info);
-            }
-          }
-          if (arr_informes.length != 1) {
-            for (let i = 0; i < arr_informes.length - 1; i++) {
-              let soporte_info = arr_informes[i];
-              let objeto_soporte = {
-                "Id": soporte_info.Id,
-                "Documento": soporte_info.Documento,
-                "Activo": false,
-                "FechaCreacion": soporte_info.FechaCreacion,
-                "FechaModificacion": soporte_info.FechaModificacion,
-                "Aprobado": soporte_info.Aprobado,
-                "ItemInformeTipoContratoId": {
-                  "Id": soporte_info.ItemInformeTipoContratoId.Id
-                },
-                "PagoMensualId": {
-                  "Id": soporte_info.PagoMensualId.Id
-                }
-              };
-              cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
-                console.log("Proceso exitoso");
-              });
-            }
-          }
-        });
-    }
+
     //
     /*
       Función para enviar el cumplido
     */
     self.enviar_cumplido = function (solicitud) {
       swal({
-        title: '¿Está seguro(a) de firmar electrónicamente y enviar a revisar los soportes por el supervisor?',
+        title: '¿Está seguro(a) de enviar a revisar los soportes por el supervisor?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -715,13 +678,7 @@ angular.module('contractualClienteApp')
 
           self.obtener_doc(solicitud);
           if (self.documentos) {
-            //Inicio verificación rechazo
-            cumplidosCrudRequest.get('soporte_pago_mensual?query=documento:' + self.documentos[0].Documento.Id + "&limit=1").then(response => {
-              let soporteId = response.data.Data[0].PagoMensualId.Id;
-              self.comprobarDesactivacionInformes(soporteId);
-            });
 
-            //Fin verificación
             cumplidosCrudRequest.get('estado_pago_mensual', $.param({
               limit: 0,
               query: 'CodigoAbreviacion:PRS'
@@ -745,83 +702,27 @@ angular.module('contractualClienteApp')
                 DocumentoEjecutor: self.Documento
               }
 
-              //Inicio firma inicial contratista
-              self.documentos.forEach(documento => {
-                if (documento.Documento.Descripcion == 'INFORME DE GESTIÓN Y CERTIFICADO DE CUMPLIMIENTO') {
-                  //console.log(documento);
-                  cumplidosCrudRequest.get('soporte_pago_mensual?query=documento:' + documento.Documento.Id + "&limit=1").then(response => {
-                    const soporteRes = response.data.Data[0];
-                    amazonAdministrativaRequest.get('informacion_persona_natural?query=Id:' + soporteRes.PagoMensualId.DocumentoPersonaId).then(response => {
-                      const personaNatural = response.data[0];
-                      var data = [{
-                        IdTipoDocumento: documento.Documento.TipoDocumento.Id, //id tipo documento de documentos_crud
-                        nombre: documento.Documento.Nombre,// nombre formado por vigencia+contrato+cedula+mes+año
-                        metadatos: documento.Documento.Metadatos,
-                        firmantes: [
-                          {
-                            nombre: personaNatural.PrimerNombre + " " + personaNatural.SegundoNombre + " " + personaNatural.PrimerApellido + " " + personaNatural.SegundoApellido,
-                            cargo: "Contratista",
-                            tipoId: personaNatural.TipoDocumento.Abreviatura,
-                            identificacion: personaNatural.Id
-                          }
-                        ],
-                        representantes: [],
-                        descripcion: documento.Documento.Descripcion,
-                        etapa_firma: 1,
-                        file: documento.Archivo.file
-                      }];
-                      //estampa la firma del contratista y guarda en BD y nuxeo mediante API firma electrónica
-                      firmaElectronicaRequest.firma_multiple(data).then(function (response) {
-                        if (response.data.Status == 200) {
+              cumplidosCrudRequest.put('pago_mensual', solicitud.Id, pago_mensual_auditoria).
+                then(function (response) {
+                  swal(
+                    'Solicitud enviada',
+                    'Su solicitud se encuentra a la espera de revisión',
+                    'success'
+                  )
 
-                          const idDoc = response.data.res.Id;
-                          cumplidosCrudRequest.get('item_informe_tipo_contrato', $.param({
-                            query: "Activo:true,TipoContratoId:6,ItemInformeId.CodigoAbreviacion:IGYCC",
-                            limit: 0
-                          })).then(function (response_item_informe_tipo_contrato) {
-                            var ItemInformeTipoContratoId = response_item_informe_tipo_contrato.data.Data[0].Id;
-                            const objeto_soporte = {
-                              "PagoMensualId": {
-                                "Id": soporteRes.PagoMensualId.Id
-                              },
-                              "Documento": idDoc,
-                              "ItemInformeTipoContratoId": {
-                                "Id": ItemInformeTipoContratoId
-                              },
-                              "Aprobado": false
-                            };
-                            cumplidosCrudRequest.post('soporte_pago_mensual', objeto_soporte)
-                              .then(function (response) {
-                                //Bandera de validacion
-                                cumplidosCrudRequest.put('pago_mensual', solicitud.Id, pago_mensual_auditoria).
-                                  then(function (response) {
-                                    swal(
-                                      'Solicitud enviada',
-                                      'Su solicitud se encuentra a la espera de revisión',
-                                      'success'
-                                    )
+                  self.cargar_soportes(self.contrato);
+                  //self.documentos = {};
+                })
 
-                                    self.cargar_soportes(self.contrato);
-                                    //self.documentos = {};
-                                  })
+                //Manejo de excepcion para el put
+                .catch(function (response) {
+                  swal(
+                    'Error',
+                    'No se ha podido enviar la solicitud de cumplido',
+                    'error'
+                  );
+                });
 
-                                  //Manejo de excepcion para el put
-                                  .catch(function (response) {
-                                    swal(
-                                      'Error',
-                                      'No se ha podido enviar la solicitud de cumplido',
-                                      'error'
-                                    );
-                                  });
-                              });
-                          })
-                        }
-                      });
-                    });
-                  });
-                }
-              });
-              //Fin firma inicial contratista
             })
             self.suscribirse();
             notificacionRequest.enviarNotificacion('Cumplido pendientes por aprobacion', 'ColaSupervisor', '/seguimientoycontrol/tecnico/aprobacion_supervisor');
@@ -961,45 +862,29 @@ angular.module('contractualClienteApp')
       Función para "borrar" un documento
     */
     self.borrar_doc = function () {
+
       var documento = self.doc;
-      //------ INICIO MODIFICACIÓN ESTADO ACTIVO EN SOPORTE_PAGO_MENSUAL------------
-      cumplidosCrudRequest.get('soporte_pago_mensual?query=documento:' + documento.Id).then(response => {
-        const soporte_info = response.data.Data[0];
-        const objeto_soporte = {
-          "Id": soporte_info.Id,
-          "Documento": documento.Id,
-          "Activo": false,
-          "FechaCreacion": soporte_info.FechaCreacion,
-          "FechaModificacion": soporte_info.FechaModificacion,
-          "Aprobado": soporte_info.Aprobado,
-          "ItemInformeTipoContratoId": {
-            "Id": soporte_info.ItemInformeTipoContratoId.Id
-          },
-          "PagoMensualId": {
-            "Id": soporte_info.PagoMensualId.Id
+      gestorDocumentalMidRequest.delete('/document', documento.Enlace).then(function (response) {
+        //console.log(response)
+        swal({
+          title: 'Documento borrado',
+          text: 'Se ha borrado exitosamente el documento',
+          type: 'success',
+          target: document.getElementById('modal_ver_soportes')
+        }).then(
+          function () {
+            self.obtener_doc(self.fila_sol_pago)
           }
-        };
-        cumplidosCrudRequest.put('soporte_pago_mensual', soporte_info.Id, objeto_soporte).then(response => {
-          swal({
-            title: 'Documento borrado',
-            text: 'Se ha borrado exitosamente el documento',
-            type: 'success',
-            target: document.getElementById('modal_ver_soportes')
-          }).then(
-            function () {
-              self.obtener_doc(self.fila_sol_pago)
-            }
-          );
-        });
-      }).catch(error => {
+        );
+      }).catch(function (error) {
         swal({
           title: 'Error',
           text: 'Hubo un error al momento de borrar el documento',
           type: 'error',
           target: document.getElementById('modal_ver_soportes')
         });
-      });
-      //------ FIN MODIFICACIÓN ESTADO ACTIVO EN SOPORTE_PAGO_MENSUAL------------
+      })
+
     }
 
     self.set_doc = function (doc) {

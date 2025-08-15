@@ -37,7 +37,6 @@ angular.module("contractualClienteApp").constant("CONF", {
     ARM_AWS_NOTIFICACIONES:"arn:aws:sns:us-east-1:699001025740:production-Cumplidos",
     GESTION_DOCUMENTAL_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1",
     AUTENTICATION_MID_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/autenticacion_mid/v1/",
-    FIRMA_ELECTRONICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/firma_electronica_mid/v1/",
     MODELS_SERVICE: "scripts/models/",
     TOKEN: {
       AUTORIZATION_URL:
