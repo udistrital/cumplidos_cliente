@@ -7,16 +7,24 @@ steps:
   commands:
   - python /app/check_readme.py
   when:
-    branch: [develop, feature/*, release/*]
-    event: [push]
+    branch:
+    - develop
+    - feature/*
+    - release/*
+    event:
+    - push
 
 - name: check_branch
   image: jjvargass/qa_develoment:latest
   commands:
   - python /app/check_branch.py -H ${DRONE_GIT_HTTP_URL}
   when:
-    branch: [develop, feature/*, release/*]
-    event: [push]
+    branch:
+    - develop
+    - feature/*
+    - release/*
+    event:
+    - push
 
 - name: check_commits
   failure: ignore
@@ -24,8 +32,12 @@ steps:
   commands:
   - python /app/check_commits.py
   when:
-    branch: [develop, feature/*, release/*]
-    event: [push]
+    branch:
+    - develop
+    - feature/*
+    - release/*
+    event:
+    - push
 
 - name: run_sonar_scanner
   image: aosapps/drone-sonar-plugin
@@ -35,33 +47,42 @@ steps:
     sonar_token:
       from_secret: SONAR_TOKEN
   when:
-    branch: [develop, feature/*, release/*]
-    event: [push]
+    branch:
+    - develop
+    - feature/*
+    - release/*
+    event:
+    - push
 
 - name: nodejs_release
   image: node:12.22.1
   commands:
   - npm install -g grunt-cli bower
-  - npm install --legacy-peer-deps
+  - npm install natives
+  - npm install
   - bower install --allow-root
   - cp -f app/scripts/environment/environment_test.js app/scripts/environment/environment.js
-  - grunt build --force
+  - grunt build
   when:
-    branch: [release/*, develop]
-    event: [push]
+    branch:
+    - release/*
+    event:
+    - push
 
 - name: nodejs_master
   image: node:12.22.1
   commands:
   - npm install -g grunt-cli bower
-  - npm install --legacy-peer-deps
+  - npm install natives
+  - npm install
   - bower install --allow-root
   - cp -f app/scripts/environment/environment_prod.js app/scripts/environment/environment.js
-  - grunt build --force
+  - grunt build
   when:
-    branch: [master]
-    event: [push]
-
+    branch:
+    - master
+    event:
+    - push
 
 - name: publish_s3_release
   image: plugins/s3
@@ -74,11 +95,13 @@ steps:
     region: us-east-1
     source: dist/**/*
     target: /${DRONE_REPO_NAME}
-    strip_prefix: dist/         
-    cache_control: no-cache   
+    strip_prefix: dist/
+    cache_control: no-cache
   when:
-    branch: [release/*]
-    event: [push]
+    branch:
+    - release/*
+    event:
+    - push
 
 - name: invalidate_cf_release
   image: amazon/aws-cli
@@ -89,13 +112,14 @@ steps:
       from_secret: aws_secret_access_key
     AWS_DEFAULT_REGION: us-east-1
     CF_DIST_ID:
-      from_secret: CF_DISTRIBUTION_ID_PRUEBAS 
+      from_secret: CF_DISTRIBUTION_ID_PRUEBAS
   commands:
   - aws cloudfront create-invalidation --distribution-id "$CF_DIST_ID" --paths "/${DRONE_REPO_NAME}/*"
   when:
-    branch: [release/*]
-    event: [push]
-
+    branch:
+    - release/*
+    event:
+    - push
 
 - name: publish_s3_master
   image: plugins/s3
@@ -111,8 +135,10 @@ steps:
     strip_prefix: dist/
     cache_control: public,max-age=3600
   when:
-    branch: [master]
-    event: [push]
+    branch:
+    - master
+    event:
+    - push
 
 - name: invalidate_cf_master
   image: amazon/aws-cli
@@ -127,8 +153,10 @@ steps:
   commands:
   - aws cloudfront create-invalidation --distribution-id "$CF_DIST_ID" --paths "/${DRONE_REPO_NAME}/*"
   when:
-    branch: [master]
-    event: [push]
+    branch:
+    - master
+    event:
+    - push
 
 - name: notify_telegram
   failure: ignore
@@ -141,15 +169,23 @@ steps:
     format: html
     message: >
       {{#success build.status}}
-        ✅ <a href="{{build.link}}">SUCCESS</a> <b>Build #{{build.number}}</b> ({{ build.event }})
+        ✅ <a href="{{build.link}}">SUCCESS</a> <b>Build #{{build.number}}</b> (type: <code>{{ build.event }}</code>)
         <b>Repo:</b><code>{{repo.name}}</code> <b>Branch:</b><code>{{commit.branch}}</code>
-        <b>Commit:</b> <a href="{{commit.link}}">{{truncate commit.sha 7}}</a> <b>Autor:</b>{{commit.author}}
+        <b>Commit:</b> <a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+        <b>Autor:</b>{{commit.author}} <code>&#128526 </code>
       {{else}}
-        ❌ <a href="{{build.link}}">FAILURE</a> <b>Build #{{build.number}}</b> ({{ build.event }})
+        ❌ <a href="{{build.link}}">FAILURE</a> <b>Build #{{build.number}}</b> (type: <code>{{ build.event }}</code>)
         <b>Repo:</b><code>{{repo.name}}</code> <b>Branch:</b> <code>{{commit.branch}}</code>
-        <b>Commit:</b> <a href="{{commit.link}}">{{truncate commit.sha 7}}</a> <b>Autor:</b>{{commit.author}}
+        <b>Commit:</b> <a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+        <b>Autor:</b>{{commit.author}} <code>&#128549 </code>
       {{/success}}
   when:
-    branch: [develop, release/*, master]
-    event: [push]
-    status: [failure, success]
+    branch:
+    - develop
+    - release/*
+    - master
+    event:
+    - push
+    status:
+    - failure
+    - success
