@@ -9,6 +9,7 @@
 */
 var text_es = {
     OK: "Ok",
+    IRIS_TEXTO: "¿Tienes una solicitud con el sistema? Da clic aquí",
     ERROR: "Error",
     CERRAR: "Cerrar",
     NO_HAY_DATOS_REDIRIGIR_RP: "No hay datos de registro presupuestal para este contratista",
@@ -936,11 +937,12 @@ var text_es = {
     ERROR_SIN_ESTADOS_PAGO: "No hay registros de cambio de estado.",
     ERROR_SIN_DOCUEMENTOS_PAGO: "No hay documentos cargados",
     TEMIRNACION_COMA : "no pude terminar en coma"
-    
+
 };
 
 var text_en = {
     SELECCIONAR_FILTRO: " Select the filter which is going to generate the RP request",
+    IRIS_TEXTO: "Do you have any request related to the system? Click here.",
     BUSCAR: "Search",
     INGRESE_IDENTIFICACION_PROVEEDOR: "Enter provider id",
     NO_HAY_DATOS_REDIRIGIR_CDP: "The CDPs associated with this Contract are Exhausted, please check the respective information in the ARGO system.",
