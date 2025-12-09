@@ -162,16 +162,18 @@ angular.module('contractualClienteApp')
         field: 'TipoContrato',
         displayName: 'Tipo Contrato',
         width: "12%",
-        cellTemplate: `
-            <div class="ui-grid-cell-contents">
-              <span ng-if="row.entity.TipoContrato === 'INICIAL'">
-                INICIAL
-              </span>
-              <span ng-if="row.entity.TipoContrato === 'OTRO SÍ'">
-                OTRO SÍ {{row.entity.NumeroOtrosi}}
-              </span>
-            </div>
-        `
+        cellTemplate:
+          '<div class="ui-grid-cell-contents">' +
+
+            '<span ng-if="row.entity.TipoContrato === \'INICIAL\'">' +
+              'INICIAL' +
+            '</span>' +
+
+            '<span ng-if="row.entity.TipoContrato === \'OTRO SÍ\'">' +
+              'OTRO SÍ {{row.entity.NumeroOtrosi}}' +
+            '</span>' +
+
+          '</div>'
       },
       {
         field: 'NumeroRp',
