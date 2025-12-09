@@ -192,22 +192,23 @@ angular.module('contractualClienteApp')
           displayName: $translate.instant('TIPO_CONTRATO'),
           width: "8%",
           cellTemplate:
-            `<div class="ui-grid-cell-contents tipo-contrato"
-                  ng-class="{
-                    'tipo-inicial': row.entity.TipoContrato === 'INICIAL',
-                    'tipo-otrosi': row.entity.TipoContrato === 'OTRO SI'
-                  }">
+            '<div class="ui-grid-cell-contents tipo-contrato" ' +
+            '     ng-class="{' +
+            "       'tipo-inicial': row.entity.TipoContrato === 'INICIAL'," +
+            "       'tipo-otrosi': row.entity.TipoContrato === 'OTRO SI'" +
+            '     }">' +
 
-                <span ng-if="row.entity.TipoContrato === 'INICIAL'">
-                  {{ 'INICIAL' | translate }}
-                </span>
+            '<span ng-if="row.entity.TipoContrato === \'INICIAL\'">' +
+            '  {{ "INICIAL" | translate }}' +
+            '</span>' +
 
-                <span ng-if="row.entity.TipoContrato === 'OTRO SI'">
-                  {{ 'OTRO SÍ' | translate }} {{ row.entity.NumeroOtrosi }}
-                </span>
+            '<span ng-if="row.entity.TipoContrato === \'OTRO SI\'">' +
+            '  {{ "OTRO SÍ" | translate }} {{ row.entity.NumeroOtrosi }}' +
+            '</span>' +
 
-             </div>`
+            '</div>'
         }
+
 
 
 
