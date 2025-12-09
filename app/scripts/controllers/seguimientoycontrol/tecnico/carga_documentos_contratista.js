@@ -159,6 +159,23 @@ angular.module('contractualClienteApp')
         width: "10%"
       },
       {
+        field: 'TipoContrato',
+        displayName: 'Tipo Contrato',
+        width: "12%",
+        cellTemplate:
+          '<div class="ui-grid-cell-contents">' +
+
+            '<span ng-if="row.entity.TipoContrato === \'INICIAL\'">' +
+              'INICIAL' +
+            '</span>' +
+
+            '<span ng-if="row.entity.TipoContrato === \'OTRO SÍ\'">' +
+              'OTRO SÍ {{row.entity.NumeroOtrosi}}' +
+            '</span>' +
+
+          '</div>'
+      },
+      {
         field: 'NumeroRp',
         cellTemplate: tmpl,
         displayName: $translate.instant('RP'),
@@ -230,7 +247,7 @@ angular.module('contractualClienteApp')
         .then(function (response) {
           if (response.data.Data) {
             //Contiene la respuesta de la petición
-            self.informacion_contratos = response.data.Data;
+            self.informacion_contratos = self.clasificarContratos(response.data.Data);
             //Se envia la data a la tabla
             self.gridOptions1.data = self.informacion_contratos;
             //Contiene el numero de documento del Responsable
@@ -243,6 +260,34 @@ angular.module('contractualClienteApp')
           }
         });
     };
+
+    self.clasificarContratos = function (contratos) {
+
+      let grupos = {};
+
+      contratos.forEach(c => {
+        let key = c.NumeroContratoSuscrito;
+        if (!grupos[key]) grupos[key] = [];
+        grupos[key].push(c);
+      });
+
+      Object.values(grupos).forEach((lista) => {
+
+        lista.sort((a, b) => Number(a.NumeroCdp) - Number(b.NumeroCdp));
+
+        lista[0].TipoContrato = "INICIAL";
+        lista[0].NumeroOtrosi = null;
+
+        for (let i = 1; i < lista.length; i++) {
+          lista[i].TipoContrato = "OTRO SÍ";
+          lista[i].NumeroOtrosi = i;
+        }
+      });
+
+      return contratos;
+    };
+
+
 
     /*
       Función para consultar la informacion del contratista
