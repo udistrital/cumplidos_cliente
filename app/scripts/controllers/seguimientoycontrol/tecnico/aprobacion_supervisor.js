@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * @ngdoc function
  * @name contractualClienteApp.controller:AprobacionSupervisorCtrl
@@ -8,12 +7,23 @@
  * Controller of the contractualClienteApp
  */
 angular.module('contractualClienteApp')
-  .controller('AprobacionSupervisorCtrl', function (token_service, $http, $translate, uiGridConstants, contratoRequest, funcGen, documentoRequest, $window, utils, notificacionRequest, amazonAdministrativaRequest, cumplidosMidRequest, cumplidosCrudRequest) {
+  .controller('AprobacionSupervisorCtrl', function (
+    token_service,
+    $http,
+    $translate,
+    uiGridConstants,
+    contratoRequest,
+    funcGen,
+    documentoRequest,
+    $window,
+    utils,
+    notificacionRequest,
+    amazonAdministrativaRequest,
+    cumplidosMidRequest,
+    cumplidosCrudRequest
+  ) {
 
-    //Variable de template que permite la edición de las filas de acuerdo a la condición ng-if
     var tmpl = '<div ng-if="!row.entity.editable">{{COL_FIELD}}</div><div ng-if="row.entity.editable"><input ng-model="MODEL_COL_FIELD"</div>';
-
-    //Se utiliza la variable self estandarizada
     var self = this;
     self.funcGen = funcGen;
     self.Documento = token_service.getAppPayload().documento;
@@ -75,17 +85,49 @@ angular.module('contractualClienteApp')
     self.d = new Date();
     self.anios = [(self.d.getFullYear() - 1), (self.d.getFullYear())];
 
-    /*
-  Función para obtener la imagen del escudo de la universidad
-*/
     $http.get("scripts/models/imagen_ud.json")
       .then(function (response) {
         self.imagen = response.data;
       });
 
-    /*
-      Creación tabla que tendrá todos los docentes relacionados al supervisor
-    */
+    self.clasificarContratosPorCDP = function () {
+
+      let contratos = _.groupBy(self.documentos, function (doc) {
+        return doc.PagoMensual.NumeroContrato;
+      });
+
+      angular.forEach(contratos, function (items) {
+
+        let cdps = _.uniq(items.map(i => parseInt(i.PagoMensual.NumeroCDP)))
+                    .sort((a, b) => a - b);
+        if (cdps.length === 1) {
+          items.forEach(i => {
+            i.TipoContrato = "INICIAL";
+            i.NumeroOtrosi = 0;
+          });
+          return;
+        }
+
+        let cdpInicial = cdps[0];
+        let otrosCdp = cdps.slice(1);
+
+        items.forEach(i => {
+          let cdpActual = parseInt(i.PagoMensual.NumeroCDP);
+
+          if (cdpActual === cdpInicial) {
+            i.TipoContrato = "INICIAL";
+            i.NumeroOtrosi = 0;
+          } else {
+            let index = otrosCdp.indexOf(cdpActual);
+            i.TipoContrato = "OTRO SI";
+            i.NumeroOtrosi = index + 1;
+          }
+        });
+
+      });
+
+    };
+
     self.gridOptions1 = {
       enableSorting: true,
       enableFiltering: true,
@@ -95,8 +137,8 @@ angular.module('contractualClienteApp')
         {
           field: 'NombreDependencia',
           cellTemplate: tmpl,
-          displayName: 'DEPENDENCIA',//$translate.instant('PRO_CURR')//,
-          sort: {
+          displayName: 'DEPENDENCIA',
+                    sort: {
             direction: uiGridConstants.ASC,
             priority: 1
           },
@@ -115,13 +157,12 @@ angular.module('contractualClienteApp')
         {
           field: 'NombrePersona',
           cellTemplate: tmpl,
-          displayName: 'NOMBRE CONTRATISTA',//$translate.instant('NAME_TEACHER'),
+          displayName: 'NOMBRE CONTRATISTA',
           sort: {
             direction: uiGridConstants.ASC,
             priority: 1
           },
         },
-
         {
           field: 'PagoMensual.NumeroContrato',
           cellTemplate: tmpl,
@@ -135,11 +176,44 @@ angular.module('contractualClienteApp')
           field: 'PagoMensual.VigenciaContrato',
           cellTemplate: tmpl,
           displayName: 'VIGENCIA CONTRATO',
-          sort: {
+                    sort: {
             direction: uiGridConstants.ASC,
             priority: 1
           },
         },
+        {
+          field: 'PagoMensual.NumeroCDP',
+          cellTemplate: tmpl,
+          displayName: 'CDP'
+        },
+
+        {
+          field: 'TipoContrato',
+          displayName: $translate.instant('TIPO_CONTRATO'),
+          width: "8%",
+          cellTemplate:
+            `<div class="ui-grid-cell-contents tipo-contrato"
+                  ng-class="{
+                    'tipo-inicial': row.entity.TipoContrato === 'INICIAL',
+                    'tipo-otrosi': row.entity.TipoContrato === 'OTRO SI'
+                  }">
+
+                <span ng-if="row.entity.TipoContrato === 'INICIAL'">
+                  {{ 'INICIAL' | translate }}
+                </span>
+
+                <span ng-if="row.entity.TipoContrato === 'OTRO SI'">
+                  {{ 'OTRO SÍ' | translate }} {{ row.entity.NumeroOtrosi }}
+                </span>
+
+             </div>`
+        }
+
+
+
+
+        ,
+
         {
           field: 'PagoMensual.Mes',
           cellTemplate: tmpl,
@@ -161,72 +235,57 @@ angular.module('contractualClienteApp')
         {
           field: 'Acciones',
           displayName: $translate.instant('ACC'),
-          cellTemplate: '<a type="button" title="Ver soportes" type="button" class="fa fa-eye fa-lg  faa-shake animated-hover"' +
-            'ng-click="grid.appScope.aprobacionSupervisor.obtener_doc(row.entity.PagoMensual)" data-toggle="modal" data-target="#modal_ver_soportes"</a>&nbsp;' +
-            '<a type="button" title="Visto bueno" type="button" class="fa fa-check fa-lg  faa-shake animated-hover"' +
+          cellTemplate:
+            '<a class="fa fa-eye fa-lg faa-shake animated-hover" title="Ver soportes"' +
+            'ng-click="grid.appScope.aprobacionSupervisor.obtener_doc(row.entity.PagoMensual)" data-toggle="modal" data-target="#modal_ver_soportes"></a>&nbsp;' +
+            '<a class="fa fa-check fa-lg faa-shake animated-hover" title="Visto bueno"' +
             'ng-click="grid.appScope.aprobacionSupervisor.dar_visto_bueno(row.entity.PagoMensual)"></a>&nbsp;' +
-            '<a type="button" title="Rechazar" type="button" class="fa fa-close fa-lg  faa-shake animated-hover"' +
+            '<a class="fa fa-close fa-lg faa-shake animated-hover" title="Rechazar"' +
             'ng-click="grid.appScope.aprobacionSupervisor.rechazar(row.entity.PagoMensual)"></a>',
           width: "10%"
         }
       ]
     };
 
-
-    /*
-      Función que permite obtener la data de la fila seleccionada
-    */
     self.gridOptions1.onRegisterApi = function (gridApi) {
       self.gridApi = gridApi;
     };
 
 
-
-    /*
-    Función que al recibir el número de documento del coordinador cargue los correspondientes
-    */
     self.obtener_contratistas_supervisor = function () {
+
       self.gridOptions1.data = [];
-
-
       self.obtener_informacion_supervisor(self.Documento);
-      //Petición para obtener el Id de la relación de acuerdo a los campos
-      cumplidosMidRequest.get('/solicitudes_supervisor_contratistas/' + self.Documento).then(function (response) {
-        self.documentos = response.data.Data;
-        //console.log(self.documentos);
-        //self.obtener_informacion_docente();
-        self.gridOptions1.data = self.documentos;
-        self.gridApi.core.refresh();
 
-      });
+      cumplidosMidRequest.get('/solicitudes_supervisor_contratistas/' + self.Documento)
+        .then(function (response) {
+
+          self.documentos = response.data.Data;
+          self.clasificarContratosPorCDP();
+
+          self.gridOptions1.data = self.documentos;
+          self.gridApi.core.refresh();
+        });
+
     };
 
-
-    /*
-      Función que obtiene la información correspondiente al supervisor
-    */
     self.obtener_informacion_supervisor = function (documento) {
-      //Se realiza petición a servicio de academica que retorna la información del coordinador
+
       amazonAdministrativaRequest.get('informacion_proveedor', $.param({
         query: "NumDocumento:" + documento,
         limit: 0
       })).then(function (response) {
-        //Información contratista
         self.info_supervisor = response.data;
         self.nombre_supervisor = self.info_supervisor[0].NomProveedor;
       });
     };
 
-    /**/
-
     self.obtener_contratistas_supervisor();
 
     self.enviar_notificacion = function (asunto, destinatario, mensaje, remitenteId) {
       notificacionRequest.enviarCorreo(asunto, {}, [destinatario], '', '', mensaje, remitenteId).then(function (response) {
-        //console.log(response)
       }).catch(
         function (error) {
-          //console.log(error)
         }
       )
     }
@@ -283,7 +342,7 @@ angular.module('contractualClienteApp')
                     self.obtener_contratistas_supervisor();
                     self.gridApi.core.refresh();
                   })
-                  .catch(function (response) { //Manejo de error
+                  .catch(function (response) {
                     swal(
                       'Error',
                       'No se ha podido registrar la validación del supervisor',
@@ -348,9 +407,8 @@ angular.module('contractualClienteApp')
                       'No se ha podido registrar el rechazo',
                       'error'
                     );
-                  })//Termina promesa then
+                  })
 
-                //Manejo de error
               })
 
 
