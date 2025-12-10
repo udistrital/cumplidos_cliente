@@ -931,7 +931,7 @@ var text_es = {
 
       //Historico Cumplidos
      HISTORICO_CUMPLIDOS: "HISTORICO DE CUMPLIDOS",
-     SELECION_OPCION : "Selecciona una opccion",
+     SELECION_OPCION : "Selecciona una opción",
      SOLO_NUMEROS: "Ingresa solo valores numéricos",
     MULTIPLES_OPCCIONES: "Puedes ingresar varias opciones separadas por comas.",
     ERROR_SIN_ESTADOS_PAGO: "No hay registros de cambio de estado.",

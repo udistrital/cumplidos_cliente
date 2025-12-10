@@ -25,6 +25,45 @@ angular.module('contractualClienteApp')
 
     self.mes = '';
 
+
+    self.clasificarContratosPorCDP = function () {
+
+      let grupos = _.groupBy(self.contratistas, function (item) {
+        return item.PagoMensual.NumeroContrato + "-" + item.PagoMensual.VigenciaContrato;
+      });
+
+      angular.forEach(grupos, function (items) {
+
+        let cdps = _.uniq(
+          items.map(i => parseInt(i.PagoMensual.NumeroCDP)).filter(n => !isNaN(n))
+        ).sort((a, b) => a - b);
+
+        if (cdps.length === 1) {
+          items.forEach(i => {
+            i.TipoContrato = "INICIAL";
+            i.NumeroOtrosi = 0;
+          });
+          return;
+        }
+
+        let cdpInicial = cdps[0];
+        let otros = cdps.slice(1);
+
+        items.forEach(i => {
+          let actual = parseInt(i.PagoMensual.NumeroCDP);
+
+          if (actual === cdpInicial) {
+            i.TipoContrato = "INICIAL";
+            i.NumeroOtrosi = 0;
+          } else {
+            i.TipoContrato = "OTRO SÍ";
+            i.NumeroOtrosi = otros.indexOf(actual) + 1;
+          }
+        });
+      });
+    };
+
+
     self.meses = [{
       Id: 1,
       Nombre: $translate.instant('ENERO')
@@ -106,7 +145,7 @@ angular.module('contractualClienteApp')
             direction: uiGridConstants.ASC,
             priority: 1
           },
-          width: "18%"
+          width: "17%"
         },
         {
           field: 'Rubro',
@@ -136,7 +175,7 @@ angular.module('contractualClienteApp')
             direction: uiGridConstants.ASC,
             priority: 1
           },
-          width: "20%"
+          width: "19%"
         },
 
         {
@@ -148,7 +187,7 @@ angular.module('contractualClienteApp')
             direction: uiGridConstants.ASC,
             priority: 1
           },
-          width: "12%"
+          width: "8%"
         },
         {
           field: 'PagoMensual.VigenciaContrato',
@@ -161,6 +200,20 @@ angular.module('contractualClienteApp')
           width: "7%"
         },
         {
+          field: 'TipoContrato',
+          displayName: 'Tipo Contrato',
+          width: "8%",
+          cellTemplate:
+            '<div class="ui-grid-cell-contents">' +
+              '<span ng-if="row.entity.TipoContrato === \'INICIAL\'">' +
+                'INICIAL' +
+              '</span>' +
+              '<span ng-if="row.entity.TipoContrato === \'OTRO SÍ\'">' +
+                'OTRO SÍ {{row.entity.NumeroOtrosi}}' +
+              '</span>' +
+            '</div>'
+        },
+        {
           field: 'PagoMensual.Mes',
           cellTemplate: tmpl,
           displayName: $translate.instant('MES_SOLICITUD'),
@@ -168,7 +221,7 @@ angular.module('contractualClienteApp')
             direction: uiGridConstants.ASC,
             priority: 1
           },
-          width: "9%"
+          width: "8%"
         },
         {
           field: 'PagoMensual.Ano',
@@ -178,7 +231,7 @@ angular.module('contractualClienteApp')
             direction: uiGridConstants.ASC,
             priority: 1
           },
-          width: "9%"
+          width: "8%"
         }
         ,
         {
@@ -233,12 +286,22 @@ angular.module('contractualClienteApp')
         //Petición para obtener el Id de la relación de acuerdo a los campos
         if (((self.dependencia) && Object.keys(self.dependencia).length === 0) || self.validador === 1) {
 
-          cumplidosMidRequest.get('solicitudes_ordenador_contratistas/solicitudes/' + self.Documento, $.param({
-            limit: self.gridOptions1.paginationPageSize,
-            offset: offset,
-            // query: typeof(query) === "string" ? query : query.join(",")
-          }, true)).then(gridApiService.paginationFunc(self.gridOptions1, offset));
-          self.offset = offset;
+          cumplidosMidRequest.get(
+        'solicitudes_ordenador_contratistas/solicitudes/' + self.Documento,
+        $.param({
+          limit: self.gridOptions1.paginationPageSize,
+          offset: offset,
+        }, true)
+      ).then(function(response) {
+        self.contratistas = response.data.Data || [];
+        self.clasificarContratosPorCDP();
+        self.gridOptions1.data = self.contratistas;
+
+        gridApiService.paginationFunc(self.gridOptions1, offset)(response);
+      });
+
+      self.offset = offset;
+
 
         }
         else {
