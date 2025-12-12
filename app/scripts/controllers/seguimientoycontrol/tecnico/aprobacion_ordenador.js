@@ -32,32 +32,25 @@ angular.module('contractualClienteApp')
         return item.PagoMensual.NumeroContrato + "-" + item.PagoMensual.VigenciaContrato;
       });
 
-      angular.forEach(grupos, function (items) {
+      angular.forEach(grupos, function (items, key) {
+        let cdpInicialReal = parseInt(items[0].NumeroCdp);
 
-        let cdps = _.uniq(
+        let cdpsPagos = _.uniq(
           items.map(i => parseInt(i.PagoMensual.NumeroCDP)).filter(n => !isNaN(n))
         ).sort((a, b) => a - b);
 
-        if (cdps.length === 1) {
-          items.forEach(i => {
-            i.TipoContrato = "INICIAL";
-            i.NumeroOtrosi = 0;
-          });
-          return;
-        }
 
-        let cdpInicial = cdps[0];
-        let otros = cdps.slice(1);
+        let otrosCDP = cdpsPagos.filter(c => c !== cdpInicialReal);
 
         items.forEach(i => {
-          let actual = parseInt(i.PagoMensual.NumeroCDP);
+          let cdpPago = parseInt(i.PagoMensual.NumeroCDP);
 
-          if (actual === cdpInicial) {
+          if (cdpPago === cdpInicialReal) {
             i.TipoContrato = "INICIAL";
             i.NumeroOtrosi = 0;
           } else {
             i.TipoContrato = "OTRO SÍ";
-            i.NumeroOtrosi = otros.indexOf(actual) + 1;
+            i.NumeroOtrosi = otrosCDP.indexOf(cdpPago) + 1;
           }
         });
       });
