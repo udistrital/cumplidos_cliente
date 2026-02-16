@@ -351,7 +351,7 @@ angular.module('contractualClienteApp')
                 sortby: "Id",
                 order: "asc",
                 limit: 2
-              })).then(function (response_pago_mensual) { 
+              })).then(function (response_pago_mensual) {
                 if (response.data.Data.length > 1) {
                   try {
                     var preliquidaciones = response.data.Data;
@@ -591,15 +591,51 @@ angular.module('contractualClienteApp')
 
     self.crear_lista_evidencias = function (Evidencia) {
       var ul = [];
-      if (Evidencia != '') {
-        var evidencias = Evidencia.split(',');
 
-        for (var z = 0; z < evidencias.length; z++) {
-          ul.push({ text: 'Evidencia ' + (z + 1), link: evidencias[z], color: '#0645AD', decoration: 'underline', bold: true })
-        }
+      if (!Evidencia || Evidencia.trim() === '') {
+        return ul;
       }
+
+      var evidencias = Evidencia.split(',');
+
+      var urlRegex = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
+      var relativeRegex = /^(?![a-zA-Z][a-zA-Z0-9+.-]*:)(?:\/|\.\.\/|\.\/|[A-Za-z0-9_-]+\/)[^\s]*$/;
+
+      for (var z = 0; z < evidencias.length; z++) {
+
+        var evidencia = evidencias[z].trim();
+
+        if (!evidencia) continue;
+
+        if (urlRegex.test(evidencia)) {
+          ul.push({
+            text: 'Evidencia ' + (z + 1),
+            link: evidencia,
+            color: '#0645AD',
+            decoration: 'underline',
+            bold: true
+          });
+          continue;
+        }
+
+        if (relativeRegex.test(evidencia)) {
+          ul.push({
+            text: evidencia,
+            color: '#0645AD',
+            decoration: 'underline',
+            bold: true
+          });
+          continue;
+        }
+        ul.push({
+          text: evidencia,
+          italics: true
+        });
+      }
+
       return ul;
     }
+
 
     self.construirTabla = function (informe) {
       var body = []
@@ -861,7 +897,7 @@ angular.module('contractualClienteApp')
           // Novedades postcontractuales
           self.tablaNovedades(self.informacion_informe.Novedades),
           {
-            //Certificado de cumplimiento  
+            //Certificado de cumplimiento
             style: 'tableContractInfo',
             widths: '*',
             table: {
