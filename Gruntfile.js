@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     dist: 'dist'
   };
 
-  // 
+  //
   var serveStatic = require('serve-static');
 
   // Define the configuration for all the tasks
@@ -415,7 +415,7 @@ module.exports = function(grunt) {
           dest: '<%= yeoman.dist %>'
         }]
       },
-      
+
             styles: {
                 expand: true,
                 cwd: '<%= yeoman.app %>/styles',
@@ -523,7 +523,7 @@ sonarRunner: {
         'test',
         'build'
     ]);
-  
+
 
   grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function(target) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
