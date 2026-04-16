@@ -597,7 +597,7 @@ angular.module('contractualClienteApp')
 
     self.formatear_texto_evidencia = function (evidencia) {
       if (!self.es_ruta_evidencia(evidencia)) {
-        return evidencia;
+        return self.formatear_texto_tabla(evidencia, 28);
       }
 
       var separadores = /([\\/]+)/;
@@ -625,6 +625,26 @@ angular.module('contractualClienteApp')
       }
 
       return lineas.join('\n');
+    }
+
+    self.formatear_texto_tabla = function (texto, longitudMaxima) {
+      if (!texto && texto !== 0) {
+        return '';
+      }
+
+      var limite = longitudMaxima || 28;
+
+      return texto.toString().split(/\s+/).map(function (bloque) {
+        if (bloque.length <= limite) {
+          return bloque;
+        }
+
+        var partes = [];
+        for (var i = 0; i < bloque.length; i += limite) {
+          partes.push(bloque.substring(i, i + limite));
+        }
+        return partes.join('\n');
+      }).join(' ');
     }
 
     self.crear_lista_evidencias = function (Evidencia) {
@@ -685,7 +705,7 @@ angular.module('contractualClienteApp')
             { width: 10, text: '\u2022', margin: [0, 1, 0, 0] },
             {
               width: '*',
-              text: evidencia,
+              text: self.formatear_texto_tabla(evidencia, 28),
               italics: true,
               margin: [0, 0, 0, 2]
             }
@@ -708,13 +728,13 @@ angular.module('contractualClienteApp')
         var actividadEsp = informe.ActividadesEspecificas[i];
         for (var j = 0; j < informe.ActividadesEspecificas[i].ActividadesRealizadas.length; j++) {
           var actividad = informe.ActividadesEspecificas[i].ActividadesRealizadas[j];
-          body.push([{}, {}, {}, { text: actividad.Actividad }, { text: actividad.ProductoAsociado }, {
+          body.push([{}, {}, {}, { text: self.formatear_texto_tabla(actividad.Actividad, 30), style: 'tableActividadesText' }, { text: self.formatear_texto_tabla(actividad.ProductoAsociado, 24), style: 'tableActividadesText' }, {
             stack: self.crear_lista_evidencias(actividad.Evidencia)
           }])
         }
         body[indexPrimera][0] = { rowSpan: numActividades, text: i + 1, bold: true, alignment: 'center' }
-        body[indexPrimera][1] = { rowSpan: numActividades, text: actividadEsp.ActividadEspecifica }
-        body[indexPrimera][2] = { rowSpan: numActividades, text: actividadEsp.Avance, alignment: 'center' }
+        body[indexPrimera][1] = { rowSpan: numActividades, text: self.formatear_texto_tabla(actividadEsp.ActividadEspecifica, 24), style: 'tableActividadesText' }
+        body[indexPrimera][2] = { rowSpan: numActividades, text: actividadEsp.Avance, alignment: 'center', style: 'tableActividadesText' }
         indexPrimera = indexPrimera + numActividades;
       }
       return body
@@ -950,7 +970,7 @@ angular.module('contractualClienteApp')
             widths: '*',
             table: {
               dontBreakRows: true,
-              widths: ['auto', 'auto', 'auto', 'auto', 'auto', '*'],
+              widths: [28, 120, 85, 180, 110, '*'],
               body: self.construirTabla(self.Informe)
 
             },
@@ -1045,6 +1065,11 @@ angular.module('contractualClienteApp')
             fillColor: '#CCCCCC',
             alignment: 'center',
             margin: [0, 3, 0, 0]
+          },
+          tableActividadesText: {
+            fontSize: 9,
+            alignment: 'left',
+            margin: [0, 3, 0, 3]
           },
           tableNovedadesHeader: {
             bold: true,
