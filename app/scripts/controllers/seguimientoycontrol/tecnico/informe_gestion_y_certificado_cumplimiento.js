@@ -632,7 +632,7 @@ angular.module('contractualClienteApp')
         return '';
       }
 
-      var limite = longitudMaxima || 28;
+      var limite = longitudMaxima || 40;
 
       return texto.toString().split(/\s+/).map(function (bloque) {
         if (bloque.length <= limite) {
@@ -705,7 +705,7 @@ angular.module('contractualClienteApp')
             { width: 10, text: '\u2022', margin: [0, 1, 0, 0] },
             {
               width: '*',
-              text: self.formatear_texto_tabla(evidencia, 28),
+              text: self.formatear_texto_tabla(evidencia, 40),
               italics: true,
               margin: [0, 0, 0, 2]
             }
@@ -728,12 +728,12 @@ angular.module('contractualClienteApp')
         var actividadEsp = informe.ActividadesEspecificas[i];
         for (var j = 0; j < informe.ActividadesEspecificas[i].ActividadesRealizadas.length; j++) {
           var actividad = informe.ActividadesEspecificas[i].ActividadesRealizadas[j];
-          body.push([{}, {}, {}, { text: self.formatear_texto_tabla(actividad.Actividad, 30), style: 'tableActividadesText' }, { text: self.formatear_texto_tabla(actividad.ProductoAsociado, 24), style: 'tableActividadesText' }, {
+          body.push([{}, {}, {}, { text: self.formatear_texto_tabla(actividad.Actividad, 42), style: 'tableActividadesText' }, { text: self.formatear_texto_tabla(actividad.ProductoAsociado, 32), style: 'tableActividadesText' }, {
             stack: self.crear_lista_evidencias(actividad.Evidencia)
           }])
         }
         body[indexPrimera][0] = { rowSpan: numActividades, text: i + 1, bold: true, alignment: 'center' }
-        body[indexPrimera][1] = { rowSpan: numActividades, text: self.formatear_texto_tabla(actividadEsp.ActividadEspecifica, 24), style: 'tableActividadesText' }
+        body[indexPrimera][1] = { rowSpan: numActividades, text: self.formatear_texto_tabla(actividadEsp.ActividadEspecifica, 32), style: 'tableActividadesText' }
         body[indexPrimera][2] = { rowSpan: numActividades, text: actividadEsp.Avance, alignment: 'center', style: 'tableActividadesText' }
         indexPrimera = indexPrimera + numActividades;
       }
@@ -970,7 +970,7 @@ angular.module('contractualClienteApp')
             widths: '*',
             table: {
               dontBreakRows: true,
-              widths: [28, 120, 85, 180, 110, '*'],
+              widths: [28, 135, 70, 210, 145, '*'],
               body: self.construirTabla(self.Informe)
 
             },
@@ -1067,7 +1067,7 @@ angular.module('contractualClienteApp')
             margin: [0, 3, 0, 0]
           },
           tableActividadesText: {
-            fontSize: 9,
+            fontSize: 8,
             alignment: 'left',
             margin: [0, 3, 0, 3]
           },
