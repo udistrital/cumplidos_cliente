@@ -589,17 +589,54 @@ angular.module('contractualClienteApp')
       //console.log(self.metas_disponibles);*/
     }
 
+    self.es_ruta_evidencia = function (evidencia) {
+      var relativeRegex = /^(?![a-zA-Z][a-zA-Z0-9+.-]*:)(?:\/|\.\.\/|\.\/|[A-Za-z0-9_-]+\/)[^\s]*$/;
+      var windowsPathRegex = /^[a-zA-Z]:[\\/]/;
+      return relativeRegex.test(evidencia) || windowsPathRegex.test(evidencia);
+    }
+
+    self.formatear_texto_evidencia = function (evidencia) {
+      if (!self.es_ruta_evidencia(evidencia)) {
+        return evidencia;
+      }
+
+      var separadores = /([\\/]+)/;
+      var partes = evidencia.split(separadores).filter(function (parte) {
+        return parte !== '';
+      });
+      var lineas = [];
+      var lineaActual = '';
+      var longitudMaxima = 38;
+
+      for (var i = 0; i < partes.length; i++) {
+        var parte = partes[i];
+        var siguienteLinea = lineaActual ? lineaActual + parte : parte;
+
+        if (lineaActual && siguienteLinea.length > longitudMaxima) {
+          lineas.push(lineaActual);
+          lineaActual = parte;
+        } else {
+          lineaActual = siguienteLinea;
+        }
+      }
+
+      if (lineaActual) {
+        lineas.push(lineaActual);
+      }
+
+      return lineas.join('\n');
+    }
+
     self.crear_lista_evidencias = function (Evidencia) {
-      var ul = [];
+      var stack = [];
 
       if (!Evidencia || Evidencia.trim() === '') {
-        return ul;
+        return stack;
       }
 
       var evidencias = Evidencia.split(',');
 
       var urlRegex = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
-      var relativeRegex = /^(?![a-zA-Z][a-zA-Z0-9+.-]*:)(?:\/|\.\.\/|\.\/|[A-Za-z0-9_-]+\/)[^\s]*$/;
 
       for (var z = 0; z < evidencias.length; z++) {
 
@@ -608,32 +645,56 @@ angular.module('contractualClienteApp')
         if (!evidencia) continue;
 
         if (urlRegex.test(evidencia)) {
-          ul.push({
-            text: 'Evidencia ' + (z + 1),
-            link: evidencia,
-            color: '#0645AD',
-            decoration: 'underline',
-            bold: true
+          stack.push({
+            columns: [
+              { width: 10, text: '\u2022', margin: [0, 1, 0, 0] },
+              {
+                width: '*',
+                text: 'Evidencia ' + (z + 1),
+                link: evidencia,
+                color: '#0645AD',
+                decoration: 'underline',
+                bold: true,
+                margin: [0, 0, 0, 2]
+              }
+            ],
+            columnGap: 2
           });
           continue;
         }
 
-        if (relativeRegex.test(evidencia)) {
-          ul.push({
-            text: evidencia,
-            color: '#0645AD',
-            decoration: 'underline',
-            bold: true
+        if (self.es_ruta_evidencia(evidencia)) {
+          stack.push({
+            columns: [
+              { width: 10, text: '\u2022', margin: [0, 1, 0, 0] },
+              {
+                width: '*',
+                text: self.formatear_texto_evidencia(evidencia),
+                color: '#0645AD',
+                decoration: 'underline',
+                bold: true,
+                margin: [0, 0, 0, 2]
+              }
+            ],
+            columnGap: 2
           });
           continue;
         }
-        ul.push({
-          text: evidencia,
-          italics: true
+        stack.push({
+          columns: [
+            { width: 10, text: '\u2022', margin: [0, 1, 0, 0] },
+            {
+              width: '*',
+              text: evidencia,
+              italics: true,
+              margin: [0, 0, 0, 2]
+            }
+          ],
+          columnGap: 2
         });
       }
 
-      return ul;
+      return stack;
     }
 
 
@@ -648,7 +709,7 @@ angular.module('contractualClienteApp')
         for (var j = 0; j < informe.ActividadesEspecificas[i].ActividadesRealizadas.length; j++) {
           var actividad = informe.ActividadesEspecificas[i].ActividadesRealizadas[j];
           body.push([{}, {}, {}, { text: actividad.Actividad }, { text: actividad.ProductoAsociado }, {
-            ul: self.crear_lista_evidencias(actividad.Evidencia)
+            stack: self.crear_lista_evidencias(actividad.Evidencia)
           }])
         }
         body[indexPrimera][0] = { rowSpan: numActividades, text: i + 1, bold: true, alignment: 'center' }
@@ -1174,4 +1235,3 @@ angular.module('contractualClienteApp').filter('excludeUsed', function () {
 
   return filter;
 });
-
