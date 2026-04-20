@@ -273,7 +273,16 @@ angular.module('contractualClienteApp')
 
       Object.values(grupos).forEach((lista) => {
 
-        lista.sort((a, b) => Number(a.NumeroCdp) - Number(b.NumeroCdp));
+        lista.sort((a, b) => {
+          const vigenciaA = Number(a.VigenciaCdp) || 0;
+          const vigenciaB = Number(b.VigenciaCdp) || 0;
+
+          if (vigenciaA !== vigenciaB) {
+            return vigenciaA - vigenciaB;
+          }
+
+          return (Number(a.NumeroCdp) || 0) - (Number(b.NumeroCdp) || 0);
+        });
 
         lista[0].TipoContrato = "INICIAL";
         lista[0].NumeroOtrosi = null;
