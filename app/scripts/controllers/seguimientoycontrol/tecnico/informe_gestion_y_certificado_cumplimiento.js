@@ -516,8 +516,33 @@ angular.module('contractualClienteApp')
       }
     }
 
+    self.avanceValido = function (avance) {
+      return typeof avance === 'number' && isFinite(avance) &&
+        avance >= 0 && avance <= 100 && Math.floor(avance) === avance;
+    };
+
+    self.validarAvances = function () {
+      var actividades = self.Informe.ActividadesEspecificas || [];
+      for (var i = 0; i < actividades.length; i++) {
+        if (!self.avanceValido(actividades[i].Avance)) {
+          swal({
+            title: 'Porcentaje de avance inválido',
+            text: 'El avance de la actividad específica ' + (i + 1) +
+              ' debe ser un número entero entre 0 y 100, sin decimales. Corrija el valor para continuar.',
+            type: 'warning',
+            confirmButtonText: 'Aceptar'
+          });
+          return false;
+        }
+      }
+      return true;
+    };
+
     //funcion para guardar o actualizar un informe
     self.guardar_informe = function () {
+      if (!self.validarAvances()) {
+        return;
+      }
       if (self.nuevoInforme) {
         //endpoint para crear
         cumplidosCrudRequest.post('informe', angular.toJson(self.Informe)).then(function (response) {
@@ -1094,6 +1119,9 @@ angular.module('contractualClienteApp')
     }
 
     self.formato_generacion_pdf = function () {
+      if (!self.validarAvances()) {
+        return;
+      }
       if (self.Informe.Proceso == '' || self.Informe.Proceso == null || self.Informe.Proceso == undefined || self.Informe.PeriodoInformeFin == undefined || self.Informe.PeriodoInformeFin == null || self.Informe.PeriodoInformeInicio == undefined || self.Informe.PeriodoInformeInicio == null) {
         swal({
           title: 'Formulario incompleto',
@@ -1130,6 +1158,9 @@ angular.module('contractualClienteApp')
     }
 
     self.subirInforme = function () {
+      if (!self.validarAvances()) {
+        return;
+      }
       //console.log('hola?')
       swal({
         title: '¿Está seguro(a) de subir el Informe de gestion y certificado de cumplimiento?',
@@ -1141,6 +1172,9 @@ angular.module('contractualClienteApp')
         cancelButtonText: 'Cancelar',
         confirmButtonText: 'Aceptar'
       }).then(function () {
+        if (!self.validarAvances()) {
+          return;
+        }
         //console.log(self.pdf_dataUrl)
         var nombre_doc = self.vigencia + self.contrato + self.documento_contratista + self.mes + self.anio;
         var error = false;
